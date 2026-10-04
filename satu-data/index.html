@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Single Data Platform</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Poppins:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+      body {
+        background: radial-gradient(circle at top, #0f2027, #203a43, #0b1a24);
+        font-family: "Poppins", sans-serif;
+        color: white;
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 40px;
+        background: rgba(0, 0, 0, 0.3);
+      }
+
+      .title {
+        font-family: "Orbitron";
+        letter-spacing: 2px;
+      }
+
+      .status {
+        color: #00ff9d;
+      }
+
+      .clock {
+        font-size: 13px;
+        color: #ccc;
+      }
+
+      .topmenu {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 10px 40px;
+      }
+
+      .topmenu a {
+        color: white;
+        text-decoration: none;
+        margin-right: 30px;
+        font-size: 14px;
+      }
+
+      .topmenu a.active {
+        color: #00c3ff;
+        border-bottom: 2px solid #00c3ff;
+      }
+
+      .card-glass {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        padding: 20px;
+        margin-top: 20px;
+      }
+
+      .stat-number {
+        font-size: 26px;
+        font-weight: 600;
+      }
+
+      .table {
+        color: white;
+      }
+
+      .alert-box {
+        background: rgba(255, 165, 0, 0.2);
+        border-left: 4px solid orange;
+        padding: 10px;
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="header">
+      <div class="title">SINGLE DATA PLATFORM</div>
+
+      <div>
+        <div class="status">DATA INTEGRATION ACTIVE</div>
+        <div id="clock" class="clock"></div>
+      </div>
+    </div>
+
+    <div class="topmenu">
+      <a href="index.html" class="active">Dashboard Integrasi Data</a>
+      <a href="data-opd.html">Data OPD</a>
+      <a href="integrasi-api.html">Integrasi API</a>
+      <a href="kualitas-data.html">Kualitas Data</a>
+      <a href="sinkronisasi-data.html">Sinkronisasi Data</a>
+      <a href="meta-data.html">Metadata Dataset</a>
+      <a href="../dashboard.html">Command Center</a>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>OPD Terintegrasi</h6>
+            <div class="stat-number">32</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Dataset</h6>
+            <div class="stat-number">420</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>API Aktif</h6>
+            <div class="stat-number">120</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Transaksi Data / Hari</h6>
+            <div class="stat-number">84K</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="card-glass">
+            <h5>Distribusi Dataset OPD</h5>
+
+            <canvas id="datasetChart"></canvas>
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <div class="card-glass">
+            <h5>Penggunaan API Data</h5>
+
+            <canvas id="apiChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-glass">
+        <h5>Status Integrasi Data OPD</h5>
+
+        <table class="table table-dark table-striped">
+          <thead>
+            <tr>
+              <th>OPD</th>
+              <th>Dataset</th>
+              <th>API</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>Dinas Kesehatan</td>
+              <td>45</td>
+              <td>12</td>
+              <td>Connected</td>
+            </tr>
+
+            <tr>
+              <td>Dinas Pendidikan</td>
+              <td>38</td>
+              <td>9</td>
+              <td>Connected</td>
+            </tr>
+
+            <tr>
+              <td>Dinas Sosial</td>
+              <td>26</td>
+              <td>7</td>
+              <td>Connected</td>
+            </tr>
+
+            <tr>
+              <td>Dinas Kependudukan</td>
+              <td>30</td>
+              <td>10</td>
+              <td>Latency</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card-glass">
+        <h5>AI Insight Integrasi Data</h5>
+
+        <div class="alert-box">
+          AI mendeteksi inkonsistensi data pada dataset kependudukan.
+        </div>
+
+        <div class="alert-box">
+          AI merekomendasikan sinkronisasi dataset pendidikan.
+        </div>
+
+        <div class="alert-box">
+          AI mendeteksi potensi duplikasi data pada layanan sosial.
+        </div>
+      </div>
+    </div>
+
+    <script>
+      /* CLOCK */
+
+      function updateClock() {
+        const now = new Date();
+
+        const date = now.toLocaleDateString("id-ID");
+
+        const time = now.toLocaleTimeString("id-ID");
+
+        document.getElementById("clock").innerHTML = date + " | " + time;
+      }
+
+      setInterval(updateClock, 1000);
+
+      updateClock();
+
+      /* CHART DATASET */
+
+      new Chart(document.getElementById("datasetChart"), {
+        type: "doughnut",
+
+        data: {
+          labels: ["Kesehatan", "Pendidikan", "Kependudukan", "Ekonomi"],
+          datasets: [
+            {
+              data: [120, 90, 80, 130],
+              backgroundColor: ["#00c3ff", "#00ff9d", "#ffaa00", "#ff4c4c"],
+            },
+          ],
+        },
+      });
+
+      /* API CHART */
+
+      new Chart(document.getElementById("apiChart"), {
+        type: "line",
+
+        data: {
+          labels: ["08", "09", "10", "11", "12", "13"],
+          datasets: [
+            {
+              label: "Request API",
+              data: [1200, 2400, 3600, 4200, 5100, 6200],
+              borderColor: "#00ff9d",
+            },
+          ],
+        },
+      });
+    </script>
+  </body>
+</html>

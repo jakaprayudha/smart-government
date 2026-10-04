@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Surat Domisili</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Poppins:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        background: radial-gradient(circle at top, #0f2027, #203a43, #0b1a24);
+        font-family: "Poppins", sans-serif;
+        color: white;
+        min-height: 100vh;
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 40px;
+        background: rgba(0, 0, 0, 0.3);
+      }
+
+      .title {
+        font-family: "Orbitron";
+        letter-spacing: 2px;
+      }
+
+      .card-glass {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        padding: 20px;
+        margin-top: 20px;
+      }
+
+      .preview {
+        background: white;
+        color: black;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      }
+
+      input {
+        background: #0f2530 !important;
+        border: 1px solid #1f3a46 !important;
+        color: white !important;
+        border-radius: 8px;
+        padding: 10px;
+      }
+
+      .btn-print {
+        background: linear-gradient(135deg, #00c3ff, #00ff9d);
+        border: none;
+        color: black;
+        font-weight: 600;
+        padding: 10px;
+        border-radius: 8px;
+        transition: 0.2s;
+      }
+
+      .btn-outline-light {
+        border-radius: 8px;
+        padding: 6px 16px;
+      }
+      .btn-print:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+      }
+      ::placeholder {
+        color: #ffffffaa !important;
+        opacity: 1;
+      }
+
+      ::-ms-input-placeholder {
+        color: #ffffffaa;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="header">
+      <div class="title">SURAT DOMISILI</div>
+
+      <div>
+        <button class="btn btn-outline-light" onclick="history.back()">
+          ⬅ Kembali
+        </button>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <!-- FORM -->
+
+        <div class="col-md-5">
+          <div class="card-glass">
+            <h5>Form Pengajuan</h5>
+
+            <input
+              id="nik"
+              class="form-control mb-3"
+              placeholder="NIK"
+              onkeyup="updatePreview()"
+            />
+
+            <input
+              id="nama"
+              class="form-control mb-3"
+              placeholder="Nama"
+              onkeyup="updatePreview()"
+            />
+
+            <input
+              id="ttl"
+              class="form-control mb-3"
+              placeholder="Tempat / Tanggal Lahir"
+              onkeyup="updatePreview()"
+            />
+
+            <input
+              id="alamat"
+              class="form-control mb-3"
+              placeholder="Alamat"
+              onkeyup="updatePreview()"
+            />
+
+            <div class="row">
+              <div class="col">
+                <input
+                  id="rt"
+                  class="form-control mb-3"
+                  placeholder="RT"
+                  onkeyup="updatePreview()"
+                />
+              </div>
+
+              <div class="col">
+                <input
+                  id="rw"
+                  class="form-control mb-3"
+                  placeholder="RW"
+                  onkeyup="updatePreview()"
+                />
+              </div>
+            </div>
+
+            <input
+              id="kelurahan"
+              class="form-control mb-3"
+              placeholder="Kelurahan"
+              onkeyup="updatePreview()"
+            />
+
+            <input
+              id="kecamatan"
+              class="form-control mb-3"
+              placeholder="Kecamatan"
+              onkeyup="updatePreview()"
+            />
+
+            <button class="btn btn-print w-100 mt-3" onclick="openWebcam()">
+              🖨 Cetak Surat
+            </button>
+          </div>
+        </div>
+
+        <!-- PREVIEW -->
+
+        <div class="col-md-7">
+          <div class="card-glass">
+            <h5>Preview Surat</h5>
+
+            <div id="preview" class="preview">
+              <h4 style="text-align: center">SURAT KETERANGAN DOMISILI</h4>
+
+              <br />
+
+              <p>Yang bertanda tangan di bawah ini menerangkan bahwa:</p>
+
+              <table>
+                <tr>
+                  <td>NIK</td>
+                  <td>: <span id="p_nik">-</span></td>
+                </tr>
+
+                <tr>
+                  <td>Nama</td>
+                  <td>: <span id="p_nama">-</span></td>
+                </tr>
+
+                <tr>
+                  <td>TTL</td>
+                  <td>: <span id="p_ttl">-</span></td>
+                </tr>
+
+                <tr>
+                  <td>Alamat</td>
+                  <td>: <span id="p_alamat">-</span></td>
+                </tr>
+
+                <tr>
+                  <td>RT / RW</td>
+                  <td>: <span id="p_rt">-</span> / <span id="p_rw">-</span></td>
+                </tr>
+
+                <tr>
+                  <td>Kelurahan</td>
+                  <td>: <span id="p_kelurahan">-</span></td>
+                </tr>
+
+                <tr>
+                  <td>Kecamatan</td>
+                  <td>: <span id="p_kecamatan">-</span></td>
+                </tr>
+              </table>
+
+              <br />
+
+              <p>
+                Adalah benar merupakan warga yang berdomisili di wilayah
+                tersebut.
+              </p>
+
+              <br /><br />
+
+              <div style="text-align: right">
+                <p>Perbaungan, <span id="tanggal"></span></p>
+
+                <br /><br /><br />
+
+                <p><b>Kepala Desa</b></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- WEBCAM MODAL -->
+
+    <div
+      id="webcamModal"
+      style="
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.9);
+        z-index: 9999;
+        align-items: center;
+        justify-content: center;
+      "
+    >
+      <div
+        style="
+          background: white;
+          padding: 20px;
+          border-radius: 10px;
+          text-align: center;
+        "
+      >
+        <h4>Ambil Foto Verifikasi</h4>
+
+        <video id="video" width="400" autoplay></video>
+
+        <br /><br />
+
+        <button onclick="capture()" class="btn btn-success">
+          📸 Ambil Foto
+        </button>
+
+        <button onclick="closeWebcam()" class="btn btn-secondary">Batal</button>
+
+        <canvas id="canvas" style="display: none"></canvas>
+      </div>
+    </div>
+    <script>
+      /* UPDATE PREVIEW */
+
+      function updatePreview() {
+        document.getElementById("p_nik").innerText =
+          document.getElementById("nik").value;
+
+        document.getElementById("p_nama").innerText =
+          document.getElementById("nama").value;
+
+        document.getElementById("p_ttl").innerText =
+          document.getElementById("ttl").value;
+
+        document.getElementById("p_alamat").innerText =
+          document.getElementById("alamat").value;
+
+        document.getElementById("p_rt").innerText =
+          document.getElementById("rt").value;
+
+        document.getElementById("p_rw").innerText =
+          document.getElementById("rw").value;
+
+        document.getElementById("p_kelurahan").innerText =
+          document.getElementById("kelurahan").value;
+
+        document.getElementById("p_kecamatan").innerText =
+          document.getElementById("kecamatan").value;
+      }
+
+      /* TANGGAL */
+
+      document.getElementById("tanggal").innerText =
+        new Date().toLocaleDateString("id-ID");
+      let stream;
+
+      function openWebcam() {
+        document.getElementById("webcamModal").style.display = "flex";
+
+        navigator.mediaDevices.getUserMedia({ video: true }).then(function (s) {
+          stream = s;
+
+          document.getElementById("video").srcObject = s;
+        });
+      }
+
+      function closeWebcam() {
+        document.getElementById("webcamModal").style.display = "none";
+
+        if (stream) {
+          stream.getTracks().forEach((track) => track.stop());
+        }
+      }
+
+      function capture() {
+        const video = document.getElementById("video");
+
+        const canvas = document.getElementById("canvas");
+
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+
+        const ctx = canvas.getContext("2d");
+
+        ctx.drawImage(video, 0, 0);
+
+        closeWebcam();
+
+        printSurat();
+      }
+
+      function printSurat() {
+        const printContents = document.getElementById("preview").innerHTML;
+
+        const win = window.open("", "", "width=900,height=700");
+
+        win.document.write(printContents);
+
+        win.document.close();
+
+        win.print();
+      }
+      /* PRINT */
+
+      function printSurat() {
+        var printContents = document.getElementById("preview").innerHTML;
+
+        var win = window.open("", "", "height=700,width=900");
+
+        win.document.write(printContents);
+
+        win.document.close();
+
+        win.print();
+      }
+    </script>
+  </body>
+</html>

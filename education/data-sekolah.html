@@ -1,0 +1,582 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Data Sekolah</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Poppins:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+      body {
+        background: radial-gradient(circle at top, #0f2027, #203a43, #0b1a24);
+        font-family: "Poppins", sans-serif;
+        color: white;
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 40px;
+        background: rgba(0, 0, 0, 0.3);
+      }
+
+      .title {
+        font-family: "Orbitron";
+        letter-spacing: 2px;
+      }
+
+      .status {
+        color: #00ff9d;
+      }
+
+      .clock {
+        font-size: 13px;
+        color: #ccc;
+      }
+
+      .topmenu {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 10px 40px;
+      }
+
+      .topmenu a {
+        color: white;
+        text-decoration: none;
+        margin-right: 30px;
+        font-size: 14px;
+      }
+
+      .topmenu a.active {
+        color: #00c3ff;
+        border-bottom: 2px solid #00c3ff;
+      }
+
+      .card-glass {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        padding: 20px;
+        margin-top: 20px;
+      }
+
+      .stat-number {
+        font-size: 26px;
+        font-weight: 600;
+      }
+
+      .table {
+        color: white;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- HEADER -->
+
+    <div class="header">
+      <div class="title">SMART EDUCATION CENTER</div>
+
+      <div>
+        <div class="status">DATA SEKOLAH</div>
+        <div id="clock" class="clock"></div>
+      </div>
+    </div>
+
+    <!-- MENU -->
+
+    <div class="topmenu">
+      <a href="index.html">Dashboard Pendidikan</a>
+      <a href="data-sekolah.html" class="active">Data Sekolah</a>
+      <a href="perpustakaan.html">Perpustakaan Digital</a>
+      <a href="e-learning.html">E-Learning Monitoring</a>
+      <a href="../dashboard.html">Command Center</a>
+    </div>
+
+    <div class="container-fluid">
+      <!-- STAT -->
+
+      <div class="row">
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Total Sekolah</h6>
+            <div class="stat-number">420</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Total Siswa</h6>
+            <div class="stat-number">124,500</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Total Guru</h6>
+            <div class="stat-number">6,240</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Ruang Kelas</h6>
+            <div class="stat-number">5,820</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHART -->
+
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="card-glass">
+            <h5>Distribusi Sekolah</h5>
+
+            <canvas id="schoolChart"></canvas>
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <div class="card-glass">
+            <h5>Rasio Guru vs Siswa</h5>
+
+            <canvas id="ratioChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- TABLE DATA SEKOLAH -->
+
+      <div class="card-glass">
+        <h5>Data Sekolah</h5>
+
+        <table class="table table-dark table-striped">
+          <thead>
+            <tr>
+              <th>Nama Sekolah</th>
+              <th>Jenjang</th>
+              <th>Siswa</th>
+              <th>Guru</th>
+              <th>Akreditasi</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>SMA Negeri 1 Perbaungan</td>
+              <td>SMA</td>
+              <td>920</td>
+              <td>45</td>
+              <td>A</td>
+            </tr>
+
+            <tr>
+              <td>SMP Negeri 1 Sei Rampah</td>
+              <td>SMP</td>
+              <td>780</td>
+              <td>38</td>
+              <td>A</td>
+            </tr>
+
+            <tr>
+              <td>SMK Negeri 1 Serdang Bedagai</td>
+              <td>SMK</td>
+              <td>650</td>
+              <td>40</td>
+              <td>A</td>
+            </tr>
+
+            <tr>
+              <td>SD Negeri 101234</td>
+              <td>SD</td>
+              <td>420</td>
+              <td>18</td>
+              <td>B</td>
+            </tr>
+
+            <tr>
+              <td>SMP Negeri 2 Perbaungan</td>
+              <td>SMP</td>
+              <td>560</td>
+              <td>30</td>
+              <td>A</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card-glass">
+        <h5>📈 Tren Jumlah Siswa</h5>
+
+        <canvas id="studentTrend"></canvas>
+      </div>
+      <div class="card-glass">
+        <h5>📊 Ranking Sekolah</h5>
+
+        <table class="table table-dark table-striped">
+          <thead>
+            <tr>
+              <th>Ranking</th>
+              <th>Sekolah</th>
+              <th>Akreditasi</th>
+              <th>Prestasi</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>SMA Negeri 1 Perbaungan</td>
+              <td>A</td>
+              <td>Olimpiade Nasional</td>
+            </tr>
+
+            <tr>
+              <td>2</td>
+              <td>SMA Negeri 2 Serdang Bedagai</td>
+              <td>A</td>
+              <td>Robotik Nasional</td>
+            </tr>
+
+            <tr>
+              <td>3</td>
+              <td>SMP Negeri 1 Sei Rampah</td>
+              <td>A</td>
+              <td>Juara Sains</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card-glass">
+        <h5>🧠 Prediksi Kebutuhan Guru</h5>
+
+        <div
+          style="
+            background: rgba(255, 165, 0, 0.2);
+            padding: 10px;
+            border-left: 4px solid orange;
+            margin-bottom: 10px;
+          "
+        >
+          AI memprediksi kebutuhan tambahan <b>12 guru matematika</b> di tingkat
+          SMA.
+        </div>
+
+        <div
+          style="
+            background: rgba(255, 165, 0, 0.2);
+            padding: 10px;
+            border-left: 4px solid orange;
+            margin-bottom: 10px;
+          "
+        >
+          AI memprediksi kebutuhan <b>8 guru bahasa Inggris</b> di tingkat SMP.
+        </div>
+
+        <div
+          style="
+            background: rgba(255, 165, 0, 0.2);
+            padding: 10px;
+            border-left: 4px solid orange;
+          "
+        >
+          AI memprediksi kekurangan <b>15 guru SD</b> dalam 3 tahun ke depan.
+        </div>
+      </div>
+      <div class="card-glass">
+        <h5>🗺 GIS Lokasi Sekolah</h5>
+
+        <div id="schoolMap" style="height: 420px; border-radius: 10px"></div>
+      </div>
+    </div>
+
+    <script>
+      /* CLOCK */
+
+      function updateClock() {
+        const now = new Date();
+        const date = now.toLocaleDateString("id-ID");
+        const time = now.toLocaleTimeString("id-ID");
+        document.getElementById("clock").innerHTML = date + " | " + time;
+      }
+
+      setInterval(updateClock, 1000);
+      updateClock();
+
+      /* CHART DISTRIBUSI SEKOLAH */
+
+      new Chart(document.getElementById("schoolChart"), {
+        type: "doughnut",
+
+        data: {
+          labels: ["SD", "SMP", "SMA", "SMK"],
+          datasets: [
+            {
+              data: [220, 90, 70, 40],
+              backgroundColor: ["#00c3ff", "#00ff9d", "#ffaa00", "#ff4c4c"],
+            },
+          ],
+        },
+      });
+
+      /* CHART RASIO */
+
+      new Chart(document.getElementById("ratioChart"), {
+        type: "bar",
+
+        data: {
+          labels: ["SD", "SMP", "SMA", "SMK"],
+          datasets: [
+            {
+              label: "Rasio Guru:Siswa",
+              data: [20, 18, 16, 15],
+              backgroundColor: "#00ff9d",
+            },
+          ],
+        },
+      });
+
+      new Chart(document.getElementById("studentTrend"), {
+        type: "line",
+
+        data: {
+          labels: ["2019", "2020", "2021", "2022", "2023"],
+          datasets: [
+            {
+              label: "Jumlah Siswa",
+              data: [110000, 114000, 118000, 121000, 124500],
+              borderColor: "#00c3ff",
+              tension: 0.3,
+            },
+          ],
+        },
+      });
+
+      /* GIS SEKOLAH */
+
+      const schoolMap = L.map("schoolMap").setView([3.56, 98.86], 11);
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "School GIS",
+      }).addTo(schoolMap);
+
+      const schools = [
+        {
+          name: "SMP Negeri 1 Sei Rampah",
+          principal: "Siti Rahmawati, S.Pd",
+          email: "smpn1seirampah@sch.id",
+          phone: "081234567001",
+          student: 780,
+          teacher: 38,
+          address: "Jl. Sei Rampah Raya",
+          lat: 3.567,
+          lng: 98.857,
+        },
+        {
+          name: "SMP Negeri 2 Sei Rampah",
+          principal: "Ahmad Fauzi, S.Pd",
+          email: "smpn2seirampah@sch.id",
+          phone: "081234567002",
+          student: 620,
+          teacher: 32,
+          address: "Jl. Pendidikan Sei Rampah",
+          lat: 3.57,
+          lng: 98.865,
+        },
+        {
+          name: "SMP Negeri 3 Sei Rampah",
+          principal: "Rina Kartika, S.Pd",
+          email: "smpn3seirampah@sch.id",
+          phone: "081234567003",
+          student: 540,
+          teacher: 28,
+          address: "Jl. Pemuda Sei Rampah",
+          lat: 3.565,
+          lng: 98.85,
+        },
+
+        {
+          name: "SMP Negeri 1 Perbaungan",
+          principal: "Budi Santoso, M.Pd",
+          email: "smpn1perbaungan@sch.id",
+          phone: "081234567004",
+          student: 800,
+          teacher: 40,
+          address: "Jl. Perbaungan Kota",
+          lat: 3.586,
+          lng: 98.92,
+        },
+        {
+          name: "SMP Negeri 2 Perbaungan",
+          principal: "Dewi Lestari, S.Pd",
+          email: "smpn2perbaungan@sch.id",
+          phone: "081234567005",
+          student: 650,
+          teacher: 35,
+          address: "Jl. Pendidikan Perbaungan",
+          lat: 3.59,
+          lng: 98.91,
+        },
+        {
+          name: "SMP Negeri 3 Perbaungan",
+          principal: "Joko Prasetyo, S.Pd",
+          email: "smpn3perbaungan@sch.id",
+          phone: "081234567006",
+          student: 520,
+          teacher: 30,
+          address: "Jl. Pemuda Perbaungan",
+          lat: 3.58,
+          lng: 98.93,
+        },
+
+        {
+          name: "SMP Negeri 1 Teluk Mengkudu",
+          principal: "Nurhayati, S.Pd",
+          email: "smpn1teluk@sch.id",
+          phone: "081234567007",
+          student: 600,
+          teacher: 33,
+          address: "Jl. Teluk Mengkudu",
+          lat: 3.525,
+          lng: 98.91,
+        },
+        {
+          name: "SMP Negeri 2 Teluk Mengkudu",
+          principal: "Andi Saputra, S.Pd",
+          email: "smpn2teluk@sch.id",
+          phone: "081234567008",
+          student: 480,
+          teacher: 27,
+          address: "Jl. Pendidikan Teluk Mengkudu",
+          lat: 3.52,
+          lng: 98.9,
+        },
+
+        {
+          name: "SMP Negeri 1 Dolok Masihul",
+          principal: "Hendra Wijaya, S.Pd",
+          email: "smpn1dolok@sch.id",
+          phone: "081234567009",
+          student: 550,
+          teacher: 29,
+          address: "Jl. Dolok Masihul",
+          lat: 3.453,
+          lng: 98.93,
+        },
+        {
+          name: "SMP Negeri 2 Dolok Masihul",
+          principal: "Sri Wahyuni, S.Pd",
+          email: "smpn2dolok@sch.id",
+          phone: "081234567010",
+          student: 430,
+          teacher: 25,
+          address: "Jl. Pendidikan Dolok Masihul",
+          lat: 3.46,
+          lng: 98.94,
+        },
+
+        {
+          name: "SMP Negeri 1 Tanjung Beringin",
+          principal: "Rudi Hartono, S.Pd",
+          email: "smpn1tanjung@sch.id",
+          phone: "081234567011",
+          student: 500,
+          teacher: 28,
+          address: "Jl. Tanjung Beringin",
+          lat: 3.508,
+          lng: 98.875,
+        },
+        {
+          name: "SMP Negeri 2 Tanjung Beringin",
+          principal: "Maya Sari, S.Pd",
+          email: "smpn2tanjung@sch.id",
+          phone: "081234567012",
+          student: 420,
+          teacher: 24,
+          address: "Jl. Pendidikan Tanjung Beringin",
+          lat: 3.5,
+          lng: 98.88,
+        },
+
+        {
+          name: "SMP Negeri 1 Pantai Cermin",
+          principal: "Agus Salim, S.Pd",
+          email: "smpn1pantai@sch.id",
+          phone: "081234567013",
+          student: 470,
+          teacher: 26,
+          address: "Jl. Pantai Cermin",
+          lat: 3.507,
+          lng: 98.873,
+        },
+        {
+          name: "SMP Negeri 2 Pantai Cermin",
+          principal: "Fitriani, S.Pd",
+          email: "smpn2pantai@sch.id",
+          phone: "081234567014",
+          student: 390,
+          teacher: 22,
+          address: "Jl. Pantai Cermin II",
+          lat: 3.51,
+          lng: 98.865,
+        },
+
+        {
+          name: "SMP Negeri 1 Pegajahan",
+          principal: "Dedi Kurniawan, S.Pd",
+          email: "smpn1pegajahan@sch.id",
+          phone: "081234567015",
+          student: 530,
+          teacher: 31,
+          address: "Jl. Pegajahan",
+          lat: 3.6,
+          lng: 98.88,
+        },
+      ];
+
+      schools.forEach((s) => {
+        L.circleMarker([s.lat, s.lng], {
+          radius: 10,
+          color: "#00c3ff",
+          fillColor: "#00c3ff",
+          fillOpacity: 0.9,
+        }).addTo(schoolMap).bindPopup(`
+
+<b>${s.name}</b><br><br>
+
+👤 Kepala Sekolah: ${s.principal}<br>
+
+📧 Email: ${s.email}<br>
+
+📱 HP: ${s.phone}<br>
+
+👨‍🎓 Total Siswa: ${s.student}<br>
+
+👨‍🏫 Total Guru: ${s.teacher}<br>
+
+📍 Alamat: ${s.address}
+
+`);
+      });
+    </script>
+  </body>
+</html>

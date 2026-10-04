@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Live Tracking Tim SAR</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="sidebar.css" />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", sans-serif;
+      }
+
+      body {
+        background: #f4f6f9;
+        display: flex;
+      }
+
+      /* TABLE */
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+        margin-top: 10px;
+      }
+
+      th {
+        text-align: left;
+        background: #f4f6f9;
+        padding: 10px;
+        border-bottom: 2px solid #ddd;
+      }
+
+      td {
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+      }
+
+      tr:hover {
+        background: #f9f9f9;
+      }
+
+      /* STATUS */
+
+      .status {
+        font-weight: 600;
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 12px;
+        display: inline-block;
+      }
+
+      .status-aktif {
+        background: #e8f5e9;
+        color: #2e7d32;
+      }
+
+      .status-evakuasi {
+        background: #fff3e0;
+        color: #ef6c00;
+      }
+
+      /* MAIN */
+
+      .main {
+        flex: 1;
+        padding: 20px;
+      }
+
+      /* TOPBAR */
+
+      .topbar {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+      }
+
+      /* PANEL */
+
+      .panel {
+        background: white;
+        padding: 15px;
+        border-radius: 12px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+      }
+
+      /* MAP */
+
+      #map {
+        height: 600px;
+        border-radius: 12px;
+      }
+
+      /* ICON SAR */
+
+      .sar-marker {
+        background: #c62828;
+        color: white;
+        padding: 4px 8px;
+        border-radius: 20px;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <h2>BPBD Command</h2>
+
+      <p class="menu-title">Monitoring</p>
+
+      <a href="index.html"> <i class="fa fa-house"></i> Dashboard </a>
+
+      <a href="heatmap.html"> <i class="fa fa-fire"></i> Heatmap Bencana </a>
+
+      <a href="early-warning.html">
+        <i class="fa fa-triangle-exclamation"></i> Early Warning
+      </a>
+
+      <a href="cuaca.html"> <i class="fa fa-cloud"></i> Monitoring Cuaca </a>
+
+      <a href="wilayah-rawan.html"> <i class="fa fa-map"></i> Wilayah Rawan </a>
+
+      <p class="menu-title">Operasi</p>
+
+      <a class="active" href="tracking-sar.html">
+        <i class="fa fa-location-dot"></i> Live Tracking SAR
+      </a>
+
+      <a href="sar.html"> <i class="fa fa-helicopter"></i> Tim SAR </a>
+
+      <a href="posko.html"> <i class="fa fa-house"></i> Posko Pengungsian </a>
+
+      <p class="menu-title">Data Bencana</p>
+
+      <a href="laporan.html">
+        <i class="fa fa-triangle-exclamation"></i> Laporan Bencana
+      </a>
+
+      <a href="korban.html"> <i class="fa fa-user-injured"></i> Data Korban </a>
+
+      <a href="pengungsi.html">
+        <i class="fa fa-people-group"></i> Data Pengungsi
+      </a>
+
+      <a href="bantuan.html"> <i class="fa fa-box"></i> Distribusi Bantuan </a>
+
+      <p class="menu-title">Sistem</p>
+
+      <a href="pengaturan.html"> <i class="fa fa-gear"></i> Pengaturan </a>
+      <a href="../dashboard.html">
+        <i class="fa fa-display"></i> Command Center
+      </a>
+    </div>
+
+    <!-- MAIN -->
+
+    <div class="main">
+      <div class="topbar">
+        <h2>📡 Live Tracking Tim SAR</h2>
+
+        <div><i class="fa fa-user"></i> Admin BPBD</div>
+      </div>
+
+      <div class="panel">
+        <h3>🗺️ Peta Tracking Tim SAR</h3>
+
+        <div id="map"></div>
+      </div>
+      <br />
+      <div class="panel">
+        <h3>🚁 Status Operasi Tim SAR</h3>
+
+        <table>
+          <tr>
+            <th>Tim</th>
+            <th>Lokasi</th>
+            <th>Status</th>
+          </tr>
+
+          <tr>
+            <td>SAR 01</td>
+            <td>Kec.Perbaungan</td>
+            <td class="status status-aktif">Patroli</td>
+          </tr>
+
+          <tr>
+            <td>SAR 02</td>
+            <td>Kec.Sei Rampah</td>
+            <td class="status status-evakuasi">Evakuasi</td>
+          </tr>
+
+          <tr>
+            <td>SAR 03</td>
+            <td>Kec.Pantai Cermin</td>
+            <td class="status status-aktif">Monitoring</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <script>
+      /* INIT MAP */
+
+      var map = L.map("map").setView([3.595, 98.672], 9);
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(
+        map,
+      );
+
+      /* CREATE SAR ICON */
+
+      function createSARIcon(label) {
+        return L.divIcon({
+          className: "sar-icon",
+
+          html: `<div class="sar-marker">🚁 ${label}</div>`,
+
+          iconSize: [60, 30],
+          iconAnchor: [30, 15],
+        });
+      }
+
+      /* CREATE MARKERS */
+
+      var sar1 = L.marker([3.595, 98.672], {
+        icon: createSARIcon("SAR 01"),
+      }).addTo(map);
+
+      var sar2 = L.marker([3.6, 98.66], {
+        icon: createSARIcon("SAR 02"),
+      }).addTo(map);
+
+      var sar3 = L.marker([3.58, 98.7], {
+        icon: createSARIcon("SAR 03"),
+      }).addTo(map);
+
+      /* HISTORY PATH */
+
+      var path1 = [];
+      var path2 = [];
+      var path3 = [];
+
+      /* POLYLINE TRACK */
+
+      var line1 = L.polyline(path1, { color: "red", weight: 3 }).addTo(map);
+      var line2 = L.polyline(path2, { color: "blue", weight: 3 }).addTo(map);
+      var line3 = L.polyline(path3, { color: "green", weight: 3 }).addTo(map);
+
+      /* SIMULASI GPS TRACKING */
+
+      setInterval(function () {
+        var lat1 = 3.595 + (Math.random() * 0.02 - 0.01);
+        var lon1 = 98.672 + (Math.random() * 0.02 - 0.01);
+
+        var lat2 = 3.6 + (Math.random() * 0.02 - 0.01);
+        var lon2 = 98.66 + (Math.random() * 0.02 - 0.01);
+
+        var lat3 = 3.58 + (Math.random() * 0.02 - 0.01);
+        var lon3 = 98.7 + (Math.random() * 0.02 - 0.01);
+
+        /* UPDATE MARKER */
+
+        sar1.setLatLng([lat1, lon1]);
+        sar2.setLatLng([lat2, lon2]);
+        sar3.setLatLng([lat3, lon3]);
+
+        /* SAVE HISTORY */
+
+        path1.push([lat1, lon1]);
+        path2.push([lat2, lon2]);
+        path3.push([lat3, lon3]);
+
+        /* LIMIT HISTORY */
+
+        if (path1.length > 30) path1.shift();
+        if (path2.length > 30) path2.shift();
+        if (path3.length > 30) path3.shift();
+
+        /* UPDATE LINE */
+
+        line1.setLatLngs(path1);
+        line2.setLatLngs(path2);
+        line3.setLatLngs(path3);
+      }, 3000);
+    </script>
+  </body>
+</html>

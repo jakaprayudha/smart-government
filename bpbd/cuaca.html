@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Monitoring Cuaca</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://leaflet.github.io/Leaflet.heat/dist/leaflet-heat.js"></script>
+    <link rel="stylesheet" href="sidebar.css" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Inter", sans-serif;
+      }
+
+      body {
+        display: flex;
+        background: #f4f6f9;
+      }
+
+      /* SIDEBAR */
+
+      /* MAIN */
+
+      .main {
+        flex: 1;
+        padding: 20px;
+      }
+
+      /* CARDS */
+
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+
+      /* STATUS BANJIR */
+
+      .status {
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .aman {
+        background: #e8f5e9;
+        color: #2e7d32;
+      }
+
+      .siaga {
+        background: #fff3e0;
+        color: #ef6c00;
+      }
+
+      .bahaya {
+        background: #ffebee;
+        color: #c62828;
+      }
+
+      .card {
+        background: white;
+        padding: 18px;
+        border-radius: 12px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        text-align: center;
+      }
+
+      .card h3 {
+        color: #c62828;
+        font-size: 22px;
+      }
+
+      /* GRID */
+
+      .grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 20px;
+      }
+
+      /* PANEL */
+
+      .panel {
+        background: white;
+        padding: 15px;
+        border-radius: 12px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        margin-bottom: 20px;
+      }
+
+      /* MAP */
+
+      #map {
+        height: 420px;
+        border-radius: 10px;
+      }
+
+      /* TABLE */
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+      }
+
+      th {
+        background: #f4f6f9;
+        padding: 10px;
+        text-align: left;
+      }
+
+      td {
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+      }
+
+      tr:hover {
+        background: #fafafa;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="sidebar">
+      <h2>BPBD Command</h2>
+
+      <p class="menu-title">Monitoring</p>
+
+      <a href="index.html"> <i class="fa fa-house"></i> Dashboard </a>
+
+      <a href="heatmap.html"> <i class="fa fa-fire"></i> Heatmap Bencana </a>
+
+      <a href="early-warning.html">
+        <i class="fa fa-triangle-exclamation"></i> Early Warning
+      </a>
+
+      <a class="active" href="cuaca.html">
+        <i class="fa fa-cloud"></i> Monitoring Cuaca
+      </a>
+
+      <a href="wilayah-rawan.html"> <i class="fa fa-map"></i> Wilayah Rawan </a>
+
+      <p class="menu-title">Operasi</p>
+
+      <a href="tracking-sar.html">
+        <i class="fa fa-location-dot"></i> Live Tracking SAR
+      </a>
+
+      <a href="sar.html"> <i class="fa fa-helicopter"></i> Tim SAR </a>
+
+      <a href="posko.html"> <i class="fa fa-house"></i> Posko Pengungsian </a>
+
+      <p class="menu-title">Data Bencana</p>
+
+      <a href="laporan.html">
+        <i class="fa fa-triangle-exclamation"></i> Laporan Bencana
+      </a>
+
+      <a href="korban.html"> <i class="fa fa-user-injured"></i> Data Korban </a>
+
+      <a href="pengungsi.html">
+        <i class="fa fa-people-group"></i> Data Pengungsi
+      </a>
+
+      <a href="bantuan.html"> <i class="fa fa-box"></i> Distribusi Bantuan </a>
+
+      <p class="menu-title">Sistem</p>
+
+      <a href="pengaturan.html"> <i class="fa fa-gear"></i> Pengaturan </a>
+      <a href="../dashboard.html">
+        <i class="fa fa-display"></i> Command Center
+      </a>
+    </div>
+
+    <div class="main">
+      <h2 style="margin-bottom: 20px">🌧 Monitoring Cuaca</h2>
+
+      <div class="cards">
+        <div class="card">
+          <h3>35 mm</h3>
+          <p>Curah Hujan</p>
+        </div>
+
+        <div class="card">
+          <h3>12 km/h</h3>
+          <p>Kecepatan Angin</p>
+        </div>
+
+        <div class="card">
+          <h3>29°C</h3>
+          <p>Suhu Rata-rata</p>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div>
+          <div class="panel">
+            <h3>🗺 Peta Sensor Cuaca</h3>
+
+            <div id="map"></div>
+          </div>
+
+          <div class="panel">
+            <h3>📈 Grafik Curah Hujan</h3>
+
+            <canvas id="rainChart"></canvas>
+          </div>
+
+          <div class="panel">
+            <h3>🌧 Rainfall Heatmap</h3>
+
+            <div id="rainmap" style="height: 300px; border-radius: 10px"></div>
+          </div>
+
+          <div class="panel">
+            <h3>🌪 Peta Angin Real-time</h3>
+
+            <div id="windmap" style="height: 300px; border-radius: 10px"></div>
+          </div>
+        </div>
+
+        <div>
+          <div class="panel">
+            <h3>🌦 Kondisi Cuaca Wilayah</h3>
+
+            <table>
+              <tr>
+                <th>Wilayah</th>
+                <th>Cuaca</th>
+                <th>Suhu</th>
+              </tr>
+
+              <tr>
+                <td>Kec.Perbaungan</td>
+                <td>Hujan</td>
+                <td>28°C</td>
+              </tr>
+
+              <tr>
+                <td>Kec.Sei Rampah</td>
+                <td>Berawan</td>
+                <td>24°C</td>
+              </tr>
+
+              <tr>
+                <td>Kec.Pantai Cermin</td>
+                <td>Hujan Ringan</td>
+                <td>27°C</td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="panel">
+            <h3>📋 Monitoring Sensor Cuaca</h3>
+
+            <table id="cuacaTable">
+              <tr>
+                <th>Sensor</th>
+                <th>Lokasi</th>
+                <th>Curah Hujan</th>
+              </tr>
+            </table>
+          </div>
+          <div class="panel">
+            <h3>⚠ Prediksi Banjir AI</h3>
+
+            <table id="floodTable">
+              <tr>
+                <th>Wilayah</th>
+                <th>Curah Hujan</th>
+                <th>Status</th>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      var cuacaData = [
+        {
+          sensor: "Sensor 01",
+          lokasi: "Kec.Perbaungan",
+          hujan: "35 mm",
+          lat: 3.595,
+          lng: 98.672,
+        },
+
+        {
+          sensor: "Sensor 02",
+          lokasi: "Kec.Sei Rampah",
+          hujan: "22 mm",
+          lat: 3.205,
+          lng: 98.378,
+        },
+      ];
+
+      var map = L.map("map").setView([3.595, 98.672], 8);
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(
+        map,
+      );
+
+      var table = "";
+
+      cuacaData.forEach(function (c) {
+        table += `
+
+<tr>
+
+<td>${c.sensor}</td>
+<td>${c.lokasi}</td>
+<td>${c.hujan}</td>
+
+</tr>
+
+`;
+
+        L.marker([c.lat, c.lng])
+          .addTo(map)
+          .bindPopup(c.sensor + "<br>" + c.lokasi);
+      });
+
+      document.getElementById("cuacaTable").innerHTML += table;
+
+      new Chart(
+        document.getElementById("rainChart"),
+
+        {
+          type: "line",
+
+          data: {
+            labels: ["08:00", "10:00", "12:00", "14:00", "16:00"],
+
+            datasets: [
+              {
+                label: "Curah Hujan (mm)",
+                data: [5, 12, 18, 30, 35],
+                borderColor: "#c62828",
+                fill: false,
+              },
+            ],
+          },
+        },
+      );
+
+      /* ===============================
+RAIN HEATMAP
+=============================== */
+
+      var rainMap = L.map("rainmap").setView([3.595, 98.672], 7);
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(
+        rainMap,
+      );
+
+      var rainPoints = [
+        [3.59, 98.67, 0.9],
+        [3.85, 98.3, 0.7],
+        [3.2, 98.38, 0.8],
+        [3.45, 98.53, 0.6],
+        [3.7, 98.75, 0.5],
+      ];
+
+      L.heatLayer(rainPoints, {
+        radius: 40,
+        blur: 25,
+      }).addTo(rainMap);
+
+      /* ===============================
+WIND MAP
+=============================== */
+
+      var windMap = L.map("windmap").setView([3.595, 98.672], 7);
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(
+        windMap,
+      );
+
+      var windData = [
+        {
+          lokasi: "Kec.Perbaungan",
+          lat: 3.595,
+          lng: 98.672,
+          speed: "15 km/h",
+        },
+
+        {
+          lokasi: "Kec.Sei Rampah",
+          lat: 3.205,
+          lng: 98.378,
+          speed: "10 km/h",
+        },
+
+        {
+          lokasi: "Kec.Pantai Cermin",
+          lat: 3.45,
+          lng: 98.53,
+          speed: "12 km/h",
+        },
+      ];
+
+      windData.forEach(function (w) {
+        L.marker([w.lat, w.lng])
+          .addTo(windMap)
+          .bindPopup("🌪 Angin<br>" + w.lokasi + "<br>Kecepatan : " + w.speed);
+      });
+
+      /* ===============================
+AI FLOOD PREDICTION
+=============================== */
+
+      var floodData = [
+        {
+          wilayah: "Kec.Perbaungan",
+          hujan: 35,
+        },
+
+        {
+          wilayah: "Kec.Sei Rampah",
+          hujan: 22,
+        },
+
+        {
+          wilayah: "Kec.Pantai Cermin",
+          hujan: 45,
+        },
+      ];
+
+      var table = "";
+
+      floodData.forEach(function (f) {
+        var status = "aman";
+
+        if (f.hujan > 30) {
+          status = "siaga";
+        }
+
+        if (f.hujan > 40) {
+          status = "bahaya";
+        }
+
+        table += `
+
+<tr>
+
+<td>${f.wilayah}</td>
+
+<td>${f.hujan} mm</td>
+
+<td>
+<span class="status ${status}">
+${status}
+</span>
+</td>
+
+</tr>
+
+`;
+      });
+
+      document.getElementById("floodTable").innerHTML += table;
+    </script>
+  </body>
+</html>

@@ -1,0 +1,695 @@
+<!doctype html>
+
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Dashboard Kinerja OPD</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Poppins:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <style>
+      body {
+        background: radial-gradient(circle at top, #0f2027, #203a43, #0b1a24);
+        font-family: "Poppins", sans-serif;
+        color: white;
+      }
+
+      /* HEADER */
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 40px;
+        background: rgba(0, 0, 0, 0.3);
+      }
+
+      #mapKabupaten {
+        height: 420px;
+        border-radius: 12px;
+        margin-top: 20px;
+      }
+      .progress {
+        height: 18px;
+      }
+
+      .title {
+        font-family: "Orbitron";
+        letter-spacing: 2px;
+      }
+
+      .status {
+        color: #00ff9d;
+      }
+
+      .clock {
+        font-size: 13px;
+        color: #ccc;
+      }
+
+      /* MENU */
+
+      .topmenu {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 10px 40px;
+      }
+
+      .topmenu a {
+        color: white;
+        text-decoration: none;
+        margin-right: 30px;
+        font-size: 14px;
+        padding-bottom: 5px;
+      }
+
+      .topmenu a:hover {
+        color: #00c3ff;
+      }
+
+      .topmenu a.active {
+        color: #00c3ff;
+        border-bottom: 2px solid #00c3ff;
+      }
+
+      /* CARD */
+
+      .card-glass {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        padding: 20px;
+        margin-top: 20px;
+      }
+
+      .stat-number {
+        font-size: 28px;
+        font-weight: 600;
+      }
+
+      .table {
+        color: white;
+      }
+
+      .badge-good {
+        background: #00ff9d;
+        color: black;
+      }
+
+      .badge-warning {
+        background: orange;
+      }
+
+      .badge-poor {
+        background: red;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="header">
+      <div class="title">COMMAND CENTER</div>
+
+      <div>
+        <div class="status">SYSTEM ONLINE</div>
+
+        <div id="clock" class="clock"></div>
+      </div>
+    </div>
+
+    <div class="topmenu">
+      <a href="monitoring.html">Monitoring Layanan Publik Digital</a>
+      <a href="kpi-opd.html" class="active">Dashboard Kinerja OPD</a>
+      <a href="laporan-masyarakat.html">Laporan & Keluhan Masyarakat</a>
+      <a href="cctv-geospasial.html">Integrasi CCTV & Geospasial</a>
+      <a href="analitik.html">Analitik Data Pemerintahan</a>
+      <a href="bencana.html">Monitoring Bencana</a>
+      <a href="../dashboard.html">Command Center</a>
+    </div>
+
+    <div class="container-fluid">
+      <!-- KPI SUMMARY -->
+
+      <div class="row">
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Total OPD</h6>
+
+            <div class="stat-number">42</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Capaian Program</h6>
+
+            <div class="stat-number">87%</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Program Aktif</h6>
+
+            <div class="stat-number">124</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Kepuasan Layanan</h6>
+
+            <div class="stat-number">92%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHART -->
+
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="card-glass">
+            <h5>Kinerja OPD</h5>
+
+            <canvas id="opdChart"></canvas>
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <div class="card-glass">
+            <h5>Trend Kinerja Bulanan</h5>
+
+            <canvas id="trendChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- TOP OPD -->
+
+      <div class="card-glass">
+        <h5>Ranking Kinerja OPD</h5>
+
+        <table class="table table-dark table-striped">
+          <thead>
+            <tr>
+              <th>Ranking</th>
+              <th>OPD</th>
+              <th>Capaian</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>Dinas Kesehatan</td>
+              <td>96%</td>
+              <td><span class="badge badge-good">Sangat Baik</span></td>
+            </tr>
+
+            <tr>
+              <td>2</td>
+              <td>Dinas Pendidikan</td>
+              <td>92%</td>
+              <td><span class="badge badge-good">Baik</span></td>
+            </tr>
+
+            <tr>
+              <td>3</td>
+              <td>DPMPTSP</td>
+              <td>88%</td>
+              <td><span class="badge badge-good">Baik</span></td>
+            </tr>
+
+            <tr>
+              <td>4</td>
+              <td>Diskominfo</td>
+              <td>84%</td>
+              <td><span class="badge badge-warning">Cukup</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- KPI DETAIL -->
+
+      <div class="card-glass">
+        <h5>Detail KPI OPD</h5>
+
+        <table class="table table-dark table-striped">
+          <thead>
+            <tr>
+              <th>OPD</th>
+              <th>Target</th>
+              <th>Realisasi</th>
+              <th>Capaian</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>Dinas Kesehatan</td>
+              <td>100 Program</td>
+              <td>96</td>
+              <td>96%</td>
+            </tr>
+
+            <tr>
+              <td>Dinas Pendidikan</td>
+              <td>80 Program</td>
+              <td>74</td>
+              <td>92%</td>
+            </tr>
+
+            <tr>
+              <td>DPMPTSP</td>
+              <td>60 Program</td>
+              <td>53</td>
+              <td>88%</td>
+            </tr>
+
+            <tr>
+              <td>Diskominfo</td>
+              <td>50 Program</td>
+              <td>42</td>
+              <td>84%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card-glass">
+        <h5>KPI Prioritas Kepala Daerah (RPJMD)</h5>
+
+        <table class="table table-dark table-striped">
+          <thead>
+            <tr>
+              <th>Program Prioritas</th>
+              <th>Target</th>
+              <th>Realisasi</th>
+              <th>Capaian</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>Peningkatan Layanan Kesehatan</td>
+              <td>100%</td>
+              <td>92%</td>
+              <td><span class="badge badge-good">Baik</span></td>
+            </tr>
+
+            <tr>
+              <td>Digitalisasi Layanan Publik</td>
+              <td>100%</td>
+              <td>87%</td>
+              <td><span class="badge badge-warning">Proses</span></td>
+            </tr>
+
+            <tr>
+              <td>Pembangunan Infrastruktur Desa</td>
+              <td>120 Proyek</td>
+              <td>96</td>
+              <td><span class="badge badge-warning">Proses</span></td>
+            </tr>
+
+            <tr>
+              <td>Peningkatan Kualitas Pendidikan</td>
+              <td>100%</td>
+              <td>91%</td>
+              <td><span class="badge badge-good">Baik</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card-glass">
+        <h5>Peta Kinerja Pembangunan Kecamatan</h5>
+
+        <table class="table table-dark table-striped">
+          <thead>
+            <tr>
+              <th>Kecamatan</th>
+              <th>Program</th>
+              <th>Status</th>
+              <th>Progres</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>Perbaungan</td>
+              <td>Pembangunan Jalan</td>
+              <td><span class="badge badge-good">On Track</span></td>
+              <td>82%</td>
+            </tr>
+
+            <tr>
+              <td>Sei Rampah</td>
+              <td>Pengembangan Sekolah</td>
+              <td><span class="badge badge-good">On Track</span></td>
+              <td>76%</td>
+            </tr>
+
+            <tr>
+              <td>Tanjungan Beringin</td>
+              <td>Drainase Kota</td>
+              <td><span class="badge badge-warning">Delay</span></td>
+              <td>64%</td>
+            </tr>
+
+            <tr>
+              <td>Teluk Mengkudu</td>
+              <td>Puskesmas Baru</td>
+              <td><span class="badge badge-good">On Track</span></td>
+              <td>88%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card-glass">
+        <h5>Monitoring Anggaran APBD</h5>
+
+        <canvas id="apbdChart"></canvas>
+      </div>
+
+      <div class="card-glass">
+        <h5>Monitoring Proyek Pembangunan</h5>
+
+        <table class="table table-dark table-striped">
+          <thead>
+            <tr>
+              <th>Proyek</th>
+              <th>Lokasi</th>
+              <th>Progress</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>Pembangunan Puskesmas</td>
+              <td>Perbaungan</td>
+              <td>78%</td>
+              <td><span class="badge badge-good">On Track</span></td>
+            </tr>
+
+            <tr>
+              <td>Revitalisasi Pasar</td>
+              <td>Sei Rampah</td>
+              <td>63%</td>
+              <td><span class="badge badge-warning">Delay</span></td>
+            </tr>
+
+            <tr>
+              <td>Pembangunan Jalan Kabupaten</td>
+              <td>Teluk Mengkudu</td>
+              <td>85%</td>
+              <td><span class="badge badge-good">On Track</span></td>
+            </tr>
+
+            <tr>
+              <td>Smart City Command Center</td>
+              <td>Diskominfo</td>
+              <td>72%</td>
+              <td><span class="badge badge-good">On Track</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card-glass">
+        <h5>Peta Monitoring Pembangunan Kabupaten</h5>
+
+        <div id="mapKabupaten"></div>
+      </div>
+
+      <div class="card-glass">
+        <h5>Monitoring Progress Proyek Strategis</h5>
+
+        <table class="table table-dark">
+          <thead>
+            <tr>
+              <th>Proyek</th>
+              <th>Lokasi</th>
+              <th>Progress</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>Pembangunan Puskesmas</td>
+              <td>Perbaungan</td>
+              <td>
+                <div class="progress">
+                  <div class="progress-bar bg-success" style="width: 78%">
+                    78%
+                  </div>
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <td>Revitalisasi Pasar</td>
+              <td>Sei Rampah</td>
+              <td>
+                <div class="progress">
+                  <div class="progress-bar bg-warning" style="width: 63%">
+                    63%
+                  </div>
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <td>Pembangunan Jalan Kabupaten</td>
+              <td>Teluk Mengkudu</td>
+              <td>
+                <div class="progress">
+                  <div class="progress-bar bg-info" style="width: 85%">85%</div>
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <td>Command Center Smart City</td>
+              <td>Diskominfo</td>
+              <td>
+                <div class="progress">
+                  <div class="progress-bar bg-primary" style="width: 72%">
+                    72%
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card-glass">
+        <h5>Executive Dashboard Kepala Daerah</h5>
+
+        <div class="row">
+          <div class="col-md-3">
+            <h6>Pertumbuhan Ekonomi</h6>
+            <h3>5.8%</h3>
+          </div>
+
+          <div class="col-md-3">
+            <h6>Pengangguran</h6>
+            <h3>4.1%</h3>
+          </div>
+
+          <div class="col-md-3">
+            <h6>Kemiskinan</h6>
+            <h3>7.2%</h3>
+          </div>
+
+          <div class="col-md-3">
+            <h6>Indeks Kepuasan Publik</h6>
+            <h3>92%</h3>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-glass">
+        <h5>Alert Proyek Pembangunan</h5>
+
+        <div id="alertProyek"></div>
+      </div>
+    </div>
+
+    <script>
+      /* ================= GIS MAP ================= */
+
+      const map = L.map("mapKabupaten").setView([3.56, 98.86], 11);
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 18,
+      }).addTo(map);
+
+      const proyek = [
+        {
+          nama: "RSUD Sultan Sulaiman",
+          lat: 3.573,
+          lng: 98.861,
+          progress: 78,
+        },
+        {
+          nama: "Revitalisasi Pasar Sei Rampah",
+          lat: 3.566,
+          lng: 98.858,
+          progress: 63,
+        },
+        {
+          nama: "Pembangunan Jalan Perbaungan",
+          lat: 3.586,
+          lng: 98.92,
+          progress: 85,
+        },
+        {
+          nama: "Puskesmas Teluk Mengkudu",
+          lat: 3.525,
+          lng: 98.91,
+          progress: 72,
+        },
+        {
+          nama: "Infrastruktur Dolok Masihul",
+          lat: 3.453,
+          lng: 98.93,
+          progress: 66,
+        },
+        {
+          nama: "Drainase Tanjung Beringin",
+          lat: 3.508,
+          lng: 98.875,
+          progress: 70,
+        },
+      ];
+
+      proyek.forEach((p) => {
+        let color =
+          p.progress > 80 ? "green" : p.progress > 65 ? "orange" : "red";
+
+        const marker = L.circleMarker([p.lat, p.lng], {
+          radius: 8,
+          color: color,
+          fillOpacity: 0.8,
+        }).addTo(map);
+
+        marker.bindPopup(`
+          <b>${p.nama}</b><br>
+          Progress: ${p.progress}%
+        `);
+      });
+
+      /* ALERT PROYEK */
+
+      setInterval(() => {
+        const delay = Math.random();
+
+        if (delay > 0.7) {
+          const alert = document.createElement("div");
+
+          alert.className = "alert alert-danger";
+
+          alert.innerHTML = "⚠ Proyek mengalami keterlambatan progress";
+
+          document.getElementById("alertProyek").prepend(alert);
+
+          setTimeout(() => alert.remove(), 5000);
+        }
+      }, 6000);
+      /* CLOCK */
+
+      function updateClock() {
+        const now = new Date();
+
+        const date = now.toLocaleDateString("id-ID");
+
+        const time = now.toLocaleTimeString("id-ID");
+
+        document.getElementById("clock").innerHTML = date + " | " + time;
+      }
+
+      setInterval(updateClock, 1000);
+
+      updateClock();
+
+      /* CHART */
+
+      new Chart(document.getElementById("opdChart"), {
+        type: "bar",
+
+        data: {
+          labels: ["Kesehatan", "Pendidikan", "DPMPTSP", "Kominfo"],
+
+          datasets: [
+            {
+              label: "Capaian (%)",
+
+              data: [96, 92, 88, 84],
+
+              backgroundColor: "#00c3ff",
+            },
+          ],
+        },
+      });
+
+      new Chart(document.getElementById("trendChart"), {
+        type: "line",
+
+        data: {
+          labels: ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun"],
+
+          datasets: [
+            {
+              label: "Capaian Kinerja",
+
+              data: [72, 78, 81, 84, 87, 90],
+
+              borderColor: "#00ff9d",
+            },
+          ],
+        },
+      });
+      new Chart(document.getElementById("apbdChart"), {
+        type: "bar",
+
+        data: {
+          labels: [
+            "Kesehatan",
+            "Pendidikan",
+            "Infrastruktur",
+            "Sosial",
+            "Digitalisasi",
+          ],
+
+          datasets: [
+            {
+              label: "Anggaran (Miliar)",
+              data: [420, 380, 520, 210, 150],
+              backgroundColor: "#00c3ff",
+            },
+          ],
+        },
+      });
+    </script>
+  </body>
+</html>

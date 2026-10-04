@@ -1,0 +1,487 @@
+<!doctype html>
+
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Kontrol Prioritas Bandwidth</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Poppins:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        background: radial-gradient(circle at top, #0f2027, #203a43, #0b1a24);
+        font-family: "Poppins", sans-serif;
+        color: white;
+      }
+
+      /* HEADER */
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 40px;
+        background: rgba(0, 0, 0, 0.3);
+      }
+
+      .title {
+        font-family: "Orbitron";
+        letter-spacing: 2px;
+      }
+
+      .status {
+        color: #00ff9d;
+      }
+
+      .clock {
+        font-size: 13px;
+        color: #ccc;
+      }
+
+      /* MENU */
+
+      .topmenu {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 10px 40px;
+      }
+
+      .topmenu a {
+        color: white;
+        text-decoration: none;
+        margin-right: 30px;
+        font-size: 14px;
+        padding-bottom: 5px;
+      }
+
+      .topmenu a:hover {
+        color: #00c3ff;
+      }
+
+      .topmenu a.active {
+        color: #00c3ff;
+        border-bottom: 2px solid #00c3ff;
+      }
+
+      /* CARD */
+
+      .card-glass {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        padding: 20px;
+        margin-top: 20px;
+      }
+
+      /* BADGE */
+
+      .badge-critical {
+        background: red;
+      }
+
+      .badge-high {
+        background: orange;
+      }
+
+      .badge-normal {
+        background: #00ff9d;
+        color: black;
+      }
+
+      .slider {
+        width: 100%;
+      }
+
+      .table {
+        color: white;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="header">
+      <div class="title">SMART PUBLIC INTERNET</div>
+
+      <div>
+        <div class="status">SYSTEM ONLINE</div>
+
+        <div class="clock" id="clock"></div>
+      </div>
+    </div>
+
+    <div class="topmenu">
+      <a href="monitoring.html">Monitoring Realtime Traffic</a>
+      <a href="monitoring-opd.html">Dashboard Pemanfaatan OPD</a>
+      <a href="bandwith-control.html" class="active"
+        >Kontrol Prioritas Bandwidth</a
+      >
+      <a href="../dashboard.html">Command Center</a>
+    </div>
+
+    <div class="container-fluid">
+      <!-- PRIORITY SERVICES -->
+
+      <div class="card-glass">
+        <h5>Layanan Vital Prioritas Tinggi</h5>
+
+        <table class="table table-dark table-striped">
+          <thead>
+            <tr>
+              <th>Layanan</th>
+              <th>Instansi</th>
+              <th>Prioritas</th>
+              <th>Bandwidth Minimum</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>Sistem Rumah Sakit</td>
+              <td>RSUD</td>
+              <td><span class="badge badge-critical">Critical</span></td>
+              <td>150 Mbps</td>
+              <td>Aktif</td>
+            </tr>
+
+            <tr>
+              <td>Sistem Darurat Bencana</td>
+              <td>BPBD</td>
+              <td><span class="badge badge-critical">Critical</span></td>
+              <td>100 Mbps</td>
+              <td>Aktif</td>
+            </tr>
+
+            <tr>
+              <td>Server Data Pemerintah</td>
+              <td>Diskominfo</td>
+              <td><span class="badge badge-high">High</span></td>
+              <td>80 Mbps</td>
+              <td>Aktif</td>
+            </tr>
+
+            <tr>
+              <td>Layanan Pendidikan Online</td>
+              <td>Dinas Pendidikan</td>
+              <td><span class="badge badge-normal">Normal</span></td>
+              <td>50 Mbps</td>
+              <td>Aktif</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- BANDWIDTH CONTROL -->
+
+      <div class="card-glass">
+        <h5>Pengaturan Prioritas Bandwidth OPD</h5>
+
+        <table class="table table-dark table-striped">
+          <thead>
+            <tr>
+              <th>OPD</th>
+              <th>Prioritas</th>
+              <th>Bandwidth</th>
+              <th>Kontrol</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>RSUD</td>
+
+              <td>
+                <span class="badge badge-critical">Critical</span>
+              </td>
+
+              <td id="rsudValue">150 Mbps</td>
+
+              <td>
+                <input
+                  type="range"
+                  min="50"
+                  max="300"
+                  value="150"
+                  class="slider"
+                  oninput="updateBandwidth('rsudValue', this.value)"
+                />
+              </td>
+            </tr>
+
+            <tr>
+              <td>Diskominfo</td>
+
+              <td>
+                <span class="badge badge-high">High</span>
+              </td>
+
+              <td id="kominfoValue">120 Mbps</td>
+
+              <td>
+                <input
+                  type="range"
+                  min="50"
+                  max="250"
+                  value="120"
+                  class="slider"
+                  oninput="updateBandwidth('kominfoValue', this.value)"
+                />
+              </td>
+            </tr>
+
+            <tr>
+              <td>Dinas Pendidikan</td>
+
+              <td>
+                <span class="badge badge-normal">Normal</span>
+              </td>
+
+              <td id="disdikValue">80 Mbps</td>
+
+              <td>
+                <input
+                  type="range"
+                  min="20"
+                  max="200"
+                  value="80"
+                  class="slider"
+                  oninput="updateBandwidth('disdikValue', this.value)"
+                />
+              </td>
+            </tr>
+
+            <tr>
+              <td>Dinas Kesehatan</td>
+
+              <td>
+                <span class="badge badge-high">High</span>
+              </td>
+
+              <td id="dinkesValue">100 Mbps</td>
+
+              <td>
+                <input
+                  type="range"
+                  min="30"
+                  max="200"
+                  value="100"
+                  class="slider"
+                  oninput="updateBandwidth('dinkesValue', this.value)"
+                />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- DRAG DROP PRIORITY -->
+
+      <div class="card-glass">
+        <h5>Drag-Drop Prioritas Bandwidth</h5>
+
+        <ul id="priorityList" class="list-group">
+          <li class="list-group-item bg-dark text-white" draggable="true">
+            RSUD (Critical)
+          </li>
+
+          <li class="list-group-item bg-dark text-white" draggable="true">
+            Diskominfo
+          </li>
+
+          <li class="list-group-item bg-dark text-white" draggable="true">
+            Dinas Pendidikan
+          </li>
+
+          <li class="list-group-item bg-dark text-white" draggable="true">
+            Dinas Kesehatan
+          </li>
+        </ul>
+
+        <p class="mt-2 text-muted">
+          Urutan teratas mendapatkan prioritas bandwidth tertinggi.
+        </p>
+      </div>
+
+      <!-- AI BANDWIDTH -->
+
+      <div class="card-glass">
+        <h5>AI Auto Bandwidth Allocation</h5>
+
+        <button class="btn btn-primary" onclick="runAI()">
+          Optimasi Bandwidth Otomatis
+        </button>
+
+        <p class="mt-3" id="aiResult">
+          Klik tombol untuk menjalankan analisis AI jaringan.
+        </p>
+      </div>
+
+      <!-- ROUTER QOS -->
+
+      <div class="card-glass">
+        <h5>Router QoS Monitoring</h5>
+
+        <table class="table table-dark table-striped">
+          <thead>
+            <tr>
+              <th>Router</th>
+              <th>Latency</th>
+              <th>Packet Loss</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>Router Kominfo</td>
+              <td id="lat1">10 ms</td>
+              <td id="loss1">0%</td>
+              <td>Normal</td>
+            </tr>
+
+            <tr>
+              <td>Router RSUD</td>
+              <td id="lat2">12 ms</td>
+              <td id="loss2">0%</td>
+              <td>Normal</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- FAILOVER -->
+
+      <div class="card-glass">
+        <h5>Status Failover Jaringan</h5>
+
+        <p>
+          Primary Network :
+          <span id="primaryStatus" class="badge bg-success"> ONLINE </span>
+        </p>
+
+        <p>
+          Backup Network :
+          <span id="backupStatus" class="badge bg-secondary"> STANDBY </span>
+        </p>
+      </div>
+
+      <!-- QOS POLICY -->
+
+      <div class="card-glass">
+        <h5>Kebijakan QoS Jaringan</h5>
+
+        <ul>
+          <li>Prioritas jaringan untuk layanan kesehatan dan darurat.</li>
+
+          <li>Bandwidth minimum dijamin untuk RSUD dan BPBD.</li>
+
+          <li>Traffic non-prioritas akan diturunkan saat jaringan padat.</li>
+
+          <li>Monitoring otomatis untuk mendeteksi overload.</li>
+
+          <li>
+            Sistem auto-failover akan mengalihkan trafik ke jaringan cadangan.
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <script>
+      /* CLOCK */
+
+      function updateClock() {
+        const now = new Date();
+
+        const date = now.toLocaleDateString("id-ID");
+
+        const time = now.toLocaleTimeString("id-ID");
+
+        document.getElementById("clock").innerHTML = date + " | " + time;
+      }
+
+      setInterval(updateClock, 1000);
+      updateClock();
+
+      /* SLIDER */
+
+      function updateBandwidth(element, value) {
+        document.getElementById(element).innerHTML = value + " Mbps";
+      }
+
+      /* DRAG DROP */
+
+      const list = document.getElementById("priorityList");
+
+      let dragging;
+
+      list.addEventListener("dragstart", (e) => {
+        dragging = e.target;
+      });
+
+      list.addEventListener("dragover", (e) => {
+        e.preventDefault();
+
+        const target = e.target;
+
+        if (target && target !== dragging) {
+          list.insertBefore(dragging, target);
+        }
+      });
+
+      /* AI BANDWIDTH */
+
+      function runAI() {
+        const prediction = Math.floor(Math.random() * 200) + 100;
+
+        document.getElementById("aiResult").innerHTML =
+          "AI merekomendasikan bandwidth RSUD dinaikkan menjadi " +
+          prediction +
+          " Mbps karena peningkatan traffic layanan kesehatan.";
+      }
+
+      /* QOS MONITOR */
+
+      setInterval(() => {
+        const latency = Math.floor(Math.random() * 20) + 5;
+
+        const loss = Math.floor(Math.random() * 3);
+
+        document.getElementById("lat1").innerHTML = latency + " ms";
+
+        document.getElementById("loss1").innerHTML = loss + "%";
+      }, 3000);
+
+      /* FAILOVER */
+
+      setInterval(() => {
+        const fail = Math.random();
+
+        if (fail > 0.85) {
+          document.getElementById("primaryStatus").innerHTML = "OFFLINE";
+          document.getElementById("primaryStatus").className =
+            "badge bg-danger";
+
+          document.getElementById("backupStatus").innerHTML = "ACTIVE";
+          document.getElementById("backupStatus").className =
+            "badge bg-success";
+        } else {
+          document.getElementById("primaryStatus").innerHTML = "ONLINE";
+          document.getElementById("primaryStatus").className =
+            "badge bg-success";
+
+          document.getElementById("backupStatus").innerHTML = "STANDBY";
+          document.getElementById("backupStatus").className =
+            "badge bg-secondary";
+        }
+      }, 5000);
+    </script>
+  </body>
+</html>

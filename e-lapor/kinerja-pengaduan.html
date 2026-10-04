@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Kinerja Penanganan Pengaduan</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Poppins:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+      body {
+        background: radial-gradient(circle at top, #0f2027, #203a43, #0b1a24);
+        font-family: "Poppins", sans-serif;
+        color: white;
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 40px;
+        background: rgba(0, 0, 0, 0.3);
+      }
+
+      .title {
+        font-family: "Orbitron";
+        letter-spacing: 2px;
+      }
+
+      .status {
+        color: #00ff9d;
+      }
+
+      .clock {
+        font-size: 13px;
+        color: #ccc;
+      }
+
+      .topmenu {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 10px 40px;
+      }
+
+      .topmenu a {
+        color: white;
+        text-decoration: none;
+        margin-right: 30px;
+        font-size: 14px;
+      }
+
+      .topmenu a.active {
+        color: #00c3ff;
+        border-bottom: 2px solid #00c3ff;
+      }
+
+      .card-glass {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        padding: 20px;
+        margin-top: 20px;
+      }
+
+      .stat-number {
+        font-size: 28px;
+        font-weight: 600;
+      }
+
+      .table {
+        color: white;
+      }
+
+      .badge-good {
+        background: #00ff9d;
+        color: black;
+      }
+
+      .badge-warning {
+        background: orange;
+      }
+
+      .badge-danger {
+        background: red;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="header">
+      <div class="title">E-LAPOR COMMAND CENTER</div>
+
+      <div>
+        <div class="status">KINERJA PENANGANAN LAPORAN</div>
+        <div id="clock" class="clock"></div>
+      </div>
+    </div>
+
+    <div class="topmenu">
+      <a href="index.html">Dashboard Pengaduan</a>
+      <a href="data-laporan.html">Daftar Laporan</a>
+      <a href="peta-pengaduan.html">Peta Pengaduan</a>
+      <a href="kinerja-pengaduan.html" class="active">Kinerja Penanganan</a>
+      <a href="analitk-pengaduan.html">Analitik Pengaduan</a>
+      <a href="laporan-opd.html">Laporan OPD</a>
+      <a href="../dashboard.html">Command Center</a>
+    </div>
+
+    <div class="container-fluid">
+      <!-- STAT -->
+
+      <div class="row">
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Total Laporan</h6>
+            <div class="stat-number">4,320</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Laporan Selesai</h6>
+            <div class="stat-number">3,910</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Diproses</h6>
+            <div class="stat-number">210</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Rata-rata Respon</h6>
+            <div class="stat-number">4.2 Jam</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHART -->
+
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="card-glass">
+            <h5>Jumlah Laporan per OPD</h5>
+
+            <canvas id="opdChart"></canvas>
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <div class="card-glass">
+            <h5>SLA Respon OPD</h5>
+
+            <canvas id="slaChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- RANKING OPD -->
+
+      <div class="card-glass">
+        <h5>🏆 Ranking OPD Responsif</h5>
+
+        <table class="table table-dark table-striped">
+          <thead>
+            <tr>
+              <th>Ranking</th>
+              <th>OPD</th>
+              <th>Laporan Selesai</th>
+              <th>Rata Respon</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>Dinas Perhubungan</td>
+              <td>820</td>
+              <td>2.5 Jam</td>
+            </tr>
+
+            <tr>
+              <td>2</td>
+              <td>Dinas PU</td>
+              <td>760</td>
+              <td>3.1 Jam</td>
+            </tr>
+
+            <tr>
+              <td>3</td>
+              <td>Dinas Lingkungan</td>
+              <td>690</td>
+              <td>4.0 Jam</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- MONITORING SLA -->
+
+      <div class="card-glass">
+        <h5>Monitoring SLA Penanganan</h5>
+
+        <table class="table table-dark table-striped">
+          <thead>
+            <tr>
+              <th>OPD</th>
+              <th>Laporan Masuk</th>
+              <th>Selesai</th>
+              <th>Rata Respon</th>
+              <th>Status SLA</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>Dinas PU</td>
+              <td>900</td>
+              <td>760</td>
+              <td>3.1 Jam</td>
+              <td><span class="badge badge-good">Baik</span></td>
+            </tr>
+
+            <tr>
+              <td>Dinas Perhubungan</td>
+              <td>870</td>
+              <td>820</td>
+              <td>2.5 Jam</td>
+              <td><span class="badge badge-good">Baik</span></td>
+            </tr>
+
+            <tr>
+              <td>Dinas Lingkungan</td>
+              <td>750</td>
+              <td>690</td>
+              <td>4 Jam</td>
+              <td><span class="badge badge-warning">Perlu Perbaikan</span></td>
+            </tr>
+
+            <tr>
+              <td>PDAM</td>
+              <td>420</td>
+              <td>310</td>
+              <td>7 Jam</td>
+              <td><span class="badge badge-danger">Lambat</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <script>
+      /* CLOCK */
+
+      function updateClock() {
+        const now = new Date();
+
+        document.getElementById("clock").innerHTML =
+          now.toLocaleDateString("id-ID") +
+          " | " +
+          now.toLocaleTimeString("id-ID");
+      }
+
+      setInterval(updateClock, 1000);
+      updateClock();
+
+      /* CHART OPD */
+
+      new Chart(document.getElementById("opdChart"), {
+        type: "bar",
+
+        data: {
+          labels: ["Dinas PU", "Dinas Perhubungan", "Dinas Lingkungan", "PDAM"],
+
+          datasets: [
+            {
+              label: "Jumlah Laporan",
+              data: [900, 870, 750, 420],
+              backgroundColor: "#00c3ff",
+            },
+          ],
+        },
+      });
+
+      /* SLA CHART */
+
+      new Chart(document.getElementById("slaChart"), {
+        type: "line",
+
+        data: {
+          labels: ["Dinas PU", "Dinas Perhubungan", "Dinas Lingkungan", "PDAM"],
+
+          datasets: [
+            {
+              label: "Rata Respon (Jam)",
+              data: [3.1, 2.5, 4, 7],
+              borderColor: "#00ff9d",
+            },
+          ],
+        },
+      });
+    </script>
+  </body>
+</html>

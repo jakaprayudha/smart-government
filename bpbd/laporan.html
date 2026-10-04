@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Monitoring Bencana</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="sidebar.css" />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Inter", sans-serif;
+      }
+
+      body {
+        display: flex;
+        background: #f4f6f9;
+      }
+
+      /* SIDEBAR */
+
+      #galeri {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+        flex-wrap: wrap;
+      }
+
+      .thumb {
+        width: 90px;
+        height: 70px;
+        object-fit: cover;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+
+      .thumb:hover {
+        transform: scale(1.1);
+      }
+
+      .sidebar a:hover {
+        background: #d32f2f;
+      }
+
+      /* MAIN */
+
+      .main {
+        flex: 1;
+        padding: 20px;
+      }
+
+      /* GRID */
+
+      .grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 20px;
+      }
+
+      /* MAP */
+
+      #map {
+        height: 600px;
+        border-radius: 12px;
+      }
+
+      /* PANEL */
+
+      .panel {
+        background: white;
+        padding: 15px;
+        border-radius: 12px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+      }
+
+      /* TABLE */
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+        margin-top: 10px;
+      }
+
+      th {
+        background: #f4f6f9;
+        padding: 10px;
+        text-align: left;
+        border-bottom: 2px solid #ddd;
+      }
+
+      td {
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+        cursor: pointer;
+      }
+
+      tr:hover {
+        background: #fafafa;
+      }
+
+      /* BUTTON */
+
+      .detail-btn {
+        background: #c62828;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 12px;
+      }
+
+      /* MODAL */
+
+      .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.4);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+      }
+
+      .modal-content {
+        background: white;
+        width: 520px;
+        padding: 20px;
+        border-radius: 12px;
+        position: relative;
+        z-index: 10000;
+      }
+
+      .close {
+        float: right;
+        cursor: pointer;
+        font-size: 18px;
+      }
+
+      .info {
+        margin-top: 10px;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="sidebar">
+      <h2>BPBD Command</h2>
+
+      <p class="menu-title">Monitoring</p>
+
+      <a href="index.html"> <i class="fa fa-house"></i> Dashboard </a>
+
+      <a href="heatmap.html"> <i class="fa fa-fire"></i> Heatmap Bencana </a>
+
+      <a href="early-warning.html">
+        <i class="fa fa-triangle-exclamation"></i> Early Warning
+      </a>
+
+      <a href="cuaca.html"> <i class="fa fa-cloud"></i> Monitoring Cuaca </a>
+
+      <a href="wilayah-rawan.html"> <i class="fa fa-map"></i> Wilayah Rawan </a>
+
+      <p class="menu-title">Operasi</p>
+
+      <a href="tracking-sar.html">
+        <i class="fa fa-location-dot"></i> Live Tracking SAR
+      </a>
+
+      <a href="sar.html"> <i class="fa fa-helicopter"></i> Tim SAR </a>
+
+      <a href="posko.html"> <i class="fa fa-house"></i> Posko Pengungsian </a>
+
+      <p class="menu-title">Data Bencana</p>
+
+      <a class="active" href="laporan.html">
+        <i class="fa fa-triangle-exclamation"></i> Laporan Bencana
+      </a>
+
+      <a href="korban.html"> <i class="fa fa-user-injured"></i> Data Korban </a>
+
+      <a href="pengungsi.html">
+        <i class="fa fa-people-group"></i> Data Pengungsi
+      </a>
+
+      <a href="bantuan.html"> <i class="fa fa-box"></i> Distribusi Bantuan </a>
+
+      <p class="menu-title">Sistem</p>
+
+      <a href="pengaturan.html"> <i class="fa fa-gear"></i> Pengaturan </a>
+      <a href="../dashboard.html">
+        <i class="fa fa-display"></i> Command Center
+      </a>
+    </div>
+
+    <div class="main">
+      <h2 style="margin-bottom: 20px">🗺 Monitoring Bencana</h2>
+
+      <div class="grid">
+        <!-- MAP -->
+
+        <div class="panel">
+          <div id="map"></div>
+        </div>
+
+        <!-- TABLE -->
+
+        <div class="panel">
+          <h3>Daftar Bencana</h3>
+
+          <table id="listTable">
+            <tr>
+              <th>Jenis</th>
+              <th>Lokasi</th>
+              <th>Korban</th>
+              <th>Status</th>
+              <th>Aksi</th>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL -->
+
+    <div class="modal" id="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeModal()">✖</span>
+        <h3 id="mJenis"></h3>
+
+        <div class="info"><b>📍 Lokasi :</b> <span id="mLokasi"></span></div>
+
+        <div class="info"><b>📅 Tanggal :</b> <span id="mTanggal"></span></div>
+
+        <div class="info"><b>🤕 Korban Luka :</b> <span id="mLuka"></span></div>
+
+        <div class="info">
+          <b>⚰ Korban Meninggal :</b> <span id="mMeninggal"></span>
+        </div>
+
+        <div class="info">
+          <b>🏠 Pengungsi :</b> <span id="mPengungsi"></span>
+        </div>
+
+        <div class="info"><b>⛺ Posko :</b> <span id="mPosko"></span></div>
+
+        <div class="info"><b>📊 Status :</b> <span id="mStatus"></span></div>
+
+        <div class="info"><b>📝 Keterangan :</b> <span id="mKet"></span></div>
+
+        <h4 style="margin-top: 15px">📷 Dokumentasi</h4>
+
+        <div id="galeri"></div>
+      </div>
+    </div>
+
+    <script>
+      /* DATA SAMPLE */
+
+      var disasters = [
+        {
+          jenis: "Banjir",
+          lokasi: "Kec.Perbaungan",
+          tanggal: "12 Maret 2026",
+          lat: 3.595,
+          lng: 98.672,
+          korban_luka: 8,
+          korban_meninggal: 1,
+          pengungsi: 120,
+          posko: 3,
+          status: "Penanganan",
+          keterangan:
+            "Banjir akibat curah hujan tinggi dan luapan Sungai Bahbolon.",
+          foto: [
+            "https://images.unsplash.com/photo-1547683905-f686c993aae5",
+            "https://images.unsplash.com/photo-1500375592092-40eb2168fd21",
+            "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
+          ],
+        },
+
+        {
+          jenis: "Longsor",
+          lokasi: "Kec.Sei Rampah",
+          tanggal: "10 Maret 2026",
+          lat: 3.205,
+          lng: 98.378,
+          korban_luka: 3,
+          korban_meninggal: 0,
+          pengungsi: 40,
+          posko: 1,
+          status: "Evakuasi",
+          keterangan: "Tanah longsor menutup akses jalan desa.",
+          foto: [
+            "https://images.unsplash.com/photo-1581093458791-9d42f7c8fbc6",
+            "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
+          ],
+        },
+      ];
+
+      /* MAP */
+
+      var map = L.map("map").setView([3.595, 98.672], 8);
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(
+        map,
+      );
+
+      /* LOAD TABLE + MARKER */
+
+      var table = "";
+
+      disasters.forEach(function (d, i) {
+        table += `
+
+<tr onclick="showDetail(${i})">
+
+<td>${d.jenis}</td>
+
+<td>${d.lokasi}</td>
+
+<td>${d.korban_luka + d.korban_meninggal}</td>
+
+<td>${d.status}</td>
+
+<td>
+
+<button class="detail-btn"
+onclick="event.stopPropagation();showDetail(${i})">
+Detail
+</button>
+
+</td>
+
+</tr>
+
+`;
+
+        /* MARKER */
+
+        var marker = L.marker([d.lat, d.lng]).addTo(map);
+
+        marker.bindPopup(`
+
+<b>${d.jenis}</b><br>
+
+Lokasi : ${d.lokasi}<br>
+
+Korban : ${d.korban}<br>
+
+<button onclick="showDetail(${i})"
+style="
+margin-top:6px;
+padding:4px 8px;
+background:#c62828;
+color:white;
+border:none;
+border-radius:6px;
+cursor:pointer;">
+Detail
+</button>
+
+`);
+      });
+
+      document.getElementById("listTable").innerHTML += table;
+
+      /* MODAL DETAIL */
+
+      function showDetail(i) {
+        var d = disasters[i];
+
+        map.setView([d.lat, d.lng], 11);
+
+        document.getElementById("mJenis").innerText =
+          d.jenis + " - " + d.lokasi;
+        document.getElementById("mLokasi").innerText = d.lokasi;
+        document.getElementById("mTanggal").innerText = d.tanggal;
+        document.getElementById("mLuka").innerText = d.korban_luka + " orang";
+        document.getElementById("mMeninggal").innerText =
+          d.korban_meninggal + " orang";
+        document.getElementById("mPengungsi").innerText =
+          d.pengungsi + " orang";
+        document.getElementById("mPosko").innerText = d.posko + " lokasi";
+        document.getElementById("mStatus").innerText = d.status;
+        document.getElementById("mKet").innerText = d.keterangan;
+
+        /* GALERI FOTO */
+
+        var galeri = "";
+
+        d.foto.forEach(function (f) {
+          galeri += `<img src="${f}" class="thumb" onclick="preview('${f}')">`;
+        });
+
+        document.getElementById("galeri").innerHTML = galeri;
+
+        document.getElementById("modal").style.display = "flex";
+      }
+
+      function closeModal() {
+        document.getElementById("modal").style.display = "none";
+      }
+
+      function preview(src) {
+        window.open(src, "_blank");
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>GIS Infrastruktur Digital</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Poppins:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <style>
+      body {
+        background: radial-gradient(circle at top, #0f2027, #203a43, #0b1a24);
+        font-family: "Poppins", sans-serif;
+        color: white;
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 40px;
+        background: rgba(0, 0, 0, 0.3);
+      }
+
+      .title {
+        font-family: "Orbitron";
+        letter-spacing: 2px;
+      }
+
+      .status {
+        color: #00ff9d;
+      }
+
+      .clock {
+        font-size: 13px;
+        color: #ccc;
+      }
+
+      .topmenu {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 10px 40px;
+      }
+
+      .topmenu a {
+        color: white;
+        text-decoration: none;
+        margin-right: 30px;
+        font-size: 14px;
+      }
+
+      .topmenu a.active {
+        color: #00c3ff;
+        border-bottom: 2px solid #00c3ff;
+      }
+
+      .card-glass {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        padding: 20px;
+        margin-top: 20px;
+      }
+
+      .map-box {
+        height: 420px;
+        border-radius: 10px;
+        overflow: hidden;
+      }
+
+      .stat-number {
+        font-size: 26px;
+        font-weight: 600;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="header">
+      <div class="title">SMART CITY GIS CENTER</div>
+
+      <div>
+        <div class="status">DIGITAL INFRASTRUCTURE MONITORING</div>
+        <div id="clock" class="clock"></div>
+      </div>
+    </div>
+
+    <div class="topmenu">
+      <a href="index.html">GIS Infrastruktur</a>
+      <a href="gis-drainase.html">GIS Banjir & Drainase</a>
+      <a href="gis-fasilitas-publik.html">GIS Fasilitas Publik</a>
+      <a href="gis-transportasi.html">GIS Transportasi</a>
+      <a href="gis-digital.html" class="active">GIS Infrastruktur Digital</a>
+      <a href="gis-smart-city.html">Master Smart City Map</a>
+      <a href="../dashboard.html">Command Center</a>
+    </div>
+
+    <div class="container-fluid">
+      <!-- STAT -->
+
+      <div class="row">
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>BTS</h6>
+            <div class="stat-number">182</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>WiFi Publik</h6>
+            <div class="stat-number">120</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>CCTV</h6>
+            <div class="stat-number">240</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Fiber Optic</h6>
+            <div class="stat-number">320 Km</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHART -->
+
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="card-glass">
+            <h5>Distribusi Infrastruktur Digital</h5>
+
+            <canvas id="digitalChart"></canvas>
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <div class="card-glass">
+            <h5>Trafik Jaringan</h5>
+
+            <canvas id="trafficChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- MAP -->
+
+      <div class="card-glass">
+        <h5>Peta Infrastruktur Digital</h5>
+
+        <div id="digitalMap" class="map-box"></div>
+      </div>
+    </div>
+
+    <script>
+      /* CLOCK */
+
+      function updateClock() {
+        const now = new Date();
+
+        const date = now.toLocaleDateString("id-ID");
+
+        const time = now.toLocaleTimeString("id-ID");
+
+        document.getElementById("clock").innerHTML = date + " | " + time;
+      }
+
+      setInterval(updateClock, 1000);
+      updateClock();
+
+      /* CHART */
+
+      new Chart(document.getElementById("digitalChart"), {
+        type: "doughnut",
+
+        data: {
+          labels: ["BTS", "WiFi", "CCTV", "Data Center"],
+          datasets: [
+            {
+              data: [182, 120, 240, 6],
+              backgroundColor: ["#ff4c4c", "#00ff9d", "#00c3ff", "#ffaa00"],
+            },
+          ],
+        },
+      });
+
+      new Chart(document.getElementById("trafficChart"), {
+        type: "line",
+
+        data: {
+          labels: ["08", "10", "12", "14", "16", "18"],
+          datasets: [
+            {
+              label: "Traffic Data (Gbps)",
+              data: [120, 180, 210, 260, 230, 200],
+              borderColor: "#00ff9d",
+            },
+          ],
+        },
+      });
+
+      /* MAP */
+
+      const digitalMap = L.map("digitalMap").setView([3.56, 98.86], 11);
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "Digital Infrastructure GIS",
+      }).addTo(digitalMap);
+
+      /* BTS */
+
+      const bts = [
+        { lat: 3.567, lng: 98.857, name: "BTS Telkomsel Sei Rampah" },
+        { lat: 3.586, lng: 98.92, name: "BTS XL Perbaungan" },
+      ];
+
+      bts.forEach((b) => {
+        L.circleMarker([b.lat, b.lng], {
+          radius: 10,
+          color: "red",
+          fillColor: "red",
+          fillOpacity: 0.9,
+        })
+          .addTo(digitalMap)
+          .bindPopup(b.name);
+      });
+
+      /* WIFI */
+
+      const wifi = [
+        { lat: 3.568, lng: 98.86, name: "WiFi Alun-Alun Sei Rampah" },
+        { lat: 3.575, lng: 98.87, name: "WiFi Kantor Bupati" },
+      ];
+      wifi.forEach((w) => {
+        L.circleMarker([w.lat, w.lng], {
+          radius: 8,
+          color: "green",
+          fillColor: "green",
+          fillOpacity: 0.9,
+        })
+          .addTo(digitalMap)
+          .bindPopup(w.name);
+      });
+
+      /* CCTV */
+
+      const cctv = [
+        { lat: 3.567, lng: 98.857, name: "CCTV Simpang Sei Rampah" },
+        { lat: 3.507, lng: 98.873, name: "CCTV Pasar Pantai Cermin" },
+      ];
+
+      cctv.forEach((c) => {
+        L.circleMarker([c.lat, c.lng], {
+          radius: 8,
+          color: "blue",
+          fillColor: "blue",
+          fillOpacity: 0.9,
+        })
+          .addTo(digitalMap)
+          .bindPopup(c.name);
+      });
+
+      /* FIBER OPTIC */
+
+      const fiber = {
+        type: "FeatureCollection",
+
+        features: [
+          {
+            type: "Feature",
+
+            properties: {
+              name: "Fiber Optic Utama",
+            },
+
+            geometry: {
+              type: "LineString",
+              coordinates: [
+                [98.85, 3.52],
+                [98.87, 3.55],
+                [98.9, 3.58],
+                [98.92, 3.6],
+              ],
+            },
+          },
+        ],
+      };
+
+      L.geoJSON(fiber, {
+        style: {
+          color: "#00c3ff",
+          weight: 4,
+        },
+
+        onEachFeature: function (feature, layer) {
+          layer.bindPopup(feature.properties.name);
+        },
+      }).addTo(digitalMap);
+    </script>
+  </body>
+</html>

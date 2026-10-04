@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+
+    <title>Cetak Tiket</title>
+
+    <style>
+      body {
+        font-family: Arial;
+        text-align: center;
+        padding: 40px;
+      }
+
+      .nomor {
+        font-size: 70px;
+        font-weight: bold;
+        margin: 20px 0;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h3>TIKET ANTRIAN</h3>
+
+    <div id="nomor" class="nomor">A-001</div>
+
+    <p id="layanan"></p>
+
+    <p id="waktu"></p>
+
+    <script>
+      function getParam(name) {
+        const url = new URL(window.location.href);
+
+        return url.searchParams.get(name);
+      }
+
+      document.getElementById("nomor").innerText = getParam("nomor");
+
+      document.getElementById("layanan").innerText = getParam("layanan");
+
+      document.getElementById("waktu").innerText = new Date().toLocaleString();
+
+      /* auto print */
+
+      window.onload = function () {
+        setTimeout(function () {
+          window.print();
+        }, 300);
+      };
+    </script>
+  </body>
+</html>

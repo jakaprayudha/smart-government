@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>GIS Fasilitas Publik</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Poppins:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+
+    <style>
+      body {
+        background: radial-gradient(circle at top, #0f2027, #203a43, #0b1a24);
+        font-family: "Poppins", sans-serif;
+        color: white;
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 40px;
+        background: rgba(0, 0, 0, 0.3);
+      }
+
+      .title {
+        font-family: "Orbitron";
+        letter-spacing: 2px;
+      }
+
+      .status {
+        color: #00ff9d;
+      }
+
+      .clock {
+        font-size: 13px;
+        color: #ccc;
+      }
+
+      .topmenu {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 10px 40px;
+      }
+
+      .topmenu a {
+        color: white;
+        text-decoration: none;
+        margin-right: 30px;
+        font-size: 14px;
+      }
+
+      .topmenu a.active {
+        color: #00c3ff;
+        border-bottom: 2px solid #00c3ff;
+      }
+
+      .card-glass {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        padding: 20px;
+        margin-top: 20px;
+      }
+
+      .map-box {
+        height: 420px;
+        border-radius: 10px;
+        overflow: hidden;
+      }
+
+      .stat-number {
+        font-size: 26px;
+        font-weight: 600;
+      }
+
+      .table {
+        color: white;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- HEADER -->
+
+    <div class="header">
+      <div class="title">SMART CITY GIS CENTER</div>
+
+      <div>
+        <div class="status">FASILITAS PUBLIK MONITORING</div>
+        <div id="clock" class="clock"></div>
+      </div>
+    </div>
+
+    <!-- MENU -->
+
+    <div class="topmenu">
+      <a href="index.html">GIS Infrastruktur</a>
+      <a href="gis-drainase.html">GIS Banjir & Drainase</a>
+      <a href="gis-fasilitas-publik.html" class="active"
+        >GIS Fasilitas Publik</a
+      >
+      <a href="gis-transportasi.html">GIS Transportasi</a>
+      <a href="gis-digital.html">GIS Infrastruktur Digital</a>
+      <a href="gis-smart-city.html">Master Smart City Map</a>
+      <a href="../dashboard.html">Command Center</a>
+    </div>
+
+    <div class="container-fluid">
+      <!-- STAT -->
+
+      <div class="row">
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Sekolah</h6>
+            <div class="stat-number">120</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Rumah Sakit</h6>
+            <div class="stat-number">12</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Puskesmas</h6>
+            <div class="stat-number">28</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Pasar</h6>
+            <div class="stat-number">18</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Halte</h6>
+            <div class="stat-number">48</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Terminal</h6>
+            <div class="stat-number">6</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Public Internet</h6>
+            <div class="stat-number">6</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Toilet</h6>
+            <div class="stat-number">6</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHART -->
+
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="card-glass">
+            <h5>Distribusi Fasilitas</h5>
+
+            <canvas id="facilityChart"></canvas>
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <div class="card-glass">
+            <h5>Penggunaan Fasilitas Publik</h5>
+
+            <canvas id="usageChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- MAP -->
+
+      <div class="card-glass">
+        <h5>Peta Fasilitas Publik</h5>
+
+        <div id="facilityMap" class="map-box"></div>
+      </div>
+    </div>
+
+    <script>
+      /* CLOCK */
+
+      function updateClock() {
+        const now = new Date();
+
+        const date = now.toLocaleDateString("id-ID");
+
+        const time = now.toLocaleTimeString("id-ID");
+
+        document.getElementById("clock").innerHTML = date + " | " + time;
+      }
+
+      setInterval(updateClock, 1000);
+      updateClock();
+
+      /* CHART */
+
+      new Chart(document.getElementById("facilityChart"), {
+        type: "doughnut",
+
+        data: {
+          labels: ["Sekolah", "Rumah Sakit", "Puskesmas", "Pasar"],
+          datasets: [
+            {
+              data: [120, 12, 28, 18],
+              backgroundColor: ["#00c3ff", "#ff4c4c", "#00ff9d", "#ffaa00"],
+            },
+          ],
+        },
+      });
+
+      new Chart(document.getElementById("usageChart"), {
+        type: "bar",
+
+        data: {
+          labels: ["Sekolah", "RS", "Puskesmas", "Pasar"],
+          datasets: [
+            {
+              label: "Pengunjung Harian",
+              data: [4500, 1200, 1800, 3200],
+              backgroundColor: "#00c3ff",
+            },
+          ],
+        },
+      });
+
+      /* MAP */
+
+      const facilityMap = L.map("facilityMap").setView([3.56, 98.86], 11);
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "Public Facility GIS",
+      }).addTo(facilityMap);
+
+      /* DATA FASILITAS */
+
+      const facilities = [
+        {
+          name: "RSUD Sultan Sulaiman Sei Rampah",
+          type: "Rumah Sakit",
+          lat: 3.567,
+          lng: 98.857,
+          bed: 320,
+          icu: 18,
+          doctor: 45,
+        },
+
+        {
+          name: "SMA Negeri 1 Perbaungan",
+          type: "Sekolah",
+          lat: 3.586,
+          lng: 98.92,
+          student: 920,
+          classroom: 28,
+        },
+
+        {
+          name: "Puskesmas Teluk Mengkudu",
+          type: "Puskesmas",
+          lat: 3.525,
+          lng: 98.91,
+        },
+
+        {
+          name: "Pasar Sei Rampah",
+          type: "Pasar",
+          lat: 3.568,
+          lng: 98.86,
+        },
+
+        {
+          name: "Terminal Perbaungan",
+          type: "Terminal",
+          lat: 3.586,
+          lng: 98.925,
+        },
+
+        {
+          name: "Halte Jalan Lintas Sumatera",
+          type: "Halte",
+          lat: 3.575,
+          lng: 98.87,
+        },
+
+        // 🔥 tambahan biar coverage luas
+
+        {
+          name: "Puskesmas Dolok Masihul",
+          type: "Puskesmas",
+          lat: 3.453,
+          lng: 98.93,
+        },
+
+        {
+          name: "Pasar Pantai Cermin",
+          type: "Pasar",
+          lat: 3.507,
+          lng: 98.873,
+        },
+
+        {
+          name: "Halte Tanjung Beringin",
+          type: "Halte",
+          lat: 3.508,
+          lng: 98.875,
+        },
+      ];
+
+      facilities.forEach((f) => {
+        let color = "blue";
+
+        if (f.type === "Rumah Sakit") color = "red";
+        if (f.type === "Puskesmas") color = "green";
+        if (f.type === "Pasar") color = "orange";
+        if (f.type === "Terminal") color = "purple";
+        if (f.type === "Halte") color = "yellow";
+
+        const marker = L.circleMarker([f.lat, f.lng], {
+          radius: 10,
+          color: color,
+          fillColor: color,
+          fillOpacity: 0.9,
+        }).addTo(facilityMap);
+
+        let info = `<b>${f.name}</b><br>Jenis: ${f.type}`;
+
+        if (f.type === "Rumah Sakit") {
+          info += `<br>Bed: ${f.bed}
+<br>ICU: ${f.icu}
+<br>Dokter: ${f.doctor}`;
+        }
+
+        if (f.type === "Sekolah") {
+          info += `<br>Siswa: ${f.student}
+<br>Ruang Kelas: ${f.classroom}`;
+        }
+
+        marker.bindPopup(info);
+      });
+
+      L.circle([3.567, 98.857], {
+        radius: 5000,
+        color: "red",
+        fillOpacity: 0.05,
+        interactive: false,
+      })
+        .addTo(facilityMap)
+        .bindPopup("Radius layanan RSUD ±5 Km");
+
+      const heatData = [
+        [3.567, 98.857, 0.9], // Sei Rampah
+        [3.586, 98.92, 0.8], // Perbaungan
+        [3.525, 98.91, 0.95], // Teluk Mengkudu
+        [3.507, 98.873, 0.7], // Pantai Cermin
+        [3.453, 98.93, 0.6], // Dolok Masihul
+        [3.508, 98.875, 0.65], // Tanjung Beringin
+      ];
+
+      L.heatLayer(heatData, {
+        radius: 30,
+        blur: 20,
+      }).addTo(facilityMap);
+    </script>
+  </body>
+</html>

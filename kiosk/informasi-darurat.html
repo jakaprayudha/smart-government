@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Informasi Darurat</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Poppins:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        background: radial-gradient(circle at top, #0f2027, #203a43, #0b1a24);
+        font-family: "Poppins", sans-serif;
+        color: white;
+        min-height: 100vh;
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 40px;
+        background: rgba(0, 0, 0, 0.3);
+      }
+
+      .title {
+        font-family: "Orbitron";
+        letter-spacing: 2px;
+      }
+
+      .card-glass {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        padding: 20px;
+        margin-top: 20px;
+      }
+
+      .emergency-number {
+        font-size: 28px;
+        font-weight: bold;
+        color: #00ff9d;
+      }
+
+      .map-box {
+        height: 420px;
+        border-radius: 10px;
+        overflow: hidden;
+      }
+
+      .alert-box {
+        background: rgba(255, 0, 0, 0.2);
+        border-left: 4px solid red;
+        padding: 10px;
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="header">
+      <div class="title">INFORMASI DARURAT KOTA</div>
+
+      <div>
+        <button class="btn btn-outline-light" onclick="history.back()">
+          ⬅ Kembali
+        </button>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <!-- NOMOR DARURAT -->
+
+      <div class="row">
+        <div class="col-md-3">
+          <div class="card-glass text-center">
+            <h6>🚓 Polisi</h6>
+            <div class="emergency-number">110</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass text-center">
+            <h6>🚑 Ambulans</h6>
+            <div class="emergency-number">118</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass text-center">
+            <h6>🚒 Pemadam</h6>
+            <div class="emergency-number">113</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass text-center">
+            <h6>🏥 Rumah Sakit</h6>
+            <div class="emergency-number">129</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MAP -->
+
+      <div class="card-glass">
+        <h5>🗺 Peta Fasilitas Darurat</h5>
+
+        <div id="map" class="map-box"></div>
+      </div>
+
+      <!-- PERINGATAN -->
+
+      <div class="card-glass">
+        <h5>⚠️ Peringatan Darurat</h5>
+
+        <div class="alert-box">
+          Status Siaga Banjir di Kecamatan Teluk Mengkudu.
+        </div>
+
+        <div class="alert-box">
+          Potensi hujan lebat dan angin kencang malam ini.
+        </div>
+
+        <div class="alert-box">
+          BPBD mengimbau warga di wilayah rendah untuk waspada.
+        </div>
+      </div>
+    </div>
+
+    <script>
+      /* MAP */
+
+      const map = L.map("map").setView([3.5826, 98.775], 11);
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(
+        map,
+      );
+
+      const fasilitas = [
+        {
+          nama: "RSUD Serdang Bedagai",
+          jenis: "Rumah Sakit",
+          telp: "061-123456",
+          lat: 3.58,
+          lng: 98.87,
+        },
+
+        {
+          nama: "Polres Serdang Bedagai",
+          jenis: "Polisi",
+          telp: "110",
+          lat: 3.56,
+          lng: 98.86,
+        },
+
+        {
+          nama: "Pemadam Kebakaran",
+          jenis: "Damkar",
+          telp: "113",
+          lat: 3.59,
+          lng: 98.86,
+        },
+
+        {
+          nama: "Pos Ambulans",
+          jenis: "Ambulans",
+          telp: "118",
+          lat: 3.57,
+          lng: 98.88,
+        },
+      ];
+
+      fasilitas.forEach((f) => {
+        L.marker([f.lat, f.lng])
+          .bindPopup(
+            `
+<b>${f.nama}</b><br>
+Jenis: ${f.jenis}<br>
+Telepon: ${f.telp}
+`,
+          )
+          .addTo(map);
+      });
+    </script>
+  </body>
+</html>

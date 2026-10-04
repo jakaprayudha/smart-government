@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Integrasi API OPD</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Poppins:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+      body {
+        background: radial-gradient(circle at top, #0f2027, #203a43, #0b1a24);
+        font-family: "Poppins", sans-serif;
+        color: white;
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 40px;
+        background: rgba(0, 0, 0, 0.3);
+      }
+
+      .title {
+        font-family: "Orbitron";
+        letter-spacing: 2px;
+      }
+
+      .status {
+        color: #00ff9d;
+      }
+
+      .clock {
+        font-size: 13px;
+        color: #ccc;
+      }
+
+      .topmenu {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 10px 40px;
+      }
+
+      .topmenu a {
+        color: white;
+        text-decoration: none;
+        margin-right: 30px;
+        font-size: 14px;
+      }
+
+      .topmenu a.active {
+        color: #00c3ff;
+        border-bottom: 2px solid #00c3ff;
+      }
+
+      .card-glass {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        padding: 20px;
+        margin-top: 20px;
+      }
+
+      .stat-number {
+        font-size: 26px;
+        font-weight: 600;
+      }
+
+      .table {
+        color: white;
+      }
+
+      .alert-box {
+        background: rgba(255, 0, 0, 0.2);
+        border-left: 4px solid red;
+        padding: 10px;
+        margin-bottom: 10px;
+      }
+
+      .badge-online {
+        background: #00ff9d;
+        color: black;
+      }
+
+      .badge-warning {
+        background: orange;
+      }
+
+      .badge-down {
+        background: red;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="header">
+      <div class="title">SINGLE DATA PLATFORM</div>
+
+      <div>
+        <div class="status">API INTEGRATION MONITORING</div>
+        <div id="clock" class="clock"></div>
+      </div>
+    </div>
+
+    <div class="topmenu">
+      <a href="index.html">Dashboard Integrasi Data</a>
+      <a href="data-opd.html">Data OPD</a>
+      <a href="integrasi-api.html" class="active">Integrasi API</a>
+      <a href="kualitas-data.html">Kualitas Data</a>
+      <a href="sinkronisasi-data.html">Sinkronisasi Data</a>
+      <a href="meta-data.html">Metadata Dataset</a>
+      <a href="../dashboard.html">Command Center</a>
+    </div>
+
+    <div class="container-fluid">
+      <!-- STAT -->
+
+      <div class="row">
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>API Aktif</h6>
+            <div class="stat-number">120</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Request / Hari</h6>
+            <div class="stat-number">84,500</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Latency Rata-rata</h6>
+            <div class="stat-number">210 ms</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Error Rate</h6>
+            <div class="stat-number">1.2%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHART -->
+
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="card-glass">
+            <h5>Traffic API</h5>
+
+            <canvas id="trafficChart"></canvas>
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <div class="card-glass">
+            <h5>Request per Jam</h5>
+
+            <canvas id="requestChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- ALERT -->
+
+      <div class="card-glass">
+        <h5>Alert API</h5>
+
+        <div class="alert-box">⚠ API Dukcapil mengalami latency tinggi.</div>
+
+        <div class="alert-box">
+          ⚠ Endpoint API Pendidikan mengalami timeout.
+        </div>
+      </div>
+
+      <!-- API STATUS -->
+
+      <div class="card-glass">
+        <h5>Status API OPD</h5>
+
+        <table class="table table-dark table-striped">
+          <thead>
+            <tr>
+              <th>OPD</th>
+              <th>Endpoint</th>
+              <th>Latency</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>Dinas Kependudukan</td>
+              <td>/api/dukcapil/data</td>
+              <td>320 ms</td>
+              <td><span class="badge badge-warning">Latency</span></td>
+            </tr>
+
+            <tr>
+              <td>Dinas Kesehatan</td>
+              <td>/api/kesehatan/pasien</td>
+              <td>180 ms</td>
+              <td><span class="badge badge-online">Online</span></td>
+            </tr>
+
+            <tr>
+              <td>Dinas Pendidikan</td>
+              <td>/api/pendidikan/sekolah</td>
+              <td>200 ms</td>
+              <td><span class="badge badge-online">Online</span></td>
+            </tr>
+
+            <tr>
+              <td>Dinas Sosial</td>
+              <td>/api/sosial/bansos</td>
+              <td>410 ms</td>
+              <td><span class="badge badge-warning">Slow</span></td>
+            </tr>
+
+            <tr>
+              <td>Dinas Perhubungan</td>
+              <td>/api/transportasi/traffic</td>
+              <td>160 ms</td>
+              <td><span class="badge badge-online">Online</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <script>
+      /* CLOCK */
+
+      function updateClock() {
+        const now = new Date();
+
+        const date = now.toLocaleDateString("id-ID");
+
+        const time = now.toLocaleTimeString("id-ID");
+
+        document.getElementById("clock").innerHTML = date + " | " + time;
+      }
+
+      setInterval(updateClock, 1000);
+
+      updateClock();
+
+      /* TRAFFIC API */
+
+      new Chart(document.getElementById("trafficChart"), {
+        type: "line",
+
+        data: {
+          labels: ["08", "09", "10", "11", "12", "13"],
+          datasets: [
+            {
+              label: "API Request",
+              data: [12000, 18000, 22000, 26000, 30000, 34000],
+              borderColor: "#00ff9d",
+            },
+          ],
+        },
+      });
+
+      /* REQUEST CHART */
+
+      new Chart(document.getElementById("requestChart"), {
+        type: "bar",
+
+        data: {
+          labels: [
+            "Dukcapil",
+            "Kesehatan",
+            "Pendidikan",
+            "Sosial",
+            "Transportasi",
+          ],
+          datasets: [
+            {
+              label: "Request API",
+              data: [24000, 18000, 16000, 12000, 9000],
+              backgroundColor: "#00c3ff",
+            },
+          ],
+        },
+      });
+    </script>
+  </body>
+</html>

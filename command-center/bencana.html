@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Command Center - Monitoring Bencana</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Poppins:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+      body {
+        background: radial-gradient(circle at top, #0f2027, #203a43, #0b1a24);
+        font-family: "Poppins", sans-serif;
+        color: white;
+      }
+
+      /* HEADER */
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 40px;
+        background: rgba(0, 0, 0, 0.3);
+      }
+
+      .title {
+        font-family: "Orbitron";
+        letter-spacing: 2px;
+      }
+
+      .status {
+        color: #00ff9d;
+      }
+
+      .clock {
+        font-size: 13px;
+        color: #ccc;
+      }
+
+      /* MENU */
+
+      .topmenu {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 10px 40px;
+      }
+
+      .topmenu a {
+        color: white;
+        text-decoration: none;
+        margin-right: 30px;
+        font-size: 14px;
+        padding-bottom: 5px;
+      }
+
+      .topmenu a:hover {
+        color: #00c3ff;
+      }
+
+      .topmenu a.active {
+        color: #00c3ff;
+        border-bottom: 2px solid #00c3ff;
+      }
+
+      /* CARD */
+
+      .card-glass {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        padding: 20px;
+        margin-top: 20px;
+      }
+
+      .stat-number {
+        font-size: 28px;
+        font-weight: 600;
+      }
+
+      #mapDisaster {
+        height: 420px;
+        border-radius: 12px;
+      }
+
+      .alert-box {
+        background: rgba(255, 0, 0, 0.3);
+        padding: 10px;
+        margin-bottom: 10px;
+        border-left: 4px solid red;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="header">
+      <div class="title">COMMAND CENTER</div>
+
+      <div>
+        <div class="status">SYSTEM ONLINE</div>
+
+        <div id="clock" class="clock"></div>
+      </div>
+    </div>
+
+    <div class="topmenu">
+      <a href="monitoring.html">Monitoring Layanan Publik Digital</a>
+      <a href="kpi-opd.html">Dashboard Kinerja OPD</a>
+      <a href="laporan-masyarakat.html">Laporan & Keluhan Masyarakat</a>
+      <a href="cctv-geospasial.html">Integrasi CCTV & Geospasial</a>
+      <a href="analitik.html">Analitik Data Pemerintahan</a>
+      <a href="bencana.html" class="active">Monitoring Bencana</a>
+      <a href="../dashboard.html">Command Center</a>
+    </div>
+
+    <div class="container-fluid">
+      <!-- STAT -->
+
+      <div class="row">
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Potensi Banjir</h6>
+            <div class="stat-number text-warning">3 Area</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Titik Bencana</h6>
+            <div class="stat-number">12</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Unit Siaga</h6>
+            <div class="stat-number">18</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Korban Terdampak</h6>
+            <div class="stat-number">245</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MAP -->
+
+      <div class="card-glass">
+        <h5>Peta Monitoring Bencana</h5>
+
+        <div id="mapDisaster"></div>
+      </div>
+
+      <!-- CHART -->
+
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="card-glass">
+            <h5>Trend Kejadian Bencana</h5>
+
+            <canvas id="disasterChart"></canvas>
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <div class="card-glass">
+            <h5>Jenis Bencana</h5>
+
+            <canvas id="typeChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- EMERGENCY -->
+
+      <div class="card-glass">
+        <h5>Unit Emergency Response</h5>
+
+        <table class="table table-dark">
+          <thead>
+            <tr>
+              <th>Unit</th>
+              <th>Lokasi</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>BPBD 01</td>
+              <td>Perbaungan</td>
+              <td><span class="badge bg-success">Siaga</span></td>
+            </tr>
+
+            <tr>
+              <td>BPBD 02</td>
+              <td>Sei Rampah</td>
+              <td><span class="badge bg-warning">Monitoring</span></td>
+            </tr>
+
+            <tr>
+              <td>Damkar 01</td>
+              <td>Teluk Mengkudu</td>
+              <td><span class="badge bg-success">Siaga</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ALERT -->
+
+      <div class="card-glass">
+        <h5>Alert Bencana</h5>
+
+        <div id="alertDisaster"></div>
+      </div>
+
+      <div class="card-glass">
+        <h5>Monitoring Cuaca (BMKG)</h5>
+
+        <div class="row text-center">
+          <div class="col-md-3">
+            <h6>Suhu</h6>
+            <h3 id="temp">30°C</h3>
+          </div>
+
+          <div class="col-md-3">
+            <h6>Curah Hujan</h6>
+            <h3 id="rain">20 mm</h3>
+          </div>
+
+          <div class="col-md-3">
+            <h6>Kelembaban</h6>
+            <h3 id="humidity">80%</h3>
+          </div>
+
+          <div class="col-md-3">
+            <h6>Status Cuaca</h6>
+            <h3 id="weatherStatus">Berawan</h3>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-glass">
+        <h5>Sensor Tinggi Air Sungai</h5>
+
+        <table class="table table-dark">
+          <thead>
+            <tr>
+              <th>Sungai</th>
+              <th>Tinggi Air</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+
+          <tbody id="riverTable">
+            <tr>
+              <td>Sungai Padang</td>
+              <td id="river1">120 cm</td>
+              <td id="riverStatus1">Normal</td>
+            </tr>
+
+            <tr>
+              <td>Sungai Bahbolon</td>
+              <td id="river2">95 cm</td>
+              <td id="riverStatus2">Normal</td>
+            </tr>
+
+            <tr>
+              <td>Sungai Ular</td>
+              <td id="river3">150 cm</td>
+              <td id="riverStatus3">Waspada</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card-glass">
+        <h5>Monitoring Gempa</h5>
+
+        <table class="table table-dark">
+          <thead>
+            <tr>
+              <th>Lokasi</th>
+              <th>Magnitudo</th>
+              <th>Kedalaman</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>Sumatera Utara</td>
+              <td>4.2</td>
+              <td>10 km</td>
+            </tr>
+
+            <tr>
+              <td>Selat Malaka</td>
+              <td>3.8</td>
+              <td>15 km</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card-glass">
+        <h5>Monitoring Drone Bencana</h5>
+
+        <table class="table table-dark">
+          <thead>
+            <tr>
+              <th>Drone</th>
+              <th>Lokasi</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>Drone 01</td>
+              <td>Teluk Mengkudu</td>
+              <td><span class="badge bg-success">Survey Area</span></td>
+            </tr>
+
+            <tr>
+              <td>Drone 02</td>
+              <td>Sei Rampah</td>
+              <td><span class="badge bg-warning">Monitoring</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <script>
+      /* CLOCK */
+
+      function updateClock() {
+        const now = new Date();
+
+        document.getElementById("clock").innerHTML =
+          now.toLocaleDateString("id-ID") +
+          " | " +
+          now.toLocaleTimeString("id-ID");
+      }
+
+      setInterval(updateClock, 1000);
+
+      updateClock();
+
+      /* MAP */
+
+      const map = L.map("mapDisaster").setView([3.56, 98.86], 11);
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 18,
+      }).addTo(map);
+
+      /* TITIK BENCANA */
+      const disasters = [
+        {
+          nama: "Banjir Teluk Mengkudu",
+          lat: 3.525,
+          lng: 98.91,
+        },
+        {
+          nama: "Genangan Perbaungan",
+          lat: 3.586,
+          lng: 98.92,
+        },
+        {
+          nama: "Kebakaran Permukiman Sei Rampah",
+          lat: 3.567,
+          lng: 98.857,
+        },
+        {
+          nama: "Angin Kencang Dolok Masihul",
+          lat: 3.453,
+          lng: 98.93,
+        },
+      ];
+
+      disasters.forEach((d) => {
+        L.marker([d.lat, d.lng])
+          .addTo(map)
+          .bindPopup("⚠ " + d.nama);
+      });
+
+      /* CHART */
+
+      new Chart(document.getElementById("disasterChart"), {
+        type: "line",
+
+        data: {
+          labels: ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun"],
+          datasets: [
+            {
+              label: "Jumlah Bencana",
+              data: [3, 5, 4, 7, 6, 8],
+              borderColor: "#ff4444",
+            },
+          ],
+        },
+      });
+
+      new Chart(document.getElementById("typeChart"), {
+        type: "doughnut",
+
+        data: {
+          labels: ["Banjir", "Longsor", "Kebakaran", "Angin"],
+          datasets: [
+            {
+              data: [12, 5, 3, 4],
+              backgroundColor: ["#00c3ff", "#ffcc00", "#ff4444", "#00ff9d"],
+            },
+          ],
+        },
+      });
+
+      /* ALERT */
+
+      setInterval(() => {
+        const alert = document.createElement("div");
+
+        alert.className = "alert-box";
+
+        alert.innerHTML =
+          "🚨 Potensi banjir terdeteksi akibat curah hujan tinggi";
+
+        document.getElementById("alertDisaster").prepend(alert);
+
+        setTimeout(() => alert.remove(), 6000);
+      }, 9000);
+
+      setInterval(() => {
+        const temp = 25 + Math.floor(Math.random() * 8);
+        const rain = Math.floor(Math.random() * 60);
+        const humidity = 70 + Math.floor(Math.random() * 20);
+
+        document.getElementById("temp").innerHTML = temp + "°C";
+        document.getElementById("rain").innerHTML = rain + " mm";
+        document.getElementById("humidity").innerHTML = humidity + "%";
+
+        if (rain > 40) {
+          document.getElementById("weatherStatus").innerHTML = "Hujan Lebat";
+          document.getElementById("weatherStatus").style.color = "orange";
+        } else {
+          document.getElementById("weatherStatus").innerHTML = "Berawan";
+          document.getElementById("weatherStatus").style.color = "white";
+        }
+      }, 5000);
+
+      setInterval(() => {
+        const level = Math.floor(Math.random() * 200);
+
+        document.getElementById("river1").innerHTML = level + " cm";
+
+        if (level > 150) {
+          document.getElementById("riverStatus1").innerHTML = "Siaga Banjir";
+          document.getElementById("riverStatus1").style.color = "red";
+        } else if (level > 100) {
+          document.getElementById("riverStatus1").innerHTML = "Waspada";
+          document.getElementById("riverStatus1").style.color = "orange";
+        } else {
+          document.getElementById("riverStatus1").innerHTML = "Normal";
+          document.getElementById("riverStatus1").style.color = "white";
+        }
+      }, 6000);
+      L.marker([3.525, 98.91])
+        .addTo(map)
+        .bindPopup("🚁 Drone Monitoring Banjir Teluk Mengkudu");
+
+      L.circle([3.586, 98.92], {
+        color: "red",
+        radius: 3000,
+      })
+        .addTo(map)
+        .bindPopup("⚠ Area Risiko Banjir Tinggi");
+
+      const floodZone = [
+        [3.525, 98.905],
+        [3.53, 98.915],
+        [3.52, 98.92],
+        [3.515, 98.91],
+      ];
+
+      L.polygon(floodZone, {
+        color: "blue",
+        fillOpacity: 0.3,
+      })
+        .addTo(map)
+        .bindPopup("Zona Rawan Banjir");
+
+      const landslideZone = [
+        [3.46, 98.94],
+        [3.47, 98.95],
+        [3.455, 98.96],
+        [3.445, 98.945],
+      ];
+
+      L.polygon(landslideZone, {
+        color: "orange",
+        fillOpacity: 0.4,
+      })
+        .addTo(map)
+        .bindPopup("Zona Rawan Longsor");
+    </script>
+  </body>
+</html>

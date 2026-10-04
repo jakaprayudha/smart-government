@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Smart Education Center</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Poppins:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+      body {
+        background: radial-gradient(circle at top, #0f2027, #203a43, #0b1a24);
+        font-family: "Poppins", sans-serif;
+        color: white;
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 40px;
+        background: rgba(0, 0, 0, 0.3);
+      }
+
+      .title {
+        font-family: "Orbitron";
+        letter-spacing: 2px;
+      }
+
+      .status {
+        color: #00ff9d;
+      }
+
+      .clock {
+        font-size: 13px;
+        color: #ccc;
+      }
+
+      .topmenu {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 10px 40px;
+      }
+
+      .topmenu a {
+        color: white;
+        text-decoration: none;
+        margin-right: 30px;
+        font-size: 14px;
+      }
+
+      .topmenu a.active {
+        color: #00c3ff;
+        border-bottom: 2px solid #00c3ff;
+      }
+
+      .card-glass {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        padding: 20px;
+        margin-top: 20px;
+      }
+
+      .stat-number {
+        font-size: 26px;
+        font-weight: 600;
+      }
+
+      .table {
+        color: white;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- HEADER -->
+
+    <div class="header">
+      <div class="title">SMART EDUCATION CENTER</div>
+
+      <div>
+        <div class="status">DIGITAL EDUCATION MONITORING</div>
+        <div id="clock" class="clock"></div>
+      </div>
+    </div>
+
+    <!-- MENU -->
+
+    <div class="topmenu">
+      <a href="index.html" class="active">Dashboard Pendidikan</a>
+      <a href="data-sekolah.html">Data Sekolah</a>
+      <a href="perpustakaan.html">Perpustakaan Digital</a>
+      <a href="e-learning.html">E-Learning Monitoring</a>
+      <a href="../dashboard.html">Command Center</a>
+    </div>
+
+    <div class="container-fluid">
+      <!-- STAT -->
+
+      <div class="row">
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Total Sekolah</h6>
+            <div class="stat-number">420</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Total Siswa</h6>
+            <div class="stat-number">124,500</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Total Guru</h6>
+            <div class="stat-number">6,240</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Buku Digital</h6>
+            <div class="stat-number">85,000</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHART -->
+
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="card-glass">
+            <h5>Distribusi Sekolah</h5>
+
+            <canvas id="schoolChart"></canvas>
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <div class="card-glass">
+            <h5>Aktivitas E-Learning</h5>
+
+            <canvas id="elearningChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- PERPUSTAKAAN -->
+
+      <div class="card-glass">
+        <h5>Perpustakaan Digital</h5>
+
+        <table class="table table-dark table-striped">
+          <thead>
+            <tr>
+              <th>Kategori Buku</th>
+              <th>Jumlah</th>
+              <th>Peminjaman</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>Sains</td>
+              <td>12,500</td>
+              <td>3,200</td>
+            </tr>
+
+            <tr>
+              <td>Teknologi</td>
+              <td>9,800</td>
+              <td>2,450</td>
+            </tr>
+
+            <tr>
+              <td>Sejarah</td>
+              <td>7,200</td>
+              <td>1,820</td>
+            </tr>
+
+            <tr>
+              <td>Bahasa</td>
+              <td>5,100</td>
+              <td>1,120</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- SEKOLAH TERBAIK -->
+
+      <div class="card-glass">
+        <h5>Ranking Sekolah</h5>
+
+        <table class="table table-dark table-striped">
+          <thead>
+            <tr>
+              <th>Sekolah</th>
+              <th>Akreditasi</th>
+              <th>Prestasi</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>SMA Negeri 1 Perbaungan</td>
+              <td>A</td>
+              <td>Juara Olimpiade Nasional</td>
+            </tr>
+
+            <tr>
+              <td>SMA Negeri 2 Serdang Bedagai</td>
+              <td>A</td>
+              <td>Juara Robotik</td>
+            </tr>
+
+            <tr>
+              <td>SMP Negeri 1 Sei Rampah</td>
+              <td>A</td>
+              <td>Juara Sains</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card-glass">
+        <h5>🎓 Monitoring Kehadiran Siswa</h5>
+
+        <table class="table table-dark table-striped">
+          <thead>
+            <tr>
+              <th>Sekolah</th>
+              <th>Total Siswa</th>
+              <th>Hadir</th>
+              <th>Tidak Hadir</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>SMA Negeri 1 Perbaungan</td>
+              <td>920</td>
+              <td>890</td>
+              <td>30</td>
+            </tr>
+
+            <tr>
+              <td>SMP Negeri 1 Sei Rampah</td>
+              <td>780</td>
+              <td>742</td>
+              <td>38</td>
+            </tr>
+
+            <tr>
+              <td>SMK Negeri 1 Serdang Bedagai</td>
+              <td>650</td>
+              <td>620</td>
+              <td>30</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card-glass">
+        <h5>📚 AI Recommendation Buku</h5>
+
+        <div
+          style="
+            background: rgba(0, 195, 255, 0.1);
+            padding: 10px;
+            margin-bottom: 10px;
+            border-left: 4px solid #00c3ff;
+          "
+        >
+          AI merekomendasikan buku <b>"Dasar Pemrograman Python"</b> untuk siswa
+          SMK jurusan IT.
+        </div>
+
+        <div
+          style="
+            background: rgba(0, 195, 255, 0.1);
+            padding: 10px;
+            margin-bottom: 10px;
+            border-left: 4px solid #00c3ff;
+          "
+        >
+          AI merekomendasikan buku <b>"Fisika Modern"</b> untuk siswa SMA kelas
+          XII.
+        </div>
+
+        <div
+          style="
+            background: rgba(0, 195, 255, 0.1);
+            padding: 10px;
+            border-left: 4px solid #00c3ff;
+          "
+        >
+          AI merekomendasikan buku <b>"Sejarah Dunia"</b> untuk siswa SMP kelas
+          IX.
+        </div>
+      </div>
+
+      <div class="card-glass">
+        <h5>🏫 GIS Sekolah</h5>
+
+        <div id="schoolMap" style="height: 420px; border-radius: 10px"></div>
+      </div>
+
+      <div class="card-glass">
+        <h5>🧠 Analitik Kelulusan</h5>
+
+        <canvas id="graduationChart"></canvas>
+      </div>
+
+      <div class="card-glass">
+        <h5>📡 Monitoring E-Learning Realtime</h5>
+
+        <table class="table table-dark table-striped">
+          <thead>
+            <tr>
+              <th>Sekolah</th>
+              <th>Kelas Online</th>
+              <th>Siswa Aktif</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>SMA Negeri 1 Perbaungan</td>
+              <td>12</td>
+              <td>380</td>
+              <td>Online</td>
+            </tr>
+
+            <tr>
+              <td>SMP Negeri 1 Sei Rampah</td>
+              <td>8</td>
+              <td>250</td>
+              <td>Online</td>
+            </tr>
+
+            <tr>
+              <td>SMK Negeri 1 Serdang Bedagai</td>
+              <td>10</td>
+              <td>310</td>
+              <td>Online</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <script>
+      /* CLOCK */
+
+      function updateClock() {
+        const now = new Date();
+        const date = now.toLocaleDateString("id-ID");
+        const time = now.toLocaleTimeString("id-ID");
+        document.getElementById("clock").innerHTML = date + " | " + time;
+      }
+
+      setInterval(updateClock, 1000);
+      updateClock();
+
+      /* CHART */
+
+      new Chart(document.getElementById("schoolChart"), {
+        type: "doughnut",
+
+        data: {
+          labels: ["SD", "SMP", "SMA", "SMK"],
+          datasets: [
+            {
+              data: [220, 90, 70, 40],
+              backgroundColor: ["#00c3ff", "#00ff9d", "#ffaa00", "#ff4c4c"],
+            },
+          ],
+        },
+      });
+
+      new Chart(document.getElementById("elearningChart"), {
+        type: "line",
+
+        data: {
+          labels: ["Sen", "Sel", "Rab", "Kam", "Jum"],
+          datasets: [
+            {
+              label: "Pengguna E-Learning",
+              data: [4200, 5200, 6100, 5800, 6400],
+              borderColor: "#00ff9d",
+            },
+          ],
+        },
+      });
+
+      const schoolMap = L.map("schoolMap").setView([3.56, 98.86], 11);
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(
+        schoolMap,
+      );
+
+      const schools = [
+        {
+          name: "SMA Negeri 1 Perbaungan",
+          lat: 3.586,
+          lng: 98.92,
+          student: 920,
+          teacher: 45,
+        },
+        {
+          name: "SMP Negeri 1 Sei Rampah",
+          lat: 3.567,
+          lng: 98.857,
+          student: 780,
+          teacher: 38,
+        },
+        {
+          name: "SMK Negeri 1 Serdang Bedagai",
+          lat: 3.525,
+          lng: 98.91,
+          student: 650,
+          teacher: 40,
+        },
+        {
+          name: "SD Negeri Dolok Masihul",
+          lat: 3.453,
+          lng: 98.93,
+          student: 420,
+          teacher: 25,
+        },
+      ];
+
+      schools.forEach((s) => {
+        L.circleMarker([s.lat, s.lng], {
+          radius: s.student / 50,
+          color: "blue",
+          fillColor: "blue",
+          fillOpacity: 0.7,
+        }).addTo(schoolMap).bindPopup(`
+<b>${s.name}</b><br>
+Siswa: ${s.student}<br>
+Guru: ${s.teacher}
+`);
+      });
+
+      new Chart(document.getElementById("graduationChart"), {
+        type: "bar",
+
+        data: {
+          labels: ["SMA", "SMK", "SMP"],
+          datasets: [
+            {
+              label: "Tingkat Kelulusan (%)",
+              data: [96, 92, 98],
+              backgroundColor: "#00ff9d",
+            },
+          ],
+        },
+      });
+    </script>
+  </body>
+</html>

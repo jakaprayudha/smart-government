@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Early Warning System</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script src="https://leaflet.github.io/Leaflet.heat/dist/leaflet-heat.js"></script>
+    <link rel="stylesheet" href="sidebar.css" />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Inter", sans-serif;
+      }
+
+      body {
+        background: #f4f6f9;
+        display: flex;
+      }
+
+      /* MAIN */
+
+      .main {
+        flex: 1;
+        padding: 20px;
+      }
+
+      /* TOPBAR */
+
+      .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      /* GRID */
+
+      .grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 20px;
+      }
+
+      /* PANEL */
+
+      .panel {
+        background: white;
+        padding: 15px;
+        border-radius: 12px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        margin-bottom: 20px;
+      }
+
+      /* MAP */
+
+      #map {
+        height: 420px;
+        border-radius: 12px;
+      }
+
+      /* TABLE */
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+        margin-top: 10px;
+      }
+
+      th {
+        background: #f4f6f9;
+        padding: 10px;
+        text-align: left;
+        border-bottom: 2px solid #ddd;
+      }
+
+      td {
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+      }
+
+      /* STATUS */
+
+      .status {
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .aman {
+        background: #e8f5e9;
+        color: #2e7d32;
+      }
+
+      .siaga {
+        background: #fff3e0;
+        color: #ef6c00;
+      }
+
+      .bahaya {
+        background: #ffebee;
+        color: #c62828;
+      }
+
+      /* ALARM */
+
+      #alarmPanel {
+        text-align: center;
+        font-size: 18px;
+        font-weight: 600;
+        background: #e8f5e9;
+        color: #2e7d32;
+      }
+
+      .alarm-danger {
+        background: #ffebee !important;
+        color: #c62828 !important;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="sidebar">
+      <h2>BPBD Command</h2>
+
+      <p class="menu-title">Monitoring</p>
+
+      <a href="index.html"> <i class="fa fa-house"></i> Dashboard </a>
+
+      <a href="heatmap.html"> <i class="fa fa-fire"></i> Heatmap Bencana </a>
+
+      <a class="active" href="early-warning.html">
+        <i class="fa fa-triangle-exclamation"></i> Early Warning
+      </a>
+
+      <a href="cuaca.html"> <i class="fa fa-cloud"></i> Monitoring Cuaca </a>
+
+      <a href="wilayah-rawan.html"> <i class="fa fa-map"></i> Wilayah Rawan </a>
+
+      <p class="menu-title">Operasi</p>
+
+      <a href="tracking-sar.html">
+        <i class="fa fa-location-dot"></i> Live Tracking SAR
+      </a>
+
+      <a href="sar.html"> <i class="fa fa-helicopter"></i> Tim SAR </a>
+
+      <a href="posko.html"> <i class="fa fa-house"></i> Posko Pengungsian </a>
+
+      <p class="menu-title">Data Bencana</p>
+
+      <a href="laporan.html">
+        <i class="fa fa-triangle-exclamation"></i> Laporan Bencana
+      </a>
+
+      <a href="korban.html"> <i class="fa fa-user-injured"></i> Data Korban </a>
+
+      <a href="pengungsi.html">
+        <i class="fa fa-people-group"></i> Data Pengungsi
+      </a>
+
+      <a href="bantuan.html"> <i class="fa fa-box"></i> Distribusi Bantuan </a>
+
+      <p class="menu-title">Sistem</p>
+
+      <a href="pengaturan.html"> <i class="fa fa-gear"></i> Pengaturan </a>
+      <a href="../dashboard.html">
+        <i class="fa fa-display"></i> Command Center
+      </a>
+    </div>
+
+    <div class="main">
+      <div class="topbar">
+        <h2>⚠️ Early Warning System</h2>
+
+        <div><i class="fa fa-user"></i> Admin BPBD</div>
+      </div>
+
+      <div class="grid">
+        <!-- LEFT -->
+
+        <div>
+          <div class="panel">
+            <h3>🗺️ Lokasi Sensor</h3>
+
+            <div id="map"></div>
+          </div>
+
+          <div class="panel">
+            <h3>📊 Grafik Realtime Ketinggian Air</h3>
+
+            <canvas id="sensorChart"></canvas>
+          </div>
+
+          <div class="panel" id="alarmPanel">
+            <h3>🚨 Alarm Banjir</h3>
+
+            <p id="alarmText">Status Normal</p>
+          </div>
+
+          <div class="panel">
+            <h3>🌧 Heatmap Curah Hujan</h3>
+
+            <div id="rainmap" style="height: 300px; border-radius: 10px"></div>
+          </div>
+        </div>
+
+        <!-- RIGHT -->
+
+        <div>
+          <div class="panel">
+            <h3>🌊 Ketinggian Air Sungai</h3>
+
+            <table id="riverTable"></table>
+          </div>
+
+          <div class="panel">
+            <h3>🌊 Pasang Surut Laut</h3>
+
+            <table id="seaTable"></table>
+          </div>
+
+          <div class="panel">
+            <h3>🌧 Monitoring Cuaca</h3>
+
+            <table id="weatherTable"></table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      /* MAP */
+
+      var map = L.map("map").setView([3.595, 98.672], 8);
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(
+        map,
+      );
+
+      /* DATA SENSOR */
+
+      var rivers = [
+        { name: "Sungai Bahbolon", lat: 3.59, lng: 98.67 },
+        { name: "Sungai Padang", lat: 3.85, lng: 98.3 },
+        { name: "Sungai Buluh", lat: 2.98, lng: 99.62 },
+        { name: "Sungai Sialang Buah (DAS)", lat: 2.65, lng: 99.78 },
+      ];
+
+      var seas = [{ name: "Pantai Cermin" }, { name: "Tanjung Beringin" }];
+
+      var weathers = [
+        { name: "Kec.Perbaungan" },
+        { name: "Kec.Sei Rampah" },
+        { name: "Kec.Pantai Cermin" },
+        { name: "Serdang Bedagai" },
+      ];
+
+      /* MAP MARKERS */
+
+      rivers.forEach(function (r) {
+        L.marker([r.lat, r.lng])
+          .addTo(map)
+          .bindPopup("Sensor " + r.name);
+      });
+
+      /* STATUS */
+
+      function getStatus(val) {
+        if (val < 200) return ["Aman", "aman"];
+
+        if (val < 300) return ["Siaga", "siaga"];
+
+        return ["Bahaya", "bahaya"];
+      }
+
+      /* CHART */
+
+      var ctx = document.getElementById("sensorChart");
+
+      var chart = new Chart(ctx, {
+        type: "line",
+
+        data: {
+          labels: [],
+          datasets: [
+            {
+              label: "Ketinggian Air (cm)",
+              data: [],
+              borderColor: "#c62828",
+              tension: 0.3,
+            },
+          ],
+        },
+      });
+
+      function updateChart(level) {
+        if (chart.data.labels.length > 10) {
+          chart.data.labels.shift();
+          chart.data.datasets[0].data.shift();
+        }
+
+        chart.data.labels.push(new Date().toLocaleTimeString());
+        chart.data.datasets[0].data.push(level);
+
+        chart.update();
+      }
+
+      /* ALARM */
+
+      function checkAlarm(level) {
+        var panel = document.getElementById("alarmPanel");
+        var text = document.getElementById("alarmText");
+
+        if (level > 300) {
+          panel.classList.add("alarm-danger");
+          text.innerHTML = "🚨 BANJIR BAHAYA";
+        } else {
+          panel.classList.remove("alarm-danger");
+          text.innerHTML = "Status Normal";
+        }
+      }
+
+      /* UPDATE SENSOR */
+
+      function updateData() {
+        var html = "<tr><th>Sungai</th><th>Tinggi</th><th>Status</th></tr>";
+
+        var randomLevel = 0;
+
+        rivers.forEach(function (r) {
+          var level = Math.floor(100 + Math.random() * 250);
+
+          randomLevel = level;
+
+          var status = getStatus(level);
+
+          html += `
+
+<tr>
+
+<td>${r.name}</td>
+
+<td>${level} cm</td>
+
+<td><span class="status ${status[1]}">${status[0]}</span></td>
+
+</tr>
+
+`;
+        });
+
+        document.getElementById("riverTable").innerHTML = html;
+
+        updateChart(randomLevel);
+
+        checkAlarm(randomLevel);
+
+        /* SEA */
+
+        var html2 = "<tr><th>Lokasi</th><th>Tinggi</th><th>Status</th></tr>";
+
+        seas.forEach(function (s) {
+          var level = Math.floor(80 + Math.random() * 150);
+
+          var status = getStatus(level);
+
+          html2 += `
+
+<tr>
+
+<td>${s.name}</td>
+
+<td>${level} cm</td>
+
+<td><span class="status ${status[1]}">${status[0]}</span></td>
+
+</tr>
+
+`;
+        });
+
+        document.getElementById("seaTable").innerHTML = html2;
+
+        /* WEATHER */
+
+        var html3 = "<tr><th>Lokasi</th><th>Hujan</th><th>Angin</th></tr>";
+
+        weathers.forEach(function (w) {
+          var rain = Math.floor(Math.random() * 80);
+          var wind = Math.floor(5 + Math.random() * 20);
+
+          html3 += `
+
+<tr>
+
+<td>${w.name}</td>
+
+<td>${rain} mm</td>
+
+<td>${wind} km/h</td>
+
+</tr>
+
+`;
+        });
+
+        document.getElementById("weatherTable").innerHTML = html3;
+      }
+
+      updateData();
+
+      setInterval(updateData, 3000);
+
+      /* HEATMAP HUJAN */
+
+      var rainMap = L.map("rainmap").setView([3.595, 98.672], 7);
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(
+        rainMap,
+      );
+
+      var rainPoints = [
+        [3.59, 98.67, 0.8],
+        [3.85, 98.3, 0.7],
+        [2.98, 99.62, 0.9],
+        [3.3, 98.5, 0.6],
+        [3.45, 98.7, 0.7],
+      ];
+
+      L.heatLayer(rainPoints, {
+        radius: 40,
+        blur: 25,
+      }).addTo(rainMap);
+    </script>
+  </body>
+</html>

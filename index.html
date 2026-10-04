@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Command Center Serdang Bedagai</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Poppins:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <style>
+      body {
+        height: 100vh;
+        background: radial-gradient(circle at top, #0f2027, #203a43, #0b1a24);
+        font-family: "Poppins", sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        color: white;
+      }
+
+      /* animated background grid */
+
+      body::before {
+        content: "";
+        position: absolute;
+        width: 200%;
+        height: 200%;
+        background-image:
+          linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        background-size: 50px 50px;
+        animation: moveGrid 40s linear infinite;
+      }
+
+      @keyframes moveGrid {
+        0% {
+          transform: translate(0, 0);
+        }
+        100% {
+          transform: translate(-200px, -200px);
+        }
+      }
+
+      .login-card {
+        width: 420px;
+        padding: 40px;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(15px);
+        box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
+        position: relative;
+        z-index: 2;
+      }
+
+      .title {
+        font-family: "Orbitron";
+        text-align: center;
+        font-size: 26px;
+        letter-spacing: 2px;
+        margin-bottom: 5px;
+      }
+
+      .subtitle {
+        text-align: center;
+        font-size: 14px;
+        color: #ccc;
+        margin-bottom: 30px;
+      }
+
+      .logo {
+        width: 80px;
+        display: block;
+        margin: auto;
+        margin-bottom: 15px;
+      }
+
+      .form-control {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+      }
+
+      .form-control:focus {
+        background: rgba(255, 255, 255, 0.08);
+        color: white;
+        border-color: #00c3ff;
+        box-shadow: none;
+      }
+
+      .btn-login {
+        background: linear-gradient(45deg, #00c3ff, #0072ff);
+        border: none;
+        padding: 10px;
+        font-weight: 500;
+        letter-spacing: 1px;
+      }
+
+      .btn-login:hover {
+        opacity: 0.9;
+      }
+
+      .footer {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 12px;
+        color: #aaa;
+      }
+
+      .status {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        font-size: 12px;
+        color: #00ff9d;
+      }
+
+      .time {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        font-size: 12px;
+        color: #ccc;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="time" id="clock"></div>
+    <div class="status">SYSTEM ONLINE</div>
+
+    <div class="login-card">
+      <img src="logo.png" class="logo" />
+
+      <div class="title">COMMAND CENTER</div>
+
+      <div class="subtitle">Kabupaten Serdang Bedagai</div>
+
+      <form id="loginForm">
+        <div class="mb-3">
+          <label class="form-label">Username</label>
+          <input
+            type="text"
+            id="username"
+            class="form-control"
+            placeholder="Masukkan username"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Password</label>
+          <input
+            type="password"
+            id="password"
+            class="form-control"
+            placeholder="Masukkan password"
+          />
+        </div>
+
+        <button class="btn btn-login w-100">LOGIN</button>
+      </form>
+
+      <div class="footer">Smart City Monitoring System</div>
+    </div>
+
+    <script>
+      function updateClock() {
+        const now = new Date();
+        document.getElementById("clock").innerHTML =
+          now.toLocaleDateString() + " | " + now.toLocaleTimeString();
+      }
+
+      setInterval(updateClock, 1000);
+      updateClock();
+    </script>
+    <script>
+      // 🔐 Dummy Login + Toast
+      document
+        .getElementById("loginForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const username = document.getElementById("username").value;
+          const password = document.getElementById("password").value;
+
+          const toastEl = document.getElementById("loginToast");
+          const toastMsg = document.getElementById("toastMessage");
+
+          const toast = new bootstrap.Toast(toastEl);
+
+          if (username === "admin" && password === "2026") {
+            toastEl.classList.remove("text-bg-danger");
+            toastEl.classList.add("text-bg-success");
+
+            toastMsg.innerText = "Login berhasil 🚀";
+            toast.show();
+
+            localStorage.setItem("isLogin", "true");
+
+            document.querySelector(".btn-login").innerText = "LOADING...";
+
+            setTimeout(() => {
+              window.location.href = "dashboard.html";
+            }, 1000);
+          } else {
+            toastEl.classList.remove("text-bg-success");
+            toastEl.classList.add("text-bg-danger");
+
+            toastMsg.innerText = "Username atau password salah ❌";
+            toast.show();
+          }
+        });
+    </script>
+
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999">
+      <div
+        id="loginToast"
+        class="toast align-items-center text-bg-success border-0"
+        role="alert"
+      >
+        <div class="d-flex">
+          <div class="toast-body" id="toastMessage">Login berhasil</div>
+          <button
+            type="button"
+            class="btn-close btn-close-white me-2 m-auto"
+            data-bs-dismiss="toast"
+          ></button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Log Aktivitas Sistem</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Poppins:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+      body {
+        background: radial-gradient(circle at top, #0f2027, #203a43, #0b1a24);
+        font-family: "Poppins", sans-serif;
+        color: white;
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 40px;
+        background: rgba(0, 0, 0, 0.3);
+      }
+
+      .title {
+        font-family: "Orbitron";
+        letter-spacing: 2px;
+      }
+
+      .status {
+        color: #00ff9d;
+      }
+
+      .clock {
+        font-size: 13px;
+        color: #ccc;
+      }
+
+      .topmenu {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 10px 40px;
+      }
+
+      .topmenu a {
+        color: white;
+        text-decoration: none;
+        margin-right: 30px;
+        font-size: 14px;
+      }
+
+      .topmenu a.active {
+        color: #00c3ff;
+        border-bottom: 2px solid #00c3ff;
+      }
+
+      .card-glass {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        padding: 20px;
+        margin-top: 20px;
+      }
+
+      .stat-number {
+        font-size: 28px;
+        font-weight: 600;
+      }
+
+      .badge-safe {
+        background: #00ff9d;
+        color: black;
+      }
+      .badge-warning {
+        background: orange;
+      }
+      .badge-danger {
+        background: red;
+      }
+
+      .alert-box {
+        background: rgba(255, 0, 0, 0.2);
+        border-left: 4px solid red;
+        padding: 10px;
+        margin-bottom: 10px;
+      }
+
+      .table {
+        color: white;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="header">
+      <div class="title">CYBER SECURITY CENTER</div>
+
+      <div>
+        <div class="status">SYSTEM LOG MONITORING</div>
+        <div id="clock" class="clock"></div>
+      </div>
+    </div>
+
+    <div class="topmenu">
+      <a href="index.html">Monitoring Keamanan Sistem</a>
+      <a href="attack-cyber.html">Serangan Cyber</a>
+      <a href="firewall.html">Status Firewall & IDS</a>
+      <a href="traffic.html">Traffic Jaringan</a>
+      <a href="log.html" class="active">Log Aktivitas Sistem</a>
+      <a href="audit.html">Audit Keamanan</a>
+      <a href="../dashboard.html">Command Center</a>
+    </div>
+
+    <div class="container-fluid">
+      <!-- STAT -->
+
+      <div class="row">
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Total Log Hari Ini</h6>
+            <div class="stat-number">12,540</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Login Berhasil</h6>
+            <div class="stat-number text-success">3,420</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Login Gagal</h6>
+            <div class="stat-number text-danger">210</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Event Sistem</h6>
+            <div class="stat-number">540</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHART -->
+
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="card-glass">
+            <h5>Aktivitas Login Sistem</h5>
+
+            <canvas id="loginChart"></canvas>
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <div class="card-glass">
+            <h5>Event Sistem per Jam</h5>
+
+            <canvas id="eventChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- LOGIN LOG -->
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="card-glass">
+            <h5>Log Login Pengguna</h5>
+
+            <table class="table table-dark table-striped">
+              <thead>
+                <tr>
+                  <th>Waktu</th>
+                  <th>User</th>
+                  <th>IP</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr>
+                  <td>10:21</td>
+                  <td>admin.diskominfo</td>
+                  <td>192.168.10.22</td>
+                  <td><span class="badge badge-safe">Success</span></td>
+                </tr>
+
+                <tr>
+                  <td>10:24</td>
+                  <td>unknown</td>
+                  <td>103.201.44.12</td>
+                  <td><span class="badge badge-danger">Failed</span></td>
+                </tr>
+
+                <tr>
+                  <td>10:30</td>
+                  <td>operator.rsud</td>
+                  <td>192.168.20.14</td>
+                  <td><span class="badge badge-safe">Success</span></td>
+                </tr>
+
+                <tr>
+                  <td>10:33</td>
+                  <td>unknown</td>
+                  <td>45.77.120.8</td>
+                  <td><span class="badge badge-danger">Blocked</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ADMIN ACTIVITY -->
+
+        <div class="col-md-6">
+          <div class="card-glass">
+            <h5>Aktivitas Admin Sistem</h5>
+
+            <table class="table table-dark table-striped">
+              <thead>
+                <tr>
+                  <th>Waktu</th>
+                  <th>Admin</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr>
+                  <td>09:12</td>
+                  <td>admin.diskominfo</td>
+                  <td>Update Firewall Rules</td>
+                </tr>
+
+                <tr>
+                  <td>09:45</td>
+                  <td>admin.network</td>
+                  <td>Restart Server API</td>
+                </tr>
+
+                <tr>
+                  <td>10:02</td>
+                  <td>admin.security</td>
+                  <td>Block Suspicious IP</td>
+                </tr>
+
+                <tr>
+                  <td>10:18</td>
+                  <td>admin.system</td>
+                  <td>Backup Database</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ALERT -->
+
+      <div class="card-glass">
+        <h5>Security Event Log</h5>
+
+        <div class="alert-box">
+          ⚠ 5 percobaan login gagal dari IP luar negeri
+        </div>
+
+        <div class="alert-box">⚠ Percobaan akses ilegal ke server database</div>
+
+        <div class="alert-box">
+          ⚠ Aktivitas scanning port terdeteksi oleh IDS
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function updateClock() {
+        const now = new Date();
+        const date = now.toLocaleDateString("id-ID");
+        const time = now.toLocaleTimeString("id-ID");
+        document.getElementById("clock").innerHTML = date + " | " + time;
+      }
+
+      setInterval(updateClock, 1000);
+      updateClock();
+
+      new Chart(document.getElementById("loginChart"), {
+        type: "bar",
+        data: {
+          labels: ["08", "09", "10", "11", "12", "13"],
+          datasets: [
+            {
+              label: "Login Success",
+              data: [120, 210, 340, 290, 410, 380],
+              backgroundColor: "#00ff9d",
+            },
+            {
+              label: "Login Failed",
+              data: [20, 35, 30, 40, 50, 45],
+              backgroundColor: "#ff4c4c",
+            },
+          ],
+        },
+      });
+
+      new Chart(document.getElementById("eventChart"), {
+        type: "line",
+        data: {
+          labels: ["08", "09", "10", "11", "12", "13"],
+          datasets: [
+            {
+              label: "System Event",
+              data: [80, 120, 150, 140, 180, 210],
+              borderColor: "#00c3ff",
+            },
+          ],
+        },
+      });
+    </script>
+  </body>
+</html>

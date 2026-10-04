@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Distribusi Bantuan</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="sidebar.css" />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Inter", sans-serif;
+      }
+
+      body {
+        display: flex;
+        background: #f4f6f9;
+      }
+
+      /* SIDEBAR */
+
+      /* MAIN */
+
+      .main {
+        flex: 1;
+        padding: 20px;
+      }
+
+      /* CARDS */
+
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+
+      .card {
+        background: white;
+        padding: 18px;
+        border-radius: 12px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        text-align: center;
+      }
+
+      .card h3 {
+        color: #c62828;
+        font-size: 22px;
+      }
+
+      /* GRID */
+
+      .grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 20px;
+      }
+
+      /* PANEL */
+
+      .panel {
+        background: white;
+        padding: 15px;
+        border-radius: 12px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        margin-bottom: 20px;
+      }
+
+      /* MAP */
+
+      #map {
+        height: 420px;
+        border-radius: 10px;
+      }
+
+      /* TABLE */
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+      }
+
+      th {
+        background: #f4f6f9;
+        padding: 10px;
+        text-align: left;
+      }
+
+      td {
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+      }
+
+      tr:hover {
+        background: #fafafa;
+      }
+
+      /* STATUS */
+
+      .badge {
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .kirim {
+        background: #fff3e0;
+        color: #ef6c00;
+      }
+
+      .terkirim {
+        background: #e8f5e9;
+        color: #2e7d32;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="sidebar">
+      <h2>BPBD Command</h2>
+
+      <p class="menu-title">Monitoring</p>
+
+      <a href="index.html"> <i class="fa fa-house"></i> Dashboard </a>
+
+      <a href="heatmap.html"> <i class="fa fa-fire"></i> Heatmap Bencana </a>
+
+      <a href="early-warning.html">
+        <i class="fa fa-triangle-exclamation"></i> Early Warning
+      </a>
+
+      <a href="cuaca.html"> <i class="fa fa-cloud"></i> Monitoring Cuaca </a>
+
+      <a href="wilayah-rawan.html"> <i class="fa fa-map"></i> Wilayah Rawan </a>
+
+      <p class="menu-title">Operasi</p>
+
+      <a href="tracking-sar.html">
+        <i class="fa fa-location-dot"></i> Live Tracking SAR
+      </a>
+
+      <a href="sar.html"> <i class="fa fa-helicopter"></i> Tim SAR </a>
+
+      <a href="posko.html"> <i class="fa fa-house"></i> Posko Pengungsian </a>
+
+      <p class="menu-title">Data Bencana</p>
+
+      <a href="laporan.html">
+        <i class="fa fa-triangle-exclamation"></i> Laporan Bencana
+      </a>
+
+      <a href="korban.html"> <i class="fa fa-user-injured"></i> Data Korban </a>
+
+      <a href="pengungsi.html">
+        <i class="fa fa-people-group"></i> Data Pengungsi
+      </a>
+
+      <a class="active" href="bantuan.html">
+        <i class="fa fa-box"></i> Distribusi Bantuan
+      </a>
+
+      <p class="menu-title">Sistem</p>
+
+      <a href="pengaturan.html"> <i class="fa fa-gear"></i> Pengaturan </a>
+      <a href="../dashboard.html">
+        <i class="fa fa-display"></i> Command Center
+      </a>
+    </div>
+
+    <div class="main">
+      <h2 style="margin-bottom: 20px">📦 Distribusi Bantuan</h2>
+
+      <!-- STATISTICS -->
+
+      <div class="cards">
+        <div class="card">
+          <h3 id="totalBarang">0</h3>
+          <p>Total Bantuan</p>
+        </div>
+
+        <div class="card">
+          <h3 id="totalGudang">0</h3>
+          <p>Gudang Logistik</p>
+        </div>
+
+        <div class="card">
+          <h3 id="totalDistribusi">0</h3>
+          <p>Distribusi Hari Ini</p>
+        </div>
+      </div>
+
+      <div class="grid">
+        <!-- LEFT -->
+
+        <div>
+          <div class="panel">
+            <h3>🗺 Peta Distribusi Bantuan</h3>
+
+            <div id="map"></div>
+          </div>
+
+          <div class="panel">
+            <h3>📈 Grafik Distribusi Bantuan</h3>
+
+            <canvas id="bantuanChart"></canvas>
+          </div>
+        </div>
+
+        <!-- RIGHT -->
+
+        <div>
+          <div class="panel">
+            <h3>🚚 Tracking Kendaraan Logistik</h3>
+
+            <table id="logistikVehicle">
+              <tr>
+                <th>Kendaraan</th>
+                <th>Status</th>
+                <th>Tujuan</th>
+              </tr>
+            </table>
+          </div>
+
+          <div class="panel">
+            <h3>📋 Daftar Bantuan</h3>
+
+            <table id="bantuanTable">
+              <tr>
+                <th>Barang</th>
+                <th>Jumlah</th>
+                <th>Tujuan</th>
+                <th>Status</th>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      /* DATA BANTUAN */
+
+      var bantuanData = [
+        {
+          barang: "Beras",
+          jumlah: "500 kg",
+          tujuan: "Posko Kec.Perbaungan",
+          status: "kirim",
+          lat: 3.59,
+          lng: 98.67,
+        },
+
+        {
+          barang: "Air Mineral",
+          jumlah: "200 dus",
+          tujuan: "Posko Kec.Teluk Mengkudu",
+          status: "terkirim",
+          lat: 3.205,
+          lng: 98.378,
+        },
+      ];
+
+      /* MAP */
+
+      var map = L.map("map").setView([3.595, 98.672], 8);
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(
+        map,
+      );
+
+      /* TABLE */
+
+      var table = "";
+
+      bantuanData.forEach(function (b) {
+        table += `
+
+<tr>
+
+<td>${b.barang}</td>
+<td>${b.jumlah}</td>
+<td>${b.tujuan}</td>
+
+<td>
+<span class="badge ${b.status}">
+${b.status}
+</span>
+</td>
+
+</tr>
+
+`;
+
+        L.marker([b.lat, b.lng])
+          .addTo(map)
+          .bindPopup(b.barang + " → " + b.tujuan);
+      });
+
+      document.getElementById("bantuanTable").innerHTML += table;
+
+      /* VEHICLE */
+
+      var vehicleHTML = `
+
+<tr>
+<td>Truck Logistik 01</td>
+<td>Dalam Perjalanan</td>
+<td>Posko Kec.Perbaungan</td>
+</tr>
+
+<tr>
+<td>Truck Logistik 02</td>
+<td>Terkirim</td>
+<td>Posko Kec.Teluk Mengkudu</td>
+</tr>
+
+`;
+
+      document.getElementById("logistikVehicle").innerHTML += vehicleHTML;
+
+      /* CARDS */
+
+      document.getElementById("totalBarang").innerText = "700";
+      document.getElementById("totalGudang").innerText = "2";
+      document.getElementById("totalDistribusi").innerText = "4";
+
+      /* CHART */
+
+      new Chart(
+        document.getElementById("bantuanChart"),
+
+        {
+          type: "bar",
+
+          data: {
+            labels: bantuanData.map((b) => b.barang),
+
+            datasets: [
+              {
+                label: "Distribusi",
+                data: [500, 200],
+                backgroundColor: "#c62828",
+              },
+            ],
+          },
+        },
+      );
+    </script>
+  </body>
+</html>

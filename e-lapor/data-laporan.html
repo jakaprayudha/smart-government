@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>E-LAPOR - Daftar Laporan</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Poppins:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <style>
+      body {
+        background: radial-gradient(circle at top, #0f2027, #203a43, #0b1a24);
+        font-family: "Poppins", sans-serif;
+        color: white;
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 40px;
+        background: rgba(0, 0, 0, 0.3);
+      }
+
+      .title {
+        font-family: "Orbitron";
+        letter-spacing: 2px;
+      }
+
+      .status {
+        color: #00ff9d;
+      }
+
+      .clock {
+        font-size: 13px;
+        color: #ccc;
+      }
+
+      .topmenu {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 10px 40px;
+      }
+
+      .topmenu a {
+        color: white;
+        text-decoration: none;
+        margin-right: 30px;
+        font-size: 14px;
+      }
+
+      .topmenu a.active {
+        color: #00c3ff;
+        border-bottom: 2px solid #00c3ff;
+      }
+
+      .card-glass {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        padding: 20px;
+        margin-top: 20px;
+      }
+
+      .map-box {
+        height: 450px;
+        border-radius: 10px;
+        overflow: hidden;
+      }
+
+      .stat-number {
+        font-size: 28px;
+        font-weight: 600;
+      }
+
+      .table {
+        color: white;
+      }
+
+      .badge-open {
+        background: orange;
+      }
+
+      .badge-process {
+        background: #00c3ff;
+      }
+
+      .badge-done {
+        background: #00ff9d;
+        color: black;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="header">
+      <div class="title">E-LAPOR COMMAND CENTER</div>
+
+      <div>
+        <div class="status">MONITORING PENGADUAN MASYARAKAT</div>
+        <div id="clock" class="clock"></div>
+      </div>
+    </div>
+
+    <div class="topmenu">
+      <a href="index.html">Dashboard Pengaduan</a>
+      <a href="data-laporan.html" class="active">Daftar Laporan</a>
+      <a href="peta-pengaduan.html">Peta Pengaduan</a>
+      <a href="kinerja-pengaduan.html">Kinerja Penanganan</a>
+      <a href="analitk-pengaduan.html">Analitik Pengaduan</a>
+      <a href="laporan-opd.html">Laporan OPD</a>
+      <a href="../dashboard.html">Command Center</a>
+    </div>
+
+    <div class="container-fluid">
+      <!-- STAT -->
+
+      <div class="row">
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Total Laporan</h6>
+            <div class="stat-number">4,320</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Laporan Hari Ini</h6>
+            <div class="stat-number">85</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Diproses</h6>
+            <div class="stat-number text-warning">210</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Selesai</h6>
+            <div class="stat-number text-success">3,910</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MAP -->
+
+      <div class="card-glass">
+        <h5>Peta Pengaduan Masyarakat</h5>
+
+        <div id="complaintMap" class="map-box"></div>
+      </div>
+
+      <!-- TABLE -->
+
+      <div class="card-glass">
+        <h5>Daftar Laporan</h5>
+
+        <table class="table table-dark table-striped">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Pelapor</th>
+              <th>No HP</th>
+              <th>Kategori</th>
+              <th>Laporan</th>
+              <th>Lokasi</th>
+              <th>OPD</th>
+              <th>Tanggal</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>LP-001</td>
+              <td>Ahmad</td>
+              <td>08123456789</td>
+              <td>Infrastruktur</td>
+              <td>Jalan berlubang</td>
+              <td>Perbaungan</td>
+              <td>Dinas PU</td>
+              <td>12/03/2026</td>
+              <td><span class="badge badge-open">Open</span></td>
+            </tr>
+
+            <tr>
+              <td>LP-002</td>
+              <td>Budi</td>
+              <td>08134567890</td>
+              <td>Lampu Jalan</td>
+              <td>Lampu mati</td>
+              <td>Sei Rampah</td>
+              <td>Dinas Perhubungan</td>
+              <td>12/03/2026</td>
+              <td><span class="badge badge-process">Process</span></td>
+            </tr>
+
+            <tr>
+              <td>LP-003</td>
+              <td>Siti</td>
+              <td>08145678901</td>
+              <td>Kebersihan</td>
+              <td>Sampah menumpuk</td>
+              <td>Teluk Mengkudu</td>
+              <td>Dinas Lingkungan</td>
+              <td>11/03/2026</td>
+              <td><span class="badge badge-done">Done</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <script>
+      /* CLOCK */
+
+      function updateClock() {
+        const now = new Date();
+
+        document.getElementById("clock").innerHTML =
+          now.toLocaleDateString("id-ID") +
+          " | " +
+          now.toLocaleTimeString("id-ID");
+      }
+
+      setInterval(updateClock, 1000);
+      updateClock();
+
+      /* MAP */
+
+      const map = L.map("complaintMap").setView([3.56, 98.86], 11);
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(
+        map,
+      );
+
+      /* DATA LAPORAN */
+
+      const complaints = [
+        {
+          name: "Jalan berlubang - Perbaungan",
+          lat: 3.586,
+          lng: 98.92,
+          opd: "Dinas PU",
+        },
+        {
+          name: "Lampu jalan mati - Sei Rampah",
+          lat: 3.567,
+          lng: 98.857,
+          opd: "Dinas Perhubungan",
+        },
+        {
+          name: "Sampah menumpuk - Teluk Mengkudu",
+          lat: 3.525,
+          lng: 98.91,
+          opd: "Dinas Lingkungan",
+        },
+        {
+          name: "Drainase rusak - Pantai Cermin",
+          lat: 3.507,
+          lng: 98.873,
+          opd: "Dinas PU",
+        },
+        {
+          name: "Jalan rusak - Dolok Masihul",
+          lat: 3.453,
+          lng: 98.93,
+          opd: "Dinas PU",
+        },
+      ];
+      /* MARKER LAPORAN */
+
+      complaints.forEach((c) => {
+        let color = "blue";
+
+        if (c.opd === "Dinas PU") color = "orange";
+        if (c.opd === "Dinas Lingkungan") color = "green";
+
+        L.circleMarker([c.lat, c.lng], {
+          radius: 8,
+          color: color,
+          fillOpacity: 0.8,
+        }).addTo(map).bindPopup(`
+      <b>${c.name}</b><br>
+      OPD: ${c.opd}
+    `);
+      });
+    </script>
+  </body>
+</html>

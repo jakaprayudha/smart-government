@@ -1,0 +1,829 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Analitik Pendidikan</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Poppins:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <style>
+      body {
+        background: radial-gradient(circle at top, #0f2027, #203a43, #0b1a24);
+        font-family: "Poppins", sans-serif;
+        color: white;
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 40px;
+        background: rgba(0, 0, 0, 0.3);
+      }
+
+      .title {
+        font-family: "Orbitron";
+        letter-spacing: 2px;
+      }
+
+      .status {
+        color: #00ff9d;
+      }
+
+      .clock {
+        font-size: 13px;
+        color: #ccc;
+      }
+
+      .topmenu {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 10px 40px;
+      }
+
+      .topmenu a {
+        color: white;
+        text-decoration: none;
+        margin-right: 30px;
+        font-size: 14px;
+      }
+
+      .topmenu a.active {
+        color: #00c3ff;
+        border-bottom: 2px solid #00c3ff;
+      }
+
+      .card-glass {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        padding: 20px;
+        margin-top: 20px;
+      }
+
+      .stat-number {
+        font-size: 28px;
+        font-weight: 600;
+      }
+
+      .table {
+        color: white;
+      }
+
+      .map-box {
+        height: 420px;
+        border-radius: 12px;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="header">
+      <div class="title">SMART ANALYTICS CENTER</div>
+
+      <div>
+        <div class="status">EDUCATION ANALYTICS</div>
+        <div id="clock" class="clock"></div>
+      </div>
+    </div>
+
+    <div class="topmenu">
+      <a href="analytics.html">Dashboard Analitik Pemerintahan</a>
+
+      <a href="population.html">Analitik Kependudukan</a>
+
+      <a href="health.html">Analitik Kesehatan</a>
+
+      <a href="pendidikan.html" class="active">Analitik Pendidikan</a>
+
+      <a href="ekonomi.html">Analitik Ekonomi & UMKM</a>
+
+      <a href="infrastruktur.html">Analitik Infrastruktur</a>
+
+      <a href="../dashboard.html">Command Center</a>
+    </div>
+
+    <div class="container-fluid">
+      <!-- STAT -->
+
+      <div class="row">
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Total Sekolah</h6>
+            <div class="stat-number">245</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Total Siswa</h6>
+            <div class="stat-number">82,340</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Total Guru</h6>
+            <div class="stat-number">5,420</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Jumlah Kelas</h6>
+            <div class="stat-number">2,180</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHART -->
+
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="card-glass">
+            <h5>Distribusi Sekolah</h5>
+
+            <canvas id="schoolChart"></canvas>
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <div class="card-glass">
+            <h5>Jumlah Siswa per Jenjang</h5>
+
+            <canvas id="studentChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- MAP -->
+
+      <div class="card-glass">
+        <h5>Peta Penyebaran Sekolah</h5>
+
+        <div id="schoolMap" class="map-box"></div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Tingkat Kelulusan</h6>
+            <div class="stat-number">96%</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Rasio Guru : Siswa</h6>
+            <div class="stat-number">1 : 15</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>APK Pendidikan</h6>
+            <div class="stat-number">91%</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>APM Pendidikan</h6>
+            <div class="stat-number">88%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TABEL -->
+
+      <div class="card-glass">
+        <h5>Distribusi Sekolah per Kecamatan</h5>
+
+        <table class="table table-dark table-striped">
+          <thead>
+            <tr>
+              <th>Kecamatan</th>
+              <th>SD</th>
+              <th>SMP</th>
+              <th>SMA</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>Perbaungan</td>
+              <td>22</td>
+              <td>8</td>
+              <td>6</td>
+            </tr>
+
+            <tr>
+              <td>Sei Rampah</td>
+              <td>20</td>
+              <td>7</td>
+              <td>5</td>
+            </tr>
+
+            <tr>
+              <td>Teluk Mengkudu</td>
+              <td>28</td>
+              <td>10</td>
+              <td>7</td>
+            </tr>
+
+            <tr>
+              <td>Pantai Cermin</td>
+              <td>12</td>
+              <td>5</td>
+              <td>3</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="row">
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Sekolah Kondisi Baik</h6>
+            <div class="stat-number">182</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Perlu Renovasi</h6>
+            <div class="stat-number text-warning">41</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Rusak Ringan</h6>
+            <div class="stat-number text-warning">16</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Rusak Berat</h6>
+            <div class="stat-number text-danger">6</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="card-glass">
+            <h5>Kondisi Ruang Kelas</h5>
+
+            <canvas id="classroomChart"></canvas>
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <div class="card-glass">
+            <h5>Ketersediaan Fasilitas Sekolah</h5>
+
+            <canvas id="facilityChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-glass">
+        <h5>Status Sarana Prasarana Sekolah</h5>
+
+        <table class="table table-dark table-striped">
+          <thead>
+            <tr>
+              <th>Sekolah</th>
+              <th>Ruang Kelas</th>
+              <th>Perpustakaan</th>
+              <th>Lab Komputer</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>SMA Negeri 1 Perbaungan</td>
+              <td>28</td>
+              <td>Ada</td>
+              <td>Ada</td>
+              <td>Baik</td>
+            </tr>
+
+            <tr>
+              <td>SMP Negeri 2 Sei Rampah</td>
+              <td>24</td>
+              <td>Ada</td>
+              <td>Tidak Ada</td>
+              <td>Perlu Renovasi</td>
+            </tr>
+
+            <tr>
+              <td>SMK Negeri 1 Teluk Mengkudu</td>
+              <td>32</td>
+              <td>Ada</td>
+              <td>Ada</td>
+              <td>Baik</td>
+            </tr>
+
+            <tr>
+              <td>SD Negeri Pantai Cermin</td>
+              <td>12</td>
+              <td>Tidak Ada</td>
+              <td>Tidak Ada</td>
+              <td>Rusak Ringan</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="row">
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Siswa Putus Sekolah</h6>
+            <div class="stat-number text-danger">320</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Berisiko Putus Sekolah</h6>
+            <div class="stat-number text-warning">740</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Total Dana BOS</h6>
+            <div class="stat-number">Rp 82 M</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Serapan Dana BOS</h6>
+            <div class="stat-number">78%</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="card-glass">
+            <h5>Tren Putus Sekolah</h5>
+
+            <canvas id="dropoutChart"></canvas>
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <div class="card-glass">
+            <h5>Penyerapaan Dana BOS</h5>
+
+            <canvas id="bosChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-glass">
+        <h5>Monitoring Penyerapan Dana BOS</h5>
+
+        <table class="table table-dark table-striped">
+          <thead>
+            <tr>
+              <th>Jenjang</th>
+              <th>Total Dana</th>
+              <th>Terpakai</th>
+              <th>Persentase</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>SD</td>
+              <td>Rp 32 M</td>
+              <td>Rp 25 M</td>
+              <td>78%</td>
+            </tr>
+
+            <tr>
+              <td>SMP</td>
+              <td>Rp 18 M</td>
+              <td>Rp 14 M</td>
+              <td>77%</td>
+            </tr>
+
+            <tr>
+              <td>SMA</td>
+              <td>Rp 16 M</td>
+              <td>Rp 12 M</td>
+              <td>75%</td>
+            </tr>
+
+            <tr>
+              <td>SMK</td>
+              <td>Rp 16 M</td>
+              <td>Rp 13 M</td>
+              <td>81%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card-glass">
+        <h5>Ranking Sekolah Berdasarkan Akreditasi & Prestasi</h5>
+
+        <table class="table table-dark table-striped">
+          <thead>
+            <tr>
+              <th>Ranking</th>
+              <th>Sekolah</th>
+              <th>Akreditasi</th>
+              <th>Prestasi</th>
+              <th>Skor</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>SMA Negeri 1 Perbaungan</td>
+              <td>A</td>
+              <td>Juara Olimpiade Sains</td>
+              <td>95</td>
+            </tr>
+
+            <tr>
+              <td>2</td>
+              <td>SMK Negeri 1 Teluk Mengkudu</td>
+              <td>A</td>
+              <td>Juara LKS Nasional</td>
+              <td>92</td>
+            </tr>
+
+            <tr>
+              <td>3</td>
+              <td>SMP Negeri 2 Sei Rampah</td>
+              <td>A</td>
+              <td>Juara Kompetisi Matematika</td>
+              <td>90</td>
+            </tr>
+
+            <tr>
+              <td>4</td>
+              <td>SMA Negeri 2 Perbaungan</td>
+              <td>B</td>
+              <td>Juara Debate Competition</td>
+              <td>86</td>
+            </tr>
+
+            <tr>
+              <td>5</td>
+              <td>SMK Negeri 2 Sei Rampah</td>
+              <td>B</td>
+              <td>Juara Robotik</td>
+              <td>84</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="card-glass">
+            <h5>Wilayah dengan Kualitas Pendidikan Rendah</h5>
+
+            <canvas id="educationQualityChart"></canvas>
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <div class="card-glass">
+            <h5>Indikator Pendidikan per Kecamatan</h5>
+
+            <table class="table table-dark table-striped">
+              <thead>
+                <tr>
+                  <th>Kecamatan</th>
+                  <th>APK</th>
+                  <th>APM</th>
+                  <th>Putus Sekolah</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr>
+                  <td>Pantai Cermin</td>
+                  <td>82%</td>
+                  <td>78%</td>
+                  <td>68</td>
+                </tr>
+
+                <tr>
+                  <td>Batang Kuis</td>
+                  <td>84%</td>
+                  <td>80%</td>
+                  <td>54</td>
+                </tr>
+
+                <tr>
+                  <td>Beringin</td>
+                  <td>86%</td>
+                  <td>83%</td>
+                  <td>49</td>
+                </tr>
+
+                <tr>
+                  <td>Teluk Mengkudu</td>
+                  <td>88%</td>
+                  <td>85%</td>
+                  <td>40</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      /* CLOCK */
+
+      function updateClock() {
+        const now = new Date();
+        const date = now.toLocaleDateString("id-ID");
+        const time = now.toLocaleTimeString("id-ID");
+        document.getElementById("clock").innerHTML = date + " | " + time;
+      }
+
+      setInterval(updateClock, 1000);
+      updateClock();
+
+      /* CHART SEKOLAH */
+
+      new Chart(document.getElementById("schoolChart"), {
+        type: "doughnut",
+        data: {
+          labels: ["SD", "SMP", "SMA", "SMK"],
+          datasets: [
+            {
+              data: [120, 60, 40, 25],
+              backgroundColor: ["#00c3ff", "#00ff9d", "#ffaa00", "#ff4c4c"],
+            },
+          ],
+        },
+      });
+
+      /* CHART SISWA */
+
+      new Chart(document.getElementById("studentChart"), {
+        type: "bar",
+        data: {
+          labels: ["SD", "SMP", "SMA", "SMK"],
+          datasets: [
+            {
+              label: "Jumlah Siswa",
+              data: [42000, 18000, 14000, 8340],
+              backgroundColor: "#00c3ff",
+            },
+          ],
+        },
+      });
+
+      /* MAP SEKOLAH */
+
+      /* INIT MAP */
+
+      const schoolMap = L.map("schoolMap").setView([3.56, 98.86], 11);
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "Education Analytics Map",
+      }).addTo(schoolMap);
+
+      /* DATA SEKOLAH */
+
+      const schoolData = [
+        {
+          name: "SD Negeri 1 Perbaungan",
+          level: "SD",
+          lat: 3.586,
+          lng: 98.92,
+          students: 520,
+          teachers: 32,
+          accreditation: "A",
+        },
+
+        {
+          name: "SMP Negeri 2 Sei Rampah",
+          level: "SMP",
+          lat: 3.567,
+          lng: 98.857,
+          students: 480,
+          teachers: 30,
+          accreditation: "A",
+        },
+
+        {
+          name: "SMA Negeri 1 Teluk Mengkudu",
+          level: "SMA",
+          lat: 3.525,
+          lng: 98.91,
+          students: 620,
+          teachers: 40,
+          accreditation: "A",
+        },
+
+        {
+          name: "SMK Negeri 1 Pantai Cermin",
+          level: "SMK",
+          lat: 3.507,
+          lng: 98.873,
+          students: 540,
+          teachers: 35,
+          accreditation: "B",
+        },
+
+        {
+          name: "SD Negeri Dolok Masihul",
+          level: "SD",
+          lat: 3.453,
+          lng: 98.93,
+          students: 400,
+          teachers: 25,
+          accreditation: "B",
+        },
+      ];
+
+      /* WARNA MARKER */
+
+      function getSchoolColor(level) {
+        if (level === "SD") return "blue";
+        if (level === "SMP") return "green";
+        if (level === "SMA") return "orange";
+        if (level === "SMK") return "red";
+      }
+
+      /* MARKER SEKOLAH */
+
+      schoolData.forEach((data) => {
+        const marker = L.circleMarker([data.lat, data.lng], {
+          radius: 10,
+          color: getSchoolColor(data.level),
+          fillColor: getSchoolColor(data.level),
+          fillOpacity: 0.8,
+        }).addTo(schoolMap);
+
+        marker.bindPopup(`
+<b>${data.name}</b><br>
+Jenjang: ${data.level}<br>
+Jumlah Siswa: ${data.students}<br>
+Jumlah Guru: ${data.teachers}<br>
+Akreditasi: ${data.accreditation}
+`);
+      });
+
+      /* LAYER KECAMATAN */
+
+      const districts = {
+        type: "FeatureCollection",
+        features: [
+          {
+            type: "Feature",
+            properties: { name: "Perbaungan" },
+            geometry: {
+              type: "Polygon",
+              coordinates: [
+                [
+                  [98.85, 3.55],
+                  [98.92, 3.55],
+                  [98.92, 3.62],
+                  [98.85, 3.62],
+                  [98.85, 3.55],
+                ],
+              ],
+            },
+          },
+        ],
+      };
+
+      L.geoJSON(districts, {
+        style: {
+          color: "#00c3ff",
+          weight: 2,
+          fillOpacity: 0.05,
+        },
+      }).addTo(schoolMap);
+
+      /* CHART KONDISI RUANG KELAS */
+
+      new Chart(document.getElementById("classroomChart"), {
+        type: "doughnut",
+        data: {
+          labels: ["Baik", "Rusak Ringan", "Rusak Berat"],
+          datasets: [
+            {
+              data: [1420, 210, 60],
+              backgroundColor: ["#00ff9d", "#ffaa00", "#ff4c4c"],
+            },
+          ],
+        },
+      });
+
+      /* CHART FASILITAS SEKOLAH */
+
+      new Chart(document.getElementById("facilityChart"), {
+        type: "bar",
+        data: {
+          labels: [
+            "Perpustakaan",
+            "Lab Komputer",
+            "Lab IPA",
+            "Lapangan Olahraga",
+            "Internet Sekolah",
+          ],
+          datasets: [
+            {
+              label: "Jumlah Sekolah",
+              data: [180, 120, 95, 200, 160],
+              backgroundColor: "#00c3ff",
+            },
+          ],
+        },
+      });
+      /* CHART PUTUS SEKOLAH */
+
+      new Chart(document.getElementById("dropoutChart"), {
+        type: "line",
+        data: {
+          labels: ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu"],
+          datasets: [
+            {
+              label: "Jumlah Siswa",
+              data: [45, 38, 40, 50, 42, 36, 34, 35],
+              borderColor: "#ff4c4c",
+              tension: 0.3,
+            },
+          ],
+        },
+      });
+
+      /* CHART DANA BOS */
+
+      new Chart(document.getElementById("bosChart"), {
+        type: "bar",
+        data: {
+          labels: ["SD", "SMP", "SMA", "SMK"],
+          datasets: [
+            {
+              label: "Dana BOS (Miliar)",
+              data: [32, 18, 16, 16],
+              backgroundColor: "#00c3ff",
+            },
+          ],
+        },
+      });
+
+      new Chart(document.getElementById("educationQualityChart"), {
+        type: "bar",
+
+        data: {
+          labels: [
+            "Pantai Cermin",
+            "Batang Kuis",
+            "Beringin",
+            "Teluk Mengkudu",
+          ],
+
+          datasets: [
+            {
+              label: "Jumlah Siswa Putus Sekolah",
+
+              data: [68, 54, 49, 40],
+
+              backgroundColor: "#ff4c4c",
+            },
+          ],
+        },
+      });
+    </script>
+  </body>
+</html>

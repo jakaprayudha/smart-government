@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Sinkronisasi Data</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Poppins:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+      body {
+        background: radial-gradient(circle at top, #0f2027, #203a43, #0b1a24);
+        font-family: "Poppins", sans-serif;
+        color: white;
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 40px;
+        background: rgba(0, 0, 0, 0.3);
+      }
+
+      .title {
+        font-family: "Orbitron";
+        letter-spacing: 2px;
+      }
+
+      .status {
+        color: #00ff9d;
+      }
+
+      .clock {
+        font-size: 13px;
+        color: #ccc;
+      }
+
+      .topmenu {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 10px 40px;
+      }
+
+      .topmenu a {
+        color: white;
+        text-decoration: none;
+        margin-right: 30px;
+        font-size: 14px;
+      }
+
+      .topmenu a.active {
+        color: #00c3ff;
+        border-bottom: 2px solid #00c3ff;
+      }
+
+      .card-glass {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        padding: 20px;
+        margin-top: 20px;
+      }
+
+      .stat-number {
+        font-size: 26px;
+        font-weight: 600;
+      }
+
+      .table {
+        color: white;
+      }
+
+      .alert-box {
+        background: rgba(255, 0, 0, 0.2);
+        border-left: 4px solid red;
+        padding: 10px;
+        margin-bottom: 10px;
+      }
+
+      .badge-success {
+        background: #00ff9d;
+        color: black;
+      }
+
+      .badge-warning {
+        background: orange;
+      }
+
+      .badge-danger {
+        background: red;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="header">
+      <div class="title">SINGLE DATA PLATFORM</div>
+
+      <div>
+        <div class="status">DATA SYNCHRONIZATION</div>
+        <div id="clock" class="clock"></div>
+      </div>
+    </div>
+
+    <div class="topmenu">
+      <a href="index.html">Dashboard Integrasi Data</a>
+      <a href="data-opd.html">Data OPD</a>
+      <a href="integrasi-api.html">Integrasi API</a>
+      <a href="kualitas-data.html">Kualitas Data</a>
+      <a href="sinkronisasi-data.html" class="active">Sinkronisasi Data</a>
+      <a href="meta-data.html">Metadata Dataset</a>
+      <a href="../dashboard.html">Command Center</a>
+    </div>
+
+    <div class="container-fluid">
+      <!-- STAT -->
+
+      <div class="row">
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Sistem Terhubung</h6>
+            <div class="stat-number">24</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Sinkronisasi Berhasil</h6>
+            <div class="stat-number">19</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Pending</h6>
+            <div class="stat-number text-warning">3</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Error Sinkronisasi</h6>
+            <div class="stat-number text-danger">2</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHART -->
+
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="card-glass">
+            <h5>Sinkronisasi Data per Jam</h5>
+
+            <canvas id="syncChart"></canvas>
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <div class="card-glass">
+            <h5>Volume Data Sinkronisasi</h5>
+
+            <canvas id="volumeChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- ALERT -->
+
+      <div class="card-glass">
+        <h5>Alert Sinkronisasi</h5>
+
+        <div class="alert-box">
+          ⚠ Sinkronisasi data Dukcapil gagal pada pukul 10:20.
+        </div>
+
+        <div class="alert-box">
+          ⚠ Latency sinkronisasi data kesehatan meningkat.
+        </div>
+      </div>
+
+      <!-- STATUS -->
+
+      <div class="card-glass">
+        <h5>Status Sinkronisasi Sistem</h5>
+
+        <table class="table table-dark table-striped">
+          <thead>
+            <tr>
+              <th>Sistem Sumber</th>
+              <th>Sistem Tujuan</th>
+              <th>Data</th>
+              <th>Last Sync</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>Dukcapil</td>
+              <td>Dinas Sosial</td>
+              <td>Data Penduduk</td>
+              <td>10:30</td>
+              <td><span class="badge badge-success">Synced</span></td>
+            </tr>
+
+            <tr>
+              <td>Dinas Pendidikan</td>
+              <td>Dinas Sosial</td>
+              <td>Data Siswa</td>
+              <td>10:25</td>
+              <td><span class="badge badge-success">Synced</span></td>
+            </tr>
+
+            <tr>
+              <td>Dinas Kesehatan</td>
+              <td>BPJS</td>
+              <td>Data Pasien</td>
+              <td>10:20</td>
+              <td><span class="badge badge-warning">Pending</span></td>
+            </tr>
+
+            <tr>
+              <td>Dukcapil</td>
+              <td>Dinas Kesehatan</td>
+              <td>Data Penduduk</td>
+              <td>10:18</td>
+              <td><span class="badge badge-danger">Failed</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <script>
+      /* CLOCK */
+
+      function updateClock() {
+        const now = new Date();
+
+        const date = now.toLocaleDateString("id-ID");
+
+        const time = now.toLocaleTimeString("id-ID");
+
+        document.getElementById("clock").innerHTML = date + " | " + time;
+      }
+
+      setInterval(updateClock, 1000);
+
+      updateClock();
+
+      /* CHART SYNC */
+
+      new Chart(document.getElementById("syncChart"), {
+        type: "line",
+
+        data: {
+          labels: ["08", "09", "10", "11", "12", "13"],
+          datasets: [
+            {
+              label: "Sync Process",
+              data: [120, 180, 240, 260, 300, 340],
+              borderColor: "#00ff9d",
+            },
+          ],
+        },
+      });
+
+      /* VOLUME */
+
+      new Chart(document.getElementById("volumeChart"), {
+        type: "bar",
+
+        data: {
+          labels: ["Dukcapil", "Kesehatan", "Pendidikan", "Sosial"],
+          datasets: [
+            {
+              label: "Data Sinkronisasi (MB)",
+              data: [340, 280, 210, 190],
+              backgroundColor: "#00c3ff",
+            },
+          ],
+        },
+      });
+    </script>
+  </body>
+</html>

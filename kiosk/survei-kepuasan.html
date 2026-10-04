@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Survei Kepuasan Masyarakat</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Poppins:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        background: radial-gradient(circle at top, #0f2027, #203a43, #0b1a24);
+        font-family: "Poppins", sans-serif;
+        color: white;
+        min-height: 100vh;
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 40px;
+        background: rgba(0, 0, 0, 0.3);
+      }
+
+      .title {
+        font-family: "Orbitron";
+        letter-spacing: 2px;
+      }
+
+      .card-glass {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        padding: 25px;
+        margin-top: 20px;
+      }
+
+      .rating {
+        font-size: 35px;
+        cursor: pointer;
+      }
+
+      .star {
+        color: #555;
+      }
+
+      .star.active {
+        color: #ffd700;
+      }
+
+      textarea {
+        background: #0f2530 !important;
+        border: 1px solid #1f3a46 !important;
+        color: white !important;
+        border-radius: 8px;
+      }
+
+      .btn-kirim {
+        background: linear-gradient(135deg, #00c3ff, #00ff9d);
+        border: none;
+        color: black;
+        font-weight: 600;
+        padding: 10px;
+        border-radius: 8px;
+      }
+
+      .result-box {
+        text-align: center;
+        background: white;
+        color: black;
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 20px;
+        display: none;
+      }
+
+      .progress {
+        height: 22px;
+        background: #222;
+      }
+
+      .progress-bar {
+        background: linear-gradient(90deg, #00c3ff, #00ff9d);
+        font-weight: bold;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="header">
+      <div class="title">SURVEI KEPUASAN MASYARAKAT</div>
+
+      <div>
+        <button class="btn btn-outline-light" onclick="history.back()">
+          ⬅ Kembali
+        </button>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <!-- ANALITIK -->
+
+        <div class="col-md-6">
+          <div class="card-glass">
+            <h5>📊 Tingkat Kepuasan Layanan</h5>
+
+            <canvas id="chartKepuasan"></canvas>
+          </div>
+
+          <div class="card-glass">
+            <h5>📈 Indeks Kepuasan Masyarakat</h5>
+
+            <div class="progress">
+              <div id="progressBar" class="progress-bar" style="width: 0%">
+                0%
+              </div>
+            </div>
+          </div>
+
+          <div id="result" class="result-box">
+            <h4>Terima Kasih!</h4>
+
+            <p>Survei kepuasan Anda telah direkam</p>
+
+            <h5>⭐ Skor Kepuasan</h5>
+
+            <div id="score" style="font-size: 40px; font-weight: bold"></div>
+          </div>
+        </div>
+
+        <!-- FORM SURVEI -->
+
+        <div class="col-md-6">
+          <div class="card-glass">
+            <h5>⭐ Berikan Penilaian Anda</h5>
+
+            <div class="mb-4">
+              <p>Kemudahan Proses Layanan</p>
+
+              <div class="rating" data-q="q1">
+                <span class="star">★</span>
+                <span class="star">★</span>
+                <span class="star">★</span>
+                <span class="star">★</span>
+                <span class="star">★</span>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <p>Kecepatan Pelayanan</p>
+
+              <div class="rating" data-q="q2">
+                <span class="star">★</span>
+                <span class="star">★</span>
+                <span class="star">★</span>
+                <span class="star">★</span>
+                <span class="star">★</span>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <p>Keramahan Petugas</p>
+
+              <div class="rating" data-q="q3">
+                <span class="star">★</span>
+                <span class="star">★</span>
+                <span class="star">★</span>
+                <span class="star">★</span>
+                <span class="star">★</span>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <p>Kualitas Layanan</p>
+
+              <div class="rating" data-q="q4">
+                <span class="star">★</span>
+                <span class="star">★</span>
+                <span class="star">★</span>
+                <span class="star">★</span>
+                <span class="star">★</span>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label>Saran / Masukan</label>
+
+              <textarea class="form-control" rows="3"></textarea>
+            </div>
+
+            <button class="btn btn-kirim w-100" onclick="submitSurvey()">
+              📊 Kirim Survei
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      /* CHART */
+
+      new Chart(document.getElementById("chartKepuasan"), {
+        type: "bar",
+
+        data: {
+          labels: [
+            "Administrasi",
+            "Perizinan",
+            "Kesehatan",
+            "Pendidikan",
+            "Pengaduan",
+          ],
+
+          datasets: [
+            {
+              label: "Skor Kepuasan",
+
+              data: [85, 78, 90, 82, 75],
+
+              backgroundColor: "#00c3ff",
+            },
+          ],
+        },
+      });
+
+      /* PROGRESS ANIMASI */
+
+      let progress = 0;
+
+      let interval = setInterval(() => {
+        progress++;
+
+        document.getElementById("progressBar").style.width = progress + "%";
+        document.getElementById("progressBar").innerText = progress + "%";
+
+        if (progress >= 87) {
+          clearInterval(interval);
+        }
+      }, 20);
+
+      /* STAR RATING */
+
+      let ratings = {};
+
+      document.querySelectorAll(".rating").forEach((r) => {
+        let stars = r.querySelectorAll(".star");
+
+        stars.forEach((s, i) => {
+          s.onclick = () => {
+            stars.forEach((x) => x.classList.remove("active"));
+
+            for (let j = 0; j <= i; j++) {
+              stars[j].classList.add("active");
+            }
+
+            ratings[r.dataset.q] = i + 1;
+          };
+        });
+      });
+
+      /* SUBMIT SURVEY */
+
+      function submitSurvey() {
+        let total = 0;
+        let count = 0;
+
+        for (let key in ratings) {
+          total += ratings[key];
+          count++;
+        }
+
+        let avg = (total / count).toFixed(1);
+
+        document.getElementById("score").innerText = avg + "/5";
+
+        document.getElementById("result").style.display = "block";
+
+        window.scrollTo({
+          top: document.body.scrollHeight,
+          behavior: "smooth",
+        });
+      }
+    </script>
+  </body>
+</html>

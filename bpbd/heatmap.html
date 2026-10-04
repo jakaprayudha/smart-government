@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Heatmap Bencana</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script src="https://leaflet.github.io/Leaflet.heat/dist/leaflet-heat.js"></script>
+    <link rel="stylesheet" href="sidebar.css" />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", sans-serif;
+      }
+
+      body {
+        background: #f4f6f9;
+        display: flex;
+      }
+
+      /* SIDEBAR */
+
+      /* MAIN */
+
+      .main {
+        flex: 1;
+        padding: 20px;
+      }
+
+      /* TOPBAR */
+
+      .topbar {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+      }
+
+      /* PANEL */
+
+      .panel {
+        background: white;
+        padding: 15px;
+        border-radius: 12px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        margin-bottom: 20px;
+      }
+
+      /* MAP */
+
+      #map {
+        height: 600px;
+        border-radius: 12px;
+      }
+
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+
+      .card {
+        background: white;
+        padding: 18px;
+        border-radius: 12px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        text-align: center;
+      }
+
+      .card h3 {
+        color: #c62828;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <h2>BPBD Command</h2>
+
+      <p class="menu-title">Monitoring</p>
+
+      <a href="index.html"> <i class="fa fa-house"></i> Dashboard </a>
+
+      <a class="active" href="heatmap.html">
+        <i class="fa fa-fire"></i> Heatmap Bencana
+      </a>
+
+      <a href="early-warning.html">
+        <i class="fa fa-triangle-exclamation"></i> Early Warning
+      </a>
+
+      <a href="cuaca.html"> <i class="fa fa-cloud"></i> Monitoring Cuaca </a>
+
+      <a href="wilayah-rawan.html"> <i class="fa fa-map"></i> Wilayah Rawan </a>
+
+      <p class="menu-title">Operasi</p>
+
+      <a href="tracking-sar.html">
+        <i class="fa fa-location-dot"></i> Live Tracking SAR
+      </a>
+
+      <a href="sar.html"> <i class="fa fa-helicopter"></i> Tim SAR </a>
+
+      <a href="posko.html"> <i class="fa fa-house"></i> Posko Pengungsian </a>
+
+      <p class="menu-title">Data Bencana</p>
+
+      <a href="laporan.html">
+        <i class="fa fa-triangle-exclamation"></i> Laporan Bencana
+      </a>
+
+      <a href="korban.html"> <i class="fa fa-user-injured"></i> Data Korban </a>
+
+      <a href="pengungsi.html">
+        <i class="fa fa-people-group"></i> Data Pengungsi
+      </a>
+
+      <a href="bantuan.html"> <i class="fa fa-box"></i> Distribusi Bantuan </a>
+
+      <p class="menu-title">Sistem</p>
+
+      <a href="pengaturan.html"> <i class="fa fa-gear"></i> Pengaturan </a>
+      <a href="../dashboard.html">
+        <i class="fa fa-display"></i> Command Center
+      </a>
+    </div>
+    <!-- MAIN -->
+
+    <div class="main">
+      <div class="topbar">
+        <h2>🔥 Heatmap Wilayah Rawan Bencana</h2>
+
+        <div><i class="fa fa-user"></i> Admin BPBD</div>
+      </div>
+
+      <!-- SUMMARY -->
+
+      <div class="cards">
+        <div class="card">
+          <h3>15</h3>
+          <p>Zona Banjir</p>
+        </div>
+
+        <div class="card">
+          <h3>8</h3>
+          <p>Zona Longsor</p>
+        </div>
+
+        <div class="card">
+          <h3>5</h3>
+          <p>Zona Angin Kencang</p>
+        </div>
+      </div>
+
+      <!-- HEATMAP -->
+
+      <div class="panel">
+        <h3>🗺️ Peta Heatmap Bencana</h3>
+
+        <div id="map"></div>
+      </div>
+      <div class="panel">
+        <h3>🔥 Keterangan Heatmap</h3>
+
+        <p>🔵 Rendah</p>
+        <p>🟢 Sedang</p>
+        <p>🟡 Waspada</p>
+        <p>🟠 Tinggi</p>
+        <p>🔴 Sangat Tinggi</p>
+      </div>
+    </div>
+
+    <script>
+      /* INIT MAP */
+
+      var map = L.map("map").setView([3.595, 98.672], 8);
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(
+        map,
+      );
+
+      /* HEATMAP DATA SAMPLE */
+      var points = [
+        [3.595, 98.672, 1],
+        [3.6, 98.67, 0.9],
+        [3.58, 98.66, 0.8],
+        [3.57, 98.64, 0.7],
+        [3.56, 98.65, 0.8],
+        [3.21, 98.38, 1],
+        [3.45, 98.53, 0.9],
+      ];
+      L.heatLayer(points, {
+        radius: 60,
+        blur: 40,
+        maxZoom: 12,
+
+        gradient: {
+          0.2: "blue",
+          0.4: "lime",
+          0.6: "yellow",
+          0.8: "orange",
+          1.0: "red",
+        },
+      }).addTo(map);
+    </script>
+  </body>
+</html>

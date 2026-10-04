@@ -1,0 +1,545 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Data Pengungsi</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="sidebar.css" />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Inter", sans-serif;
+      }
+
+      body {
+        display: flex;
+        background: #f4f6f9;
+      }
+
+      /* SIDEBAR */
+
+      /* MAIN */
+
+      .main {
+        flex: 1;
+        padding: 20px;
+      }
+
+      /* CARDS */
+
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+
+      .card {
+        background: white;
+        padding: 18px;
+        border-radius: 12px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        text-align: center;
+      }
+
+      .card h3 {
+        color: #c62828;
+        font-size: 22px;
+      }
+
+      /* GRID */
+
+      .grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 20px;
+      }
+
+      /* PANEL */
+
+      .panel {
+        background: white;
+        padding: 15px;
+        border-radius: 12px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        margin-bottom: 20px;
+      }
+
+      /* MAP */
+
+      #map {
+        height: 420px;
+        border-radius: 10px;
+      }
+
+      /* TABLE */
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+      }
+
+      th {
+        background: #f4f6f9;
+        padding: 10px;
+        text-align: left;
+      }
+
+      td {
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+      }
+
+      tr:hover {
+        background: #fafafa;
+      }
+
+      /* STATUS */
+
+      .badge {
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .penuh {
+        background: #ffebee;
+        color: #c62828;
+      }
+
+      .normal {
+        background: #e8f5e9;
+        color: #2e7d32;
+      }
+
+      /* MODAL */
+
+      .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.4);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+      }
+
+      .modal-content {
+        background: white;
+        width: 520px;
+        padding: 20px;
+        border-radius: 12px;
+      }
+
+      .close {
+        float: right;
+        cursor: pointer;
+        font-size: 18px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="sidebar">
+      <h2>BPBD Command</h2>
+
+      <p class="menu-title">Monitoring</p>
+
+      <a href="index.html"> <i class="fa fa-house"></i> Dashboard </a>
+
+      <a href="heatmap.html"> <i class="fa fa-fire"></i> Heatmap Bencana </a>
+
+      <a href="early-warning.html">
+        <i class="fa fa-triangle-exclamation"></i> Early Warning
+      </a>
+      <a href="cuaca.html"> <i class="fa fa-cloud"></i> Monitoring Cuaca </a>
+      <a href="wilayah-rawan.html"> <i class="fa fa-map"></i> Wilayah Rawan </a>
+
+      <p class="menu-title">Operasi</p>
+
+      <a href="tracking-sar.html">
+        <i class="fa fa-location-dot"></i> Live Tracking SAR
+      </a>
+
+      <a href="sar.html"> <i class="fa fa-helicopter"></i> Tim SAR </a>
+
+      <a href="posko.html"> <i class="fa fa-house"></i> Posko Pengungsian </a>
+
+      <p class="menu-title">Data Bencana</p>
+
+      <a href="laporan.html">
+        <i class="fa fa-triangle-exclamation"></i> Laporan Bencana
+      </a>
+
+      <a href="korban.html"> <i class="fa fa-user-injured"></i> Data Korban </a>
+
+      <a class="active" href="pengungsi.html">
+        <i class="fa fa-people-group"></i> Data Pengungsi
+      </a>
+
+      <a href="bantuan.html"> <i class="fa fa-box"></i> Distribusi Bantuan </a>
+
+      <p class="menu-title">Sistem</p>
+
+      <a href="pengaturan.html"> <i class="fa fa-gear"></i> Pengaturan </a>
+      <a href="../dashboard.html">
+        <i class="fa fa-display"></i> Command Center
+      </a>
+    </div>
+
+    <div class="main">
+      <h2 style="margin-bottom: 20px">🏠 Monitoring Pengungsi</h2>
+
+      <!-- CARDS -->
+
+      <div class="cards">
+        <div class="card">
+          <h3 id="totalPengungsi">0</h3>
+          <p>Total Pengungsi</p>
+        </div>
+
+        <div class="card">
+          <h3 id="totalPosko">0</h3>
+          <p>Total Posko</p>
+        </div>
+
+        <div class="card">
+          <h3 id="kapasitasTerpakai">0%</h3>
+          <p>Kapasitas Terpakai</p>
+        </div>
+      </div>
+
+      <div class="grid">
+        <!-- LEFT -->
+
+        <div>
+          <div class="panel">
+            <h3>🗺 Peta Posko Pengungsian</h3>
+            <div id="map"></div>
+          </div>
+
+          <div class="panel">
+            <h3>📈 Grafik Pengungsi per Posko</h3>
+            <canvas id="pengungsiChart"></canvas>
+          </div>
+
+          <div class="panel">
+            <h3>🚑 Tracking Ambulans & Tim SAR</h3>
+
+            <table id="rescueTable">
+              <tr>
+                <th>Unit</th>
+                <th>Jenis</th>
+                <th>Status</th>
+                <th>Lokasi</th>
+              </tr>
+            </table>
+          </div>
+
+          <div class="panel">
+            <h3>📦 Distribusi Bantuan Logistik</h3>
+
+            <table id="logistikTable">
+              <tr>
+                <th>Bantuan</th>
+                <th>Jumlah</th>
+                <th>Tujuan Posko</th>
+                <th>Status</th>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <!-- RIGHT -->
+
+        <div>
+          <div class="panel">
+            <h3>📋 Daftar Posko</h3>
+
+            <table id="poskoTable">
+              <tr>
+                <th>Posko</th>
+                <th>Lokasi</th>
+                <th>Pengungsi</th>
+                <th>Status</th>
+                <th>Detail</th>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL -->
+
+    <div class="modal" id="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeModal()">✖</span>
+
+        <h3 id="mPosko"></h3>
+
+        <p>Lokasi : <span id="mLokasi"></span></p>
+        <p>Pengungsi : <span id="mJumlah"></span></p>
+        <p>Kapasitas : <span id="mKapasitas"></span></p>
+        <p>Logistik : <span id="mLogistik"></span></p>
+      </div>
+    </div>
+
+    <script>
+      /* DATA */
+
+      var poskoData = [
+        {
+          nama: "Posko Kec.Perbaungan",
+          lokasi: "Kec.Perbaungan",
+          lat: 3.59,
+          lng: 98.67,
+          pengungsi: 120,
+          kapasitas: 200,
+          logistik: "Cukup",
+        },
+
+        {
+          nama: "Posko Kec.Teluk Mengkudu",
+          lokasi: "Kec.Teluk Mengkudu",
+          lat: 3.205,
+          lng: 98.378,
+          pengungsi: 80,
+          kapasitas: 150,
+          logistik: "Terbatas",
+        },
+      ];
+
+      /* MAP */
+
+      var map = L.map("map").setView([3.595, 98.672], 8);
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(
+        map,
+      );
+
+      /* TABLE */
+
+      var table = "";
+
+      var totalPengungsi = 0;
+
+      poskoData.forEach(function (p, i) {
+        totalPengungsi += p.pengungsi;
+
+        var status = "normal";
+
+        if (p.pengungsi > p.kapasitas * 0.8) {
+          status = "penuh";
+        }
+
+        table += `
+
+<tr>
+
+<td>${p.nama}</td>
+<td>${p.lokasi}</td>
+<td>${p.pengungsi}</td>
+
+<td>
+<span class="badge ${status}">
+${status}
+</span>
+</td>
+
+<td>
+
+<button onclick="showDetail(${i})"
+style="background:#c62828;color:white;border:none;padding:4px 8px;border-radius:6px">
+
+Detail
+
+</button>
+
+</td>
+
+</tr>
+
+`;
+
+        /* MAP MARKER */
+
+        L.marker([p.lat, p.lng])
+          .addTo(map)
+          .bindPopup(p.nama + "<br>Pengungsi : " + p.pengungsi);
+      });
+
+      document.getElementById("poskoTable").innerHTML += table;
+
+      /* UPDATE CARDS */
+
+      document.getElementById("totalPengungsi").innerText = totalPengungsi;
+      document.getElementById("totalPosko").innerText = poskoData.length;
+      document.getElementById("kapasitasTerpakai").innerText = "65%";
+
+      /* CHART */
+
+      new Chart(document.getElementById("pengungsiChart"), {
+        type: "bar",
+
+        data: {
+          labels: poskoData.map((p) => p.nama),
+
+          datasets: [
+            {
+              label: "Pengungsi",
+              data: poskoData.map((p) => p.pengungsi),
+              backgroundColor: "#c62828",
+            },
+          ],
+        },
+      });
+
+      /* MODAL */
+
+      function showDetail(i) {
+        var p = poskoData[i];
+
+        document.getElementById("mPosko").innerText = p.nama;
+        document.getElementById("mLokasi").innerText = p.lokasi;
+        document.getElementById("mJumlah").innerText = p.pengungsi + " orang";
+        document.getElementById("mKapasitas").innerText =
+          p.kapasitas + " orang";
+        document.getElementById("mLogistik").innerText = p.logistik;
+
+        document.getElementById("modal").style.display = "flex";
+      }
+
+      function closeModal() {
+        document.getElementById("modal").style.display = "none";
+      }
+
+      /* TRACKING AMBULANS & SAR */
+
+      var rescueUnits = [
+        {
+          unit: "Ambulans 01",
+          jenis: "Ambulans",
+          status: "Menuju Posko",
+          lokasi: "Kec.Perbaungan",
+          lat: 3.59,
+          lng: 98.67,
+        },
+
+        {
+          unit: "SAR 02",
+          jenis: "Tim SAR",
+          status: "Evakuasi",
+          lokasi: "Kec.Teluk Mengkudu",
+          lat: 3.205,
+          lng: 98.378,
+        },
+      ];
+
+      var rescueHTML = "";
+
+      rescueUnits.forEach(function (r) {
+        rescueHTML += `
+
+<tr>
+
+<td>${r.unit}</td>
+<td>${r.jenis}</td>
+<td>${r.status}</td>
+<td>${r.lokasi}</td>
+
+</tr>
+
+`;
+
+        /* MAP MARKER */
+
+        var icon = L.icon({
+          iconUrl: "https://cdn-icons-png.flaticon.com/512/2967/2967350.png",
+          iconSize: [28, 28],
+        });
+
+        L.marker([r.lat, r.lng], { icon: icon })
+          .addTo(map)
+          .bindPopup(r.unit + "<br>" + r.status);
+      });
+
+      document.getElementById("rescueTable").innerHTML += rescueHTML;
+
+      /* DISTRIBUSI LOGISTIK */
+
+      var logistikData = [
+        {
+          barang: "Beras",
+          jumlah: "500 kg",
+          tujuan: "Posko Kec.Perbaungan",
+          status: "Dalam Perjalanan",
+        },
+
+        {
+          barang: "Air Mineral",
+          jumlah: "200 dus",
+          tujuan: "Posko Kec.Teluk Mengkudu",
+          status: "Terkirim",
+        },
+      ];
+
+      var logistikHTML = "";
+
+      logistikData.forEach(function (l) {
+        logistikHTML += `
+
+<tr>
+
+<td>${l.barang}</td>
+<td>${l.jumlah}</td>
+<td>${l.tujuan}</td>
+<td>${l.status}</td>
+
+</tr>
+
+`;
+      });
+
+      document.getElementById("logistikTable").innerHTML += logistikHTML;
+
+      /* SIMULASI TRACKING UNIT */
+
+      setInterval(function () {
+        rescueUnits.forEach(function (r) {
+          var lat = r.lat + (Math.random() * 0.02 - 0.01);
+          var lng = r.lng + (Math.random() * 0.02 - 0.01);
+
+          L.marker([lat, lng]).addTo(map);
+        });
+      }, 10000);
+    </script>
+  </body>
+</html>

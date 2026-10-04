@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Command Center</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Poppins:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      /* ================= GLOBAL ================= */
+
+      body {
+        margin: 0;
+        font-family: "Poppins", sans-serif;
+        color: white;
+        background: radial-gradient(circle at top, #0f2027, #203a43, #0b1a24);
+        overflow-x: hidden;
+        min-height: 100vh;
+      }
+
+      /* animated grid */
+
+      body::before {
+        content: "";
+        position: fixed;
+        width: 200%;
+        height: 200%;
+        background-image:
+          linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        background-size: 70px 70px;
+        animation: gridMove 40s linear infinite;
+        z-index: -1;
+      }
+
+      @keyframes gridMove {
+        0% {
+          transform: translate(0, 0);
+        }
+        100% {
+          transform: translate(-200px, -200px);
+        }
+      }
+
+      /* ================= HEADER ================= */
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 40px;
+        background: rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(10px);
+      }
+
+      .title {
+        font-family: "Orbitron";
+        font-size: 24px;
+        letter-spacing: 2px;
+      }
+
+      .system-box {
+        text-align: right;
+      }
+
+      .status {
+        color: #00ff9d;
+        font-size: 13px;
+        font-weight: 500;
+      }
+
+      .clock {
+        font-size: 13px;
+        color: #ccc;
+        margin-top: 3px;
+      }
+
+      /* ================= MENU ================= */
+
+      .menu-container {
+        padding: 30px;
+      }
+
+      .menu-tile {
+        background: rgba(255, 255, 255, 0.04);
+        border-radius: 18px;
+        padding: 35px 20px;
+        text-align: center;
+        transition: 0.3s;
+        cursor: pointer;
+        height: 100%;
+      }
+
+      .menu-tile:hover {
+        background: rgba(0, 195, 255, 0.15);
+        transform: translateY(-6px);
+        box-shadow: 0 0 25px rgba(0, 195, 255, 0.5);
+      }
+
+      .menu-icon {
+        font-size: 30px;
+        margin-bottom: 10px;
+      }
+
+      .menu-title {
+        font-weight: 500;
+        font-size: 17px;
+        margin-bottom: 5px;
+      }
+
+      .menu-desc {
+        font-size: 12px;
+        color: #b8c7d0;
+      }
+      .menu-link {
+        text-decoration: none;
+        color: inherit;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- ================= HEADER ================= -->
+
+    <div class="header">
+      <div class="title">COMMAND CENTER</div>
+
+      <div class="system-box">
+        <div class="status">SYSTEM ONLINE</div>
+
+        <div class="clock" id="clock"></div>
+      </div>
+    </div>
+
+    <!-- ================= MENU GRID ================= -->
+
+    <div class="menu-container">
+      <div class="container-fluid">
+        <div class="row g-4">
+          <div class="col-lg-4 col-md-6">
+            <a href="smart-internet/monitoring.html" class="menu-link">
+              <div class="menu-tile">
+                <div class="menu-icon">🌐</div>
+                <div class="menu-title">Smart Public Internet</div>
+                <div class="menu-desc">Monitoring jaringan & bandwidth OPD</div>
+              </div>
+            </a>
+          </div>
+
+          <div class="col-lg-4 col-md-6">
+            <a href="command-center/monitoring.html" class="menu-link">
+              <div class="menu-tile">
+                <div class="menu-icon">🖥</div>
+                <div class="menu-title">Command Center</div>
+                <div class="menu-desc">Pusat monitoring layanan publik</div>
+              </div>
+            </a>
+          </div>
+
+          <div class="col-lg-4 col-md-6">
+            <a href="kiosk/index.html" class="menu-link">
+              <div class="menu-tile">
+                <div class="menu-icon">🧾</div>
+                <div class="menu-title">Digital KIOSK</div>
+                <div class="menu-desc">Layanan mandiri masyarakat</div>
+              </div>
+            </a>
+          </div>
+
+          <div class="col-lg-4 col-md-6">
+            <a href="e-lapor/index.html" class="menu-link">
+              <div class="menu-tile">
+                <div class="menu-icon">📢</div>
+                <div class="menu-title">e-Lapor</div>
+                <div class="menu-desc">Sistem pengaduan masyarakat</div>
+              </div>
+            </a>
+          </div>
+
+          <div class="col-lg-4 col-md-6">
+            <a href="satu-data/index.html" class="menu-link">
+              <div class="menu-tile">
+                <div class="menu-icon">🔗</div>
+                <div class="menu-title">Single Data</div>
+                <div class="menu-desc">Integrasi data OPD</div>
+              </div>
+            </a>
+          </div>
+
+          <div class="col-lg-4 col-md-6">
+            <a href="health/index.html" class="menu-link">
+              <div class="menu-tile">
+                <div class="menu-icon">🏥</div>
+                <div class="menu-title">Smart Health</div>
+                <div class="menu-desc">Digitalisasi layanan kesehatan</div>
+              </div>
+            </a>
+          </div>
+
+          <div class="col-lg-4 col-md-6">
+            <a href="education/index.html" class="menu-link">
+              <div class="menu-tile">
+                <div class="menu-icon">🎓</div>
+                <div class="menu-title">Smart Education</div>
+                <div class="menu-desc">Sekolah & perpustakaan digital</div>
+              </div>
+            </a>
+          </div>
+
+          <div class="col-lg-4 col-md-6">
+            <a href="gis/index.html" class="menu-link">
+              <div class="menu-tile">
+                <div class="menu-icon">🗺</div>
+                <div class="menu-title">GIS Monitoring</div>
+                <div class="menu-desc">Peta digital wilayah</div>
+              </div>
+            </a>
+          </div>
+
+          <div class="col-lg-4 col-md-6">
+            <a href="anayltics/index.html" class="menu-link">
+              <div class="menu-tile">
+                <div class="menu-icon">📊</div>
+                <div class="menu-title">Smart Analytics</div>
+                <div class="menu-desc">Analitik data pemerintahan</div>
+              </div>
+            </a>
+          </div>
+
+          <div class="col-lg-4 col-md-6">
+            <a href="cyber/index.html" class="menu-link">
+              <div class="menu-tile">
+                <div class="menu-icon">🔐</div>
+                <div class="menu-title">Cyber Security</div>
+                <div class="menu-desc">Keamanan sistem pemerintah</div>
+              </div>
+            </a>
+          </div>
+
+          <div class="col-lg-4 col-md-6">
+            <a href="bpbd/index.html" class="menu-link">
+              <div class="menu-tile">
+                <div class="menu-icon">🚨</div>
+                <div class="menu-title">Monitoring Bencana</div>
+                <div class="menu-desc">Monitoring mitigasi bencana</div>
+              </div>
+            </a>
+          </div>
+
+          <div class="col-lg-4 col-md-6">
+            <a href="gov/index.html" class="menu-link">
+              <div class="menu-tile">
+                <div class="menu-icon">⭐</div>
+                <div class="menu-title">Smart Governance</div>
+                <div class="menu-desc">Monitoring kinerja pemerintahan</div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= CLOCK SCRIPT ================= -->
+
+    <script>
+      function updateClock() {
+        const now = new Date();
+
+        const options = {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        };
+
+        const date = now.toLocaleDateString("id-ID", options);
+        const time = now.toLocaleTimeString("id-ID");
+
+        document.getElementById("clock").innerHTML = date + " | " + time;
+      }
+
+      setInterval(updateClock, 1000);
+      updateClock();
+    </script>
+  </body>
+</html>

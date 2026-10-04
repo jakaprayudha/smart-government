@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Operasi SAR</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="sidebar.css" />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Inter", sans-serif;
+      }
+
+      body {
+        display: flex;
+        background: #f4f6f9;
+      }
+
+      /* SIDEBAR */
+
+      /* MAIN */
+
+      .main {
+        flex: 1;
+        padding: 20px;
+      }
+
+      /* CARDS */
+
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+
+      .card {
+        background: white;
+        padding: 18px;
+        border-radius: 12px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        text-align: center;
+      }
+
+      .card h3 {
+        color: #c62828;
+        font-size: 22px;
+      }
+
+      /* GRID */
+
+      .grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 20px;
+      }
+
+      /* PANEL */
+
+      .panel {
+        background: white;
+        padding: 15px;
+        border-radius: 12px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        margin-bottom: 20px;
+      }
+
+      /* MAP */
+
+      #map {
+        height: 420px;
+        border-radius: 10px;
+      }
+
+      /* TABLE */
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+      }
+
+      th {
+        background: #f4f6f9;
+        padding: 10px;
+        text-align: left;
+      }
+
+      td {
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+      }
+
+      tr:hover {
+        background: #fafafa;
+      }
+
+      /* STATUS */
+
+      .badge {
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .operasi {
+        background: #e8f5e9;
+        color: #2e7d32;
+      }
+
+      .siaga {
+        background: #fff3e0;
+        color: #ef6c00;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="sidebar">
+      <h2>BPBD Command</h2>
+
+      <p class="menu-title">Monitoring</p>
+
+      <a href="index.html"> <i class="fa fa-house"></i> Dashboard </a>
+
+      <a href="heatmap.html"> <i class="fa fa-fire"></i> Heatmap Bencana </a>
+
+      <a href="early-warning.html">
+        <i class="fa fa-triangle-exclamation"></i> Early Warning
+      </a>
+
+      <a href="cuaca.html"> <i class="fa fa-cloud"></i> Monitoring Cuaca </a>
+
+      <a href="wilayah-rawan.html"> <i class="fa fa-map"></i> Wilayah Rawan </a>
+
+      <p class="menu-title">Operasi</p>
+
+      <a href="tracking-sar.html">
+        <i class="fa fa-location-dot"></i> Live Tracking SAR
+      </a>
+
+      <a class="active" href="sar.html">
+        <i class="fa fa-helicopter"></i> Tim SAR
+      </a>
+
+      <a href="posko.html"> <i class="fa fa-house"></i> Posko Pengungsian </a>
+
+      <p class="menu-title">Data Bencana</p>
+
+      <a href="laporan.html">
+        <i class="fa fa-triangle-exclamation"></i> Laporan Bencana
+      </a>
+
+      <a href="korban.html"> <i class="fa fa-user-injured"></i> Data Korban </a>
+
+      <a href="pengungsi.html">
+        <i class="fa fa-people-group"></i> Data Pengungsi
+      </a>
+
+      <a href="bantuan.html"> <i class="fa fa-box"></i> Distribusi Bantuan </a>
+
+      <p class="menu-title">Sistem</p>
+
+      <a href="pengaturan.html"> <i class="fa fa-gear"></i> Pengaturan </a>
+      <a href="../dashboard.html">
+        <i class="fa fa-display"></i> Command Center
+      </a>
+    </div>
+
+    <div class="main">
+      <h2 style="margin-bottom: 20px">🚁 Monitoring Operasi SAR</h2>
+
+      <div class="cards">
+        <div class="card">
+          <h3 id="totalTim">0</h3>
+          <p>Total Tim SAR</p>
+        </div>
+
+        <div class="card">
+          <h3 id="operasiAktif">0</h3>
+          <p>Operasi Aktif</p>
+        </div>
+
+        <div class="card">
+          <h3 id="korbanEvakuasi">0</h3>
+          <p>Korban Dievakuasi</p>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div>
+          <div class="panel">
+            <h3>🗺 Peta Operasi SAR</h3>
+
+            <div id="map"></div>
+          </div>
+
+          <div class="panel">
+            <h3>📈 Aktivitas Operasi SAR</h3>
+
+            <canvas id="sarChart"></canvas>
+          </div>
+        </div>
+
+        <div>
+          <div class="panel">
+            <h3>🚑 Kendaraan SAR</h3>
+
+            <table>
+              <tr>
+                <th>Unit</th>
+                <th>Jenis</th>
+                <th>Status</th>
+              </tr>
+
+              <tr>
+                <td>SAR 01</td>
+                <td>Helikopter</td>
+                <td>Operasi</td>
+              </tr>
+
+              <tr>
+                <td>SAR 02</td>
+                <td>Perahu Rescue</td>
+                <td>Siaga</td>
+              </tr>
+
+              <tr>
+                <td>SAR 03</td>
+                <td>Ambulans</td>
+                <td>Operasi</td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="panel">
+            <h3>📋 Daftar Tim SAR</h3>
+
+            <table id="sarTable">
+              <tr>
+                <th>Tim</th>
+                <th>Lokasi</th>
+                <th>Status</th>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      var sarData = [
+        {
+          tim: "SAR 01",
+          lokasi: "Kec.Perbaungan",
+          status: "operasi",
+          lat: 3.59,
+          lng: 98.67,
+        },
+
+        {
+          tim: "SAR 02",
+          lokasi: "Kec.Teluk Mengkudu",
+          status: "siaga",
+          lat: 3.205,
+          lng: 98.378,
+        },
+      ];
+
+      var map = L.map("map").setView([3.595, 98.672], 8);
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(
+        map,
+      );
+
+      var table = "";
+
+      var operasi = 0;
+
+      sarData.forEach(function (s) {
+        if (s.status == "operasi") {
+          operasi++;
+        }
+
+        table += `
+
+<tr>
+
+<td>${s.tim}</td>
+<td>${s.lokasi}</td>
+
+<td>
+<span class="badge ${s.status}">
+${s.status}
+</span>
+</td>
+
+</tr>
+
+`;
+
+        L.marker([s.lat, s.lng])
+          .addTo(map)
+          .bindPopup(s.tim + "<br>" + s.lokasi);
+      });
+
+      document.getElementById("sarTable").innerHTML += table;
+
+      document.getElementById("totalTim").innerText = sarData.length;
+      document.getElementById("operasiAktif").innerText = operasi;
+      document.getElementById("korbanEvakuasi").innerText = "27";
+
+      new Chart(
+        document.getElementById("sarChart"),
+
+        {
+          type: "line",
+
+          data: {
+            labels: ["08:00", "10:00", "12:00", "14:00", "16:00"],
+
+            datasets: [
+              {
+                label: "Evakuasi Korban",
+                data: [3, 7, 12, 20, 27],
+                borderColor: "#c62828",
+                fill: false,
+              },
+            ],
+          },
+        },
+      );
+    </script>
+  </body>
+</html>

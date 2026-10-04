@@ -1,0 +1,571 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Data Korban Bencana</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="sidebar.css" />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Inter", sans-serif;
+      }
+
+      body {
+        display: flex;
+        background: #f4f6f9;
+      }
+
+      /* MAIN */
+
+      .main {
+        flex: 1;
+        padding: 20px;
+      }
+
+      /* CARDS */
+
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+
+      .card {
+        background: white;
+        padding: 18px;
+        border-radius: 12px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        text-align: center;
+      }
+
+      .card h3 {
+        color: #c62828;
+        font-size: 22px;
+      }
+
+      /* GRID */
+      .grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr;
+        gap: 20px;
+        align-items: start;
+      }
+      /* PANEL */
+
+      .panel {
+        background: white;
+        padding: 15px;
+        border-radius: 12px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        margin-bottom: 20px;
+      }
+
+      /* MAP */
+
+      #map {
+        height: 420px;
+        border-radius: 10px;
+      }
+
+      /* TABLE */
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+      }
+
+      th {
+        background: #f4f6f9;
+        padding: 10px;
+        text-align: left;
+      }
+
+      td {
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+      }
+
+      tr:hover {
+        background: #fafafa;
+      }
+
+      /* MODAL */
+
+      .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.4);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+      }
+
+      .modal-content {
+        background: white;
+        width: 520px;
+        padding: 20px;
+        border-radius: 12px;
+      }
+
+      .close {
+        float: right;
+        cursor: pointer;
+        font-size: 18px;
+      }
+
+      .info {
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="sidebar">
+      <h2>BPBD Command</h2>
+
+      <p class="menu-title">Monitoring</p>
+
+      <a href="index.html"> <i class="fa fa-house"></i> Dashboard </a>
+
+      <a href="heatmap.html"> <i class="fa fa-fire"></i> Heatmap Bencana </a>
+
+      <a href="early-warning.html">
+        <i class="fa fa-triangle-exclamation"></i> Early Warning
+      </a>
+
+      <a href="cuaca.html"> <i class="fa fa-cloud"></i> Monitoring Cuaca </a>
+
+      <a href="wilayah-rawan.html"> <i class="fa fa-map"></i> Wilayah Rawan </a>
+
+      <p class="menu-title">Operasi</p>
+
+      <a href="tracking-sar.html">
+        <i class="fa fa-location-dot"></i> Live Tracking SAR
+      </a>
+
+      <a href="sar.html"> <i class="fa fa-helicopter"></i> Tim SAR </a>
+
+      <a href="posko.html"> <i class="fa fa-house"></i> Posko Pengungsian </a>
+
+      <p class="menu-title">Data Bencana</p>
+
+      <a href="laporan.html">
+        <i class="fa fa-triangle-exclamation"></i> Laporan Bencana
+      </a>
+
+      <a class="active" href="korban.html">
+        <i class="fa fa-user-injured"></i> Data Korban
+      </a>
+
+      <a href="pengungsi.html">
+        <i class="fa fa-people-group"></i> Data Pengungsi
+      </a>
+
+      <a href="bantuan.html"> <i class="fa fa-box"></i> Distribusi Bantuan </a>
+
+      <p class="menu-title">Sistem</p>
+
+      <a href="pengaturan.html"> <i class="fa fa-gear"></i> Pengaturan </a>
+      <a href="../dashboard.html">
+        <i class="fa fa-display"></i> Command Center
+      </a>
+    </div>
+
+    <div class="main">
+      <h2 style="margin-bottom: 20px">👥 Data Korban Bencana</h2>
+
+      <!-- STATISTICS -->
+
+      <div class="cards">
+        <div class="card">
+          <h3 id="totalMeninggal">0</h3>
+          <p>Meninggal</p>
+        </div>
+
+        <div class="card">
+          <h3 id="totalLuka">0</h3>
+          <p>Luka</p>
+        </div>
+
+        <div class="card">
+          <h3 id="totalPengungsi">0</h3>
+          <p>Pengungsi</p>
+        </div>
+      </div>
+
+      <div class="grid">
+        <!-- COLUMN 1 -->
+
+        <div>
+          <div class="panel">
+            <h3>🗺 Peta Korban</h3>
+            <div id="map"></div>
+          </div>
+
+          <div class="panel">
+            <h3>📈 Grafik Korban per Kecamatan</h3>
+            <canvas id="korbanChart"></canvas>
+          </div>
+        </div>
+
+        <!-- COLUMN 2 -->
+
+        <div>
+          <div class="panel">
+            <h3>🚨 Realtime Laporan Masyarakat</h3>
+
+            <table id="panicTable">
+              <tr>
+                <th>Waktu</th>
+                <th>Lokasi</th>
+                <th>Jenis</th>
+                <th>Status</th>
+              </tr>
+            </table>
+          </div>
+
+          <div class="panel">
+            <h3>🛰 Drone Monitoring View</h3>
+
+            <div style="position: relative">
+              <iframe
+                width="100%"
+                height="220"
+                style="border-radius: 10px; border: none"
+                src="https://www.youtube.com/embed/0dE7Lk6A9l4?autoplay=1&mute=1&loop=1&playlist=0dE7Lk6A9l4"
+                allow="autoplay"
+              ></iframe>
+
+              <div
+                style="
+                  position: absolute;
+                  top: 10px;
+                  left: 10px;
+                  background: red;
+                  color: white;
+                  padding: 4px 8px;
+                  font-size: 12px;
+                  border-radius: 6px;
+                "
+              >
+                ● LIVE DRONE
+              </div>
+            </div>
+
+            <div
+              style="
+                display: flex;
+                gap: 15px;
+                margin-top: 10px;
+                font-size: 13px;
+              "
+            >
+              <span>📡 Signal : Strong</span>
+              <span>ارتفاع : 120 m</span>
+              <span>⚡ Battery : 78%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- COLUMN 3 -->
+
+        <div>
+          <div class="panel">
+            <h3>📋 Detail Korban per Desa</h3>
+
+            <table id="korbanTable">
+              <tr>
+                <th>Kecamatan</th>
+                <th>Desa</th>
+                <th>Meninggal</th>
+                <th>Luka</th>
+                <th>Pengungsi</th>
+                <th>Detail</th>
+              </tr>
+            </table>
+          </div>
+
+          <div class="panel">
+            <h3>🏠 Kerusakan Infrastruktur</h3>
+
+            <table>
+              <tr>
+                <th>Wilayah</th>
+                <th>Ringan</th>
+                <th>Sedang</th>
+                <th>Berat</th>
+                <th>Fasum</th>
+              </tr>
+
+              <tr>
+                <td>Kec.Perbaungan</td>
+                <td>10</td>
+                <td>6</td>
+                <td>2</td>
+                <td>Sekolah</td>
+              </tr>
+
+              <tr>
+                <td>Kec.Teluk Mengkudu</td>
+                <td>8</td>
+                <td>4</td>
+                <td>1</td>
+                <td>Puskesmas</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL -->
+
+    <div class="modal" id="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeModal()">✖</span>
+
+        <h3 id="mWilayah"></h3>
+
+        <div class="info">Meninggal : <span id="mMeninggal"></span></div>
+        <div class="info">Luka : <span id="mLuka"></span></div>
+        <div class="info">Pengungsi : <span id="mPengungsi"></span></div>
+      </div>
+    </div>
+
+    <script>
+      /* DATA */
+
+      var dataKorban = [
+        {
+          kecamatan: "Kec.Perbaungan",
+          desa: "Kwala Bekala",
+          lat: 3.59,
+          lng: 98.67,
+          meninggal: 1,
+          luka: 4,
+          pengungsi: 45,
+        },
+
+        {
+          kecamatan: "Kec.Teluk Mengkudu",
+          desa: "Gung Negeri",
+          lat: 3.205,
+          lng: 98.378,
+          meninggal: 0,
+          luka: 2,
+          pengungsi: 25,
+        },
+      ];
+
+      /* MAP */
+
+      var map = L.map("map").setView([3.595, 98.672], 8);
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(
+        map,
+      );
+
+      /* TOTAL */
+
+      var totalM = 0;
+      var totalL = 0;
+      var totalP = 0;
+
+      /* TABLE */
+
+      var table = "";
+
+      dataKorban.forEach(function (d, i) {
+        totalM += d.meninggal;
+        totalL += d.luka;
+        totalP += d.pengungsi;
+
+        table += `
+
+<tr>
+
+<td>${d.kecamatan}</td>
+<td>${d.desa}</td>
+<td>${d.meninggal}</td>
+<td>${d.luka}</td>
+<td>${d.pengungsi}</td>
+
+<td>
+
+<button onclick="showDetail(${i})"
+style="background:#c62828;color:white;border:none;padding:4px 8px;border-radius:6px">
+
+Detail
+
+</button>
+
+</td>
+
+</tr>
+
+`;
+
+        /* MAP MARKER */
+
+        L.marker([d.lat, d.lng]).addTo(map);
+      });
+
+      document.getElementById("korbanTable").innerHTML += table;
+
+      /* UPDATE CARDS */
+
+      document.getElementById("totalMeninggal").innerText = totalM;
+      document.getElementById("totalLuka").innerText = totalL;
+      document.getElementById("totalPengungsi").innerText = totalP;
+
+      /* CHART */
+
+      new Chart(document.getElementById("korbanChart"), {
+        type: "bar",
+
+        data: {
+          labels: dataKorban.map((d) => d.kecamatan),
+
+          datasets: [
+            {
+              label: "Pengungsi",
+              data: dataKorban.map((d) => d.pengungsi),
+              backgroundColor: "#c62828",
+            },
+          ],
+        },
+      });
+
+      /* MODAL */
+
+      function showDetail(i) {
+        var d = dataKorban[i];
+
+        document.getElementById("mWilayah").innerText =
+          d.kecamatan + " - " + d.desa;
+        document.getElementById("mMeninggal").innerText =
+          d.meninggal + " orang";
+        document.getElementById("mLuka").innerText = d.luka + " orang";
+        document.getElementById("mPengungsi").innerText =
+          d.pengungsi + " orang";
+
+        document.getElementById("modal").style.display = "flex";
+      }
+
+      /*************  ✨ Windsurf Command ⭐  *************/
+      /**
+       * Close the modal by setting its display to none
+       */
+      /*******  65308fa1-062d-4be9-8bd1-f2bc6b4cf566  *******/
+      function closeModal() {
+        document.getElementById("modal").style.display = "none";
+      }
+
+      /* DATA LAPORAN MASYARAKAT */
+
+      var panicReports = [
+        {
+          waktu: "10:20",
+          lokasi: "Kec.Perbaungan",
+          jenis: "Banjir",
+          status: "Baru",
+        },
+
+        {
+          waktu: "09:55",
+          lokasi: "Kec.Teluk Mengkudu",
+          jenis: "Longsor",
+          status: "Proses",
+        },
+      ];
+
+      /* LOAD TABLE */
+
+      var panicHTML = "";
+
+      panicReports.forEach(function (r) {
+        panicHTML += `
+
+<tr>
+
+<td>${r.waktu}</td>
+
+<td>${r.lokasi}</td>
+
+<td>${r.jenis}</td>
+
+<td>${r.status}</td>
+
+</tr>
+
+`;
+      });
+
+      document.getElementById("panicTable").innerHTML += panicHTML;
+
+      /* SIMULASI REALTIME LAPORAN */
+
+      setInterval(function () {
+        var now = new Date().toLocaleTimeString();
+
+        var lokasi = [
+          "Kec.Perbaungan",
+          "Kec.Sei Rampah",
+          "Kec.Pantai Cermin",
+          "Binjai",
+        ];
+        var jenis = ["Banjir", "Longsor", "Angin", "Pohon Tumbang"];
+
+        var rLokasi = lokasi[Math.floor(Math.random() * lokasi.length)];
+        var rJenis = jenis[Math.floor(Math.random() * jenis.length)];
+
+        var row = `
+
+<tr>
+
+<td>${now}</td>
+
+<td>${rLokasi}</td>
+
+<td>${rJenis}</td>
+
+<td>Baru</td>
+
+</tr>
+
+`;
+
+        document.getElementById("panicTable").innerHTML += row;
+      }, 8000);
+    </script>
+  </body>
+</html>

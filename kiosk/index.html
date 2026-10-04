@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Digital Kiosk Layanan Publik</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Poppins:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        background: radial-gradient(circle at top, #0f2027, #203a43, #0b1a24);
+        font-family: "Poppins", sans-serif;
+        color: white;
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 40px;
+        background: rgba(0, 0, 0, 0.3);
+      }
+
+      .title {
+        font-family: "Orbitron";
+        letter-spacing: 2px;
+      }
+
+      .status {
+        color: #00ff9d;
+      }
+
+      .clock {
+        font-size: 13px;
+        color: #ccc;
+      }
+
+      .topmenu {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 10px 40px;
+      }
+
+      .topmenu a {
+        color: white;
+        text-decoration: none;
+        margin-right: 30px;
+        font-size: 14px;
+      }
+
+      .topmenu a.active {
+        color: #00c3ff;
+        border-bottom: 2px solid #00c3ff;
+      }
+
+      .menu-link {
+        text-decoration: none;
+        color: inherit;
+      }
+
+      .card-glass {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        padding: 20px;
+        margin-top: 20px;
+      }
+
+      .module-card {
+        padding: 40px;
+        text-align: center;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+
+      .module-card:hover {
+        background: rgba(0, 195, 255, 0.15);
+        transform: translateY(-5px);
+      }
+
+      .module-icon {
+        font-size: 45px;
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- HEADER -->
+
+    <div class="header">
+      <div class="title">DIGITAL KIOSK CENTER</div>
+
+      <div>
+        <div class="status">PUBLIC SERVICE KIOSK</div>
+        <div id="clock" class="clock"></div>
+      </div>
+    </div>
+
+    <!-- MENU -->
+
+    <div class="topmenu">
+      <a href="../dashboard.html">Command Center</a>
+      <a href="#" class="active">Digital KIOSK</a>
+    </div>
+
+    <!-- CONTENT -->
+
+    <div class="container-fluid">
+      <!-- ROW 1 -->
+
+      <div class="row">
+        <div class="col-md-4">
+          <a href="administrasi.html" class="menu-link">
+            <div class="card-glass module-card">
+              <div class="module-icon">📄</div>
+              <h5>Administrasi Warga</h5>
+              <p>Layanan dokumen kependudukan dan administrasi.</p>
+            </div>
+          </a>
+        </div>
+
+        <div class="col-md-4">
+          <a href="informasi-publik.html" class="menu-link">
+            <div class="card-glass module-card">
+              <div class="module-icon">📰</div>
+              <h5>Informasi Publik</h5>
+              <p>Berita dan informasi resmi pemerintah.</p>
+            </div>
+          </a>
+        </div>
+
+        <div class="col-md-4">
+          <a href="pengaduan.html" class="menu-link">
+            <div class="card-glass module-card">
+              <div class="module-icon">📋</div>
+              <h5>Pengaduan</h5>
+              <p>Laporan masyarakat kepada pemerintah.</p>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- ROW 2 -->
+
+      <div class="row">
+        <div class="col-md-4">
+          <a href="antrian-layanan.html" class="menu-link">
+            <div class="card-glass module-card">
+              <div class="module-icon">🎫</div>
+              <h5>Antrian Layanan</h5>
+              <p>Ambil nomor antrian layanan publik.</p>
+            </div>
+          </a>
+        </div>
+
+        <div class="col-md-4">
+          <a href="verifikasi-dokumen.html" class="menu-link">
+            <div class="card-glass module-card">
+              <div class="module-icon">✅</div>
+              <h5>Verifikasi Dokumen</h5>
+              <p>Validasi dokumen resmi masyarakat.</p>
+            </div>
+          </a>
+        </div>
+
+        <div class="col-md-4">
+          <a href="geospasial.html" class="menu-link">
+            <div class="card-glass module-card">
+              <div class="module-icon">🗺</div>
+              <h5>Geospasial</h5>
+              <p>Peta layanan publik dan fasilitas kota.</p>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- ROW 3 -->
+
+      <div class="row">
+        <div class="col-md-4">
+          <a href="survei-kepuasan.html" class="menu-link">
+            <div class="card-glass module-card">
+              <div class="module-icon">📊</div>
+              <h5>Survei Kepuasan</h5>
+              <p>Penilaian layanan pemerintah oleh masyarakat.</p>
+            </div>
+          </a>
+        </div>
+
+        <div class="col-md-4">
+          <a href="asisten-digital.html" class="menu-link">
+            <div class="card-glass module-card">
+              <div class="module-icon">🤖</div>
+              <h5>Asisten Digital</h5>
+              <p>Chatbot layanan publik otomatis membantu pertanyaan anda.</p>
+            </div>
+          </a>
+        </div>
+
+        <div class="col-md-4">
+          <a href="bantuan.html" class="menu-link">
+            <div class="card-glass module-card">
+              <div class="module-icon">❤️</div>
+              <h5>Penerima Bantuan</h5>
+              <p>Informasi bantuan sosial pemerintah.</p>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- ROW 4 -->
+
+      <div class="row">
+        <div class="col-md-4">
+          <a href="arsip.html" class="menu-link">
+            <div class="card-glass module-card">
+              <div class="module-icon">📂</div>
+              <h5>Arsip Dokumen</h5>
+              <p>Akses arsip dokumen layanan publik.</p>
+            </div>
+          </a>
+        </div>
+
+        <div class="col-md-4">
+          <a href="kegiatan.html" class="menu-link">
+            <div class="card-glass module-card">
+              <div class="module-icon">📅</div>
+              <h5>Registrasi Kegiatan</h5>
+              <p>Pendaftaran kegiatan pemerintah.</p>
+            </div>
+          </a>
+        </div>
+
+        <div class="col-md-4">
+          <a href="informasi-darurat.html" class="menu-link">
+            <div class="card-glass module-card">
+              <div class="module-icon">🚨</div>
+              <h5>Informasi Darurat</h5>
+              <p>Informasi bencana dan layanan darurat.</p>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- ROW 5 -->
+
+      <div class="row">
+        <div class="col-md-4">
+          <a href="bumdes.html" class="menu-link">
+            <div class="card-glass module-card">
+              <div class="module-icon">🏪</div>
+              <h5>BUMDes</h5>
+              <p>Informasi usaha desa dan layanan ekonomi.</p>
+            </div>
+          </a>
+        </div>
+
+        <div class="col-md-4">
+          <a href="ppob.html" class="menu-link">
+            <div class="card-glass module-card">
+              <div class="module-icon">💰</div>
+              <h5>PPOB</h5>
+              <p>Pembayaran listrik, air, dan layanan lainnya.</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function updateClock() {
+        const now = new Date();
+
+        const date = now.toLocaleDateString("id-ID");
+
+        const time = now.toLocaleTimeString("id-ID");
+
+        document.getElementById("clock").innerHTML = date + " | " + time;
+      }
+
+      setInterval(updateClock, 1000);
+
+      updateClock();
+    </script>
+  </body>
+</html>

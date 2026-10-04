@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>BPBD Command Center</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="sidebar.css" />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", sans-serif;
+      }
+
+      body {
+        background: #f4f6f9;
+        display: flex;
+      }
+
+      select {
+        width: 100%;
+        padding: 8px 10px;
+        margin-top: 8px;
+        margin-bottom: 10px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        font-size: 13px;
+        background: white;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+
+      select:focus {
+        outline: none;
+        border-color: #c62828;
+        box-shadow: 0 0 0 2px rgba(198, 40, 40, 0.15);
+      }
+
+      /* arrow custom */
+
+      select {
+        appearance: none;
+        background-image: url("data:image/svg+xml;utf8,<svg fill='%23666' height='20' viewBox='0 0 20 20' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M5 7l5 5 5-5z'/></svg>");
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+        background-size: 16px;
+        padding-right: 30px;
+      }
+
+      /* SIDEBAR */
+
+      /* SIDEBAR */
+
+      /* MAIN */
+
+      .main {
+        flex: 1;
+        padding: 20px;
+      }
+
+      /* HEADER */
+
+      .topbar {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+      }
+
+      /* CARDS */
+
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+
+      .card {
+        background: white;
+        padding: 18px;
+        border-radius: 12px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        text-align: center;
+      }
+
+      .card h3 {
+        font-size: 22px;
+        color: #c62828;
+      }
+
+      /* GRID */
+
+      .grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 20px;
+      }
+
+      /* MAP */
+
+      #map {
+        height: 420px;
+        border-radius: 12px;
+      }
+
+      /* PANEL */
+
+      .panel {
+        background: white;
+        padding: 15px;
+        border-radius: 12px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        margin-bottom: 15px;
+      }
+
+      /* TABLE */
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+      }
+
+      th,
+      td {
+        padding: 8px;
+        border-bottom: 1px solid #eee;
+        text-align: left;
+      }
+
+      /* TIMELINE */
+
+      .timeline {
+        font-size: 13px;
+      }
+
+      .timeline div {
+        padding: 6px 0;
+        border-bottom: 1px solid #eee;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <h2>BPBD Command</h2>
+
+      <p class="menu-title">Monitoring</p>
+
+      <a class="active" href="index.html">
+        <i class="fa fa-house"></i> Dashboard
+      </a>
+
+      <a href="heatmap.html"> <i class="fa fa-fire"></i> Heatmap Bencana </a>
+
+      <a href="early-warning.html">
+        <i class="fa fa-triangle-exclamation"></i> Early Warning
+      </a>
+
+      <a href="cuaca.html"> <i class="fa fa-cloud"></i> Monitoring Cuaca </a>
+
+      <a href="wilayah-rawan.html"> <i class="fa fa-map"></i> Wilayah Rawan </a>
+
+      <p class="menu-title">Operasi</p>
+
+      <a href="tracking-sar.html">
+        <i class="fa fa-location-dot"></i> Live Tracking SAR
+      </a>
+
+      <a href="sar.html"> <i class="fa fa-helicopter"></i> Tim SAR </a>
+
+      <a href="posko.html"> <i class="fa fa-house"></i> Posko Pengungsian </a>
+
+      <p class="menu-title">Data Bencana</p>
+
+      <a href="laporan.html">
+        <i class="fa fa-triangle-exclamation"></i> Laporan Bencana
+      </a>
+
+      <a href="korban.html"> <i class="fa fa-user-injured"></i> Data Korban </a>
+
+      <a href="pengungsi.html">
+        <i class="fa fa-people-group"></i> Data Pengungsi
+      </a>
+
+      <a href="bantuan.html"> <i class="fa fa-box"></i> Distribusi Bantuan </a>
+
+      <p class="menu-title">Sistem</p>
+
+      <a href="pengaturan.html"> <i class="fa fa-gear"></i> Pengaturan </a>
+      <a href="../dashboard.html">
+        <i class="fa fa-display"></i> Command Center
+      </a>
+    </div>
+    <!-- MAIN -->
+
+    <div class="main">
+      <div class="topbar">
+        <h2>🛰️ Command Center Monitoring Bencana</h2>
+
+        <div><i class="fa fa-user"></i> Admin BPBD</div>
+      </div>
+
+      <!-- SUMMARY -->
+
+      <div class="cards">
+        <div class="card">
+          <h3>5</h3>
+          <p>Bencana Aktif</p>
+        </div>
+
+        <div class="card">
+          <h3>120</h3>
+          <p>Korban</p>
+        </div>
+
+        <div class="card">
+          <h3>350</h3>
+          <p>Pengungsi</p>
+        </div>
+
+        <div class="card">
+          <h3>8</h3>
+          <p>Posko</p>
+        </div>
+
+        <div class="card">
+          <h3>12</h3>
+          <p>Tim SAR</p>
+        </div>
+
+        <div class="card" style="background: #ffebee">
+          <h3 style="color: #d32f2f">3</h3>
+          <p>🚨 Panic Emergency</p>
+        </div>
+      </div>
+
+      <div class="grid">
+        <!-- LEFT SIDE -->
+
+        <div>
+          <div class="panel">
+            <h3>🗺️ Monitoring Peta Bencana</h3>
+
+            <div id="map"></div>
+          </div>
+
+          <div class="panel">
+            <h3>📊 Grafik Korban</h3>
+
+            <canvas id="korbanChart"></canvas>
+          </div>
+
+          <div class="panel">
+            <h3>📊 Grafik Pengungsi</h3>
+
+            <canvas id="pengungsiChart"></canvas>
+          </div>
+        </div>
+
+        <!-- RIGHT SIDE -->
+
+        <div>
+          <div class="panel">
+            <h3>⏱️ Timeline Kejadian</h3>
+
+            <div class="timeline">
+              <div>10:21 Banjir Kec.Perbaungan</div>
+              <div>09:30 Longsor Kec.Sei Rampah</div>
+              <div>08:15 Angin Puting Kec.Pantai Cermin</div>
+              <div>07:50 Banjir Binjai</div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <h3>🚁 Operasi SAR</h3>
+
+            <table>
+              <tr>
+                <th>Tim</th>
+                <th>Lokasi</th>
+                <th>Status</th>
+              </tr>
+
+              <tr>
+                <td>SAR 01</td>
+                <td>Kec.Perbaungan</td>
+                <td>Evakuasi</td>
+              </tr>
+
+              <tr>
+                <td>SAR 02</td>
+                <td>Kec.Sei Rampah</td>
+                <td>Pencarian</td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="panel">
+            <h3>📦 Distribusi Bantuan</h3>
+
+            <canvas id="bantuanChart"></canvas>
+          </div>
+
+          <div class="panel">
+            <h3>🌧 Monitoring Cuaca</h3>
+
+            <select id="sensorCuaca" onchange="updateCuaca()">
+              <option value="Kec.Perbaungan">Sensor Kec.Perbaungan</option>
+              <option value="Kec.Sei Rampah">Sensor Kec.Sei Rampah</option>
+              <option value="Kec.Pantai Cermin">
+                Sensor Kec.Pantai Cermin
+              </option>
+            </select>
+
+            <p style="margin-top: 10px">Suhu : <b id="suhu">30°C</b></p>
+            <p>Curah Hujan : <b id="hujan">20 mm</b></p>
+            <p>Kecepatan Angin : <b id="angin">15 km/h</b></p>
+          </div>
+
+          <div class="panel">
+            <h3>🌊 Monitoring Ketinggian Air</h3>
+
+            <select id="sensorAir" onchange="updateAir()">
+              <option value="deli">Sungai Bahbolon</option>
+              <option value="wampu">Sungai Padang</option>
+              <option value="asahan">Sungai Buluh</option>
+            </select>
+
+            <p style="margin-top: 10px">
+              Tinggi Air : <b id="tinggiAir">120 cm</b>
+            </p>
+
+            <p>
+              Status :
+              <b id="statusAir" style="color: green">Aman</b>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      /* MAP */
+
+      var map = L.map("map").setView([3.595, 98.672], 7);
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(
+        map,
+      );
+
+      /* DISASTER MARKERS */
+
+      L.marker([3.595, 98.672]).addTo(map).bindPopup("Banjir Kec.Perbaungan");
+
+      L.marker([3.205, 98.378]).addTo(map).bindPopup("Longsor Kec.Sei Rampah");
+
+      /* CHART KORBAN */
+
+      new Chart(document.getElementById("korbanChart"), {
+        type: "bar",
+        data: {
+          labels: ["Banjir", "Longsor", "Angin"],
+          datasets: [
+            {
+              data: [40, 25, 15],
+              backgroundColor: "#c62828",
+            },
+          ],
+        },
+      });
+
+      /* CHART PENGUNGSI */
+
+      new Chart(document.getElementById("pengungsiChart"), {
+        type: "line",
+        data: {
+          labels: ["Sen", "Sel", "Rab", "Kam", "Jum"],
+          datasets: [
+            {
+              data: [120, 200, 280, 330, 350],
+              borderColor: "#1976d2",
+            },
+          ],
+        },
+      });
+
+      /* CHART BANTUAN */
+
+      new Chart(document.getElementById("bantuanChart"), {
+        type: "pie",
+        data: {
+          labels: ["Makanan", "Obat", "Selimut"],
+          datasets: [
+            {
+              data: [120, 60, 40],
+              backgroundColor: ["#ef5350", "#42a5f5", "#66bb6a"],
+            },
+          ],
+        },
+      });
+    </script>
+    <script>
+      /* DATA SAMPLE CUACA */
+
+      function updateCuaca() {
+        const sensor = document.getElementById("sensorCuaca").value;
+
+        if (sensor == "Kec.Perbaungan") {
+          document.getElementById("suhu").innerText = "30°C";
+          document.getElementById("hujan").innerText = "20 mm";
+          document.getElementById("angin").innerText = "15 km/h";
+        }
+
+        if (sensor == "Kec.Sei Rampah") {
+          document.getElementById("suhu").innerText = "25°C";
+          document.getElementById("hujan").innerText = "40 mm";
+          document.getElementById("angin").innerText = "10 km/h";
+        }
+
+        if (sensor == "Kec.Pantai Cermin") {
+          document.getElementById("suhu").innerText = "29°C";
+          document.getElementById("hujan").innerText = "35 mm";
+          document.getElementById("angin").innerText = "12 km/h";
+        }
+      }
+
+      /* DATA SAMPLE AIR */
+
+      function updateAir() {
+        const sensor = document.getElementById("sensorAir").value;
+
+        let tinggi = 0;
+        let status = "Aman";
+        let color = "green";
+
+        if (sensor == "deli") {
+          tinggi = 120;
+        }
+
+        if (sensor == "wampu") {
+          tinggi = 210;
+          status = "Siaga";
+          color = "orange";
+        }
+
+        if (sensor == "asahan") {
+          tinggi = 320;
+          status = "Bahaya";
+          color = "red";
+        }
+
+        document.getElementById("tinggiAir").innerText = tinggi + " cm";
+
+        let statusEl = document.getElementById("statusAir");
+        statusEl.innerText = status;
+        statusEl.style.color = color;
+      }
+    </script>
+  </body>
+</html>

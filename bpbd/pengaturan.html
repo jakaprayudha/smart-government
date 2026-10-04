@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Pengaturan Sistem</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="sidebar.css" />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Inter", sans-serif;
+      }
+
+      body {
+        display: flex;
+        background: #f4f6f9;
+      }
+
+      /* SIDEBAR */
+
+      .sidebar {
+        width: 220px;
+        background: #b71c1c;
+        color: white;
+        padding: 20px;
+        min-height: 100vh;
+      }
+
+      .sidebar h2 {
+        margin-bottom: 20px;
+        font-size: 18px;
+      }
+
+      .sidebar a {
+        display: block;
+        padding: 10px;
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        margin-bottom: 6px;
+      }
+
+      .sidebar a:hover {
+        background: #d32f2f;
+      }
+
+      /* MAIN */
+
+      .main {
+        flex: 1;
+        padding: 20px;
+      }
+
+      /* GRID */
+
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+
+      /* PANEL */
+
+      .panel {
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        margin-bottom: 20px;
+      }
+
+      .panel h3 {
+        margin-bottom: 15px;
+      }
+
+      /* INPUT */
+
+      input,
+      select {
+        width: 100%;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        margin-bottom: 10px;
+      }
+
+      button {
+        background: #c62828;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background: #b71c1c;
+      }
+
+      /* SWITCH */
+
+      .switch {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="sidebar">
+      <h2>BPBD Command</h2>
+
+      <p class="menu-title">Monitoring</p>
+
+      <a href="index.html"> <i class="fa fa-house"></i> Dashboard </a>
+
+      <a href="heatmap.html"> <i class="fa fa-fire"></i> Heatmap Bencana </a>
+
+      <a href="early-warning.html">
+        <i class="fa fa-triangle-exclamation"></i> Early Warning
+      </a>
+
+      <a href="cuaca.html"> <i class="fa fa-cloud"></i> Monitoring Cuaca </a>
+
+      <a href="wilayah-rawan.html"> <i class="fa fa-map"></i> Wilayah Rawan </a>
+
+      <p class="menu-title">Operasi</p>
+
+      <a href="tracking-sar.html">
+        <i class="fa fa-location-dot"></i> Live Tracking SAR
+      </a>
+
+      <a href="sar.html"> <i class="fa fa-helicopter"></i> Tim SAR </a>
+
+      <a href="posko.html"> <i class="fa fa-house"></i> Posko Pengungsian </a>
+
+      <p class="menu-title">Data Bencana</p>
+
+      <a href="laporan.html">
+        <i class="fa fa-triangle-exclamation"></i> Laporan Bencana
+      </a>
+
+      <a href="korban.html"> <i class="fa fa-user-injured"></i> Data Korban </a>
+
+      <a href="pengungsi.html">
+        <i class="fa fa-people-group"></i> Data Pengungsi
+      </a>
+
+      <a href="bantuan.html"> <i class="fa fa-box"></i> Distribusi Bantuan </a>
+
+      <p class="menu-title">Sistem</p>
+
+      <a class="active" href="pengaturan.html">
+        <i class="fa fa-gear"></i> Pengaturan
+      </a>
+
+      <a href="../dashboard.html">
+        <i class="fa fa-display"></i> Command Center
+      </a>
+    </div>
+
+    <div class="main">
+      <h2 style="margin-bottom: 20px">⚙ Pengaturan Sistem</h2>
+
+      <div class="grid">
+        <div>
+          <div class="panel">
+            <h3>👤 Profil Admin</h3>
+
+            <input type="text" value="Admin BPBD" />
+            <input type="email" value="admin@bpbd.go.id" />
+            <input type="text" value="Operator Command Center" />
+
+            <button>Simpan Profil</button>
+          </div>
+
+          <div class="panel">
+            <h3>🔐 Keamanan Akun</h3>
+
+            <input type="password" placeholder="Password Lama" />
+            <input type="password" placeholder="Password Baru" />
+
+            <button>Ganti Password</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="panel">
+            <h3>🚨 Pengaturan Notifikasi</h3>
+
+            <div class="switch">
+              <span>Alert Banjir</span>
+              <input type="checkbox" checked />
+            </div>
+
+            <div class="switch">
+              <span>Alert Longsor</span>
+              <input type="checkbox" checked />
+            </div>
+
+            <div class="switch">
+              <span>Alert Cuaca Ekstrem</span>
+              <input type="checkbox" />
+            </div>
+          </div>
+
+          <div class="panel">
+            <h3>🛰 Integrasi Sistem</h3>
+
+            <select>
+              <option>Sensor Sungai IoT</option>
+              <option>BMKG API</option>
+              <option>Weather Satellite</option>
+            </select>
+
+            <button>Hubungkan Sistem</button>
+          </div>
+
+          <div class="panel">
+            <h3>🎨 Pengaturan Tampilan</h3>
+
+            <select>
+              <option>Theme Default</option>
+              <option>Dark Mode</option>
+            </select>
+
+            <button>Simpan Pengaturan</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

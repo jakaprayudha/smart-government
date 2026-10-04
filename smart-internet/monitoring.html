@@ -1,0 +1,440 @@
+<!doctype html>
+
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Smart Public Internet</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Poppins:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <style>
+      body {
+        background: radial-gradient(circle at top, #0f2027, #203a43, #0b1a24);
+        font-family: "Poppins", sans-serif;
+        color: white;
+      }
+
+      /* HEADER */
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 40px;
+        background: rgba(0, 0, 0, 0.3);
+      }
+
+      .title {
+        font-family: "Orbitron";
+        letter-spacing: 2px;
+      }
+
+      .status {
+        color: #00ff9d;
+      }
+
+      .clock {
+        font-size: 13px;
+        color: #ccc;
+      }
+
+      /* MENU */
+
+      .topmenu {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 10px 40px;
+      }
+
+      .topmenu a {
+        color: white;
+        text-decoration: none;
+        margin-right: 30px;
+        font-size: 14px;
+        padding-bottom: 5px;
+      }
+
+      .topmenu a:hover {
+        color: #00c3ff;
+      }
+
+      .topmenu a.active {
+        color: #00c3ff;
+        border-bottom: 2px solid #00c3ff;
+      }
+
+      /* CARD */
+
+      .card-glass {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        padding: 20px;
+        margin-top: 20px;
+      }
+
+      /* MAP */
+
+      #networkMap {
+        height: 420px;
+        border-radius: 12px;
+      }
+
+      /* ROUTER NODE */
+
+      .router-online {
+        background: #00ff9d;
+        border: 2px solid white;
+        border-radius: 50%;
+        width: 14px;
+        height: 14px;
+      }
+
+      .router-offline {
+        background: red;
+        border: 2px solid white;
+        border-radius: 50%;
+        width: 14px;
+        height: 14px;
+      }
+
+      /* ALERT */
+
+      .alert-overload {
+        background: rgba(255, 0, 0, 0.2);
+        border-left: 4px solid red;
+        padding: 10px;
+        margin-bottom: 8px;
+        font-size: 13px;
+      }
+
+      .badge-normal {
+        background: #00ff9d;
+        color: black;
+      }
+
+      .badge-warning {
+        background: orange;
+      }
+
+      .table {
+        color: white;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="header">
+      <div class="title">SMART PUBLIC INTERNET</div>
+
+      <div>
+        <div class="status">SYSTEM ONLINE</div>
+        <div class="clock" id="clock"></div>
+      </div>
+    </div>
+
+    <div class="topmenu">
+      <a href="monitoring.html" class="active">Monitoring Realtime Traffic</a>
+      <a href="monitoring-opd.html">Dashboard Pemanfaatan OPD</a>
+      <a href="bandwith-control.html">Kontrol Prioritas Bandwidth</a>
+      <a href="../dashboard.html">Command Center</a>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-lg-8">
+          <div class="card-glass">
+            <h5>Realtime Bandwidth Traffic</h5>
+            <canvas id="trafficChart"></canvas>
+          </div>
+        </div>
+
+        <div class="col-lg-4">
+          <div class="card-glass">
+            <h6>Total Bandwidth Usage</h6>
+            <h3 id="totalTraffic">0 Mbps</h3>
+            <hr />
+            <p>Upload : <span id="uploadVal">0</span> Mbps</p>
+            <p>Download : <span id="downloadVal">0</span> Mbps</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-4">
+        <div class="col-lg-8">
+          <div class="card-glass">
+            <h5>Peta Jaringan Fiber OPD</h5>
+            <div id="networkMap"></div>
+          </div>
+        </div>
+
+        <div class="col-lg-4">
+          <div class="card-glass">
+            <h5>Alert Bandwidth</h5>
+            <div id="alertBox"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-glass">
+        <h5>Monitoring Router / Access Point</h5>
+
+        <table class="table table-dark table-striped">
+          <thead>
+            <tr>
+              <th>Device</th>
+              <th>IP</th>
+              <th>Status</th>
+              <th>Traffic</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>Router Kominfo</td>
+              <td>10.10.1.1</td>
+              <td><span class="badge badge-normal">Online</span></td>
+              <td>40 Mbps</td>
+            </tr>
+
+            <tr>
+              <td>Router RSUD</td>
+              <td>10.10.2.1</td>
+              <td><span class="badge badge-normal">Online</span></td>
+              <td>65 Mbps</td>
+            </tr>
+
+            <tr>
+              <td>AP Kantor Bupati</td>
+              <td>10.10.3.15</td>
+              <td><span class="badge badge-warning">High Load</span></td>
+              <td>90 Mbps</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card-glass">
+        <h5>Top User Bandwidth</h5>
+
+        <table class="table table-dark table-striped">
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Lokasi</th>
+              <th>Bandwidth</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>Server Backup</td>
+              <td>Diskominfo</td>
+              <td>120 Mbps</td>
+            </tr>
+
+            <tr>
+              <td>Streaming CCTV</td>
+              <td>Command Center</td>
+              <td>90 Mbps</td>
+            </tr>
+
+            <tr>
+              <td>Server EMR</td>
+              <td>RSUD</td>
+              <td>70 Mbps</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card-glass">
+        <h5>Monitoring Internet Sekolah</h5>
+
+        <table class="table table-dark table-striped">
+          <thead>
+            <tr>
+              <th>Sekolah</th>
+              <th>Status</th>
+              <th>Bandwidth</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>SMP 1 Perbaungan</td>
+              <td><span class="badge badge-normal">Online</span></td>
+              <td>25 Mbps</td>
+            </tr>
+
+            <tr>
+              <td>SMP 2 Sei Rampah</td>
+              <td><span class="badge badge-normal">Online</span></td>
+              <td>18 Mbps</td>
+            </tr>
+
+            <tr>
+              <td>SD 104260 Melati</td>
+              <td><span class="badge badge-warning">Slow</span></td>
+              <td>6 Mbps</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <script>
+      /* CLOCK */
+
+      function updateClock() {
+        const now = new Date();
+
+        const date = now.toLocaleDateString("id-ID");
+        const time = now.toLocaleTimeString("id-ID");
+
+        document.getElementById("clock").innerHTML = date + " | " + time;
+      }
+
+      setInterval(updateClock, 1000);
+      updateClock();
+
+      /* CHART */
+
+      const ctx = document.getElementById("trafficChart");
+
+      const trafficChart = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: [],
+          datasets: [
+            { label: "Download", borderColor: "#00c3ff", data: [] },
+            { label: "Upload", borderColor: "#00ff9d", data: [] },
+          ],
+        },
+      });
+
+      setInterval(() => {
+        const time = new Date().toLocaleTimeString();
+
+        const download = Math.floor(Math.random() * 100);
+        const upload = Math.floor(Math.random() * 60);
+
+        trafficChart.data.labels.push(time);
+        trafficChart.data.datasets[0].data.push(download);
+        trafficChart.data.datasets[1].data.push(upload);
+
+        if (trafficChart.data.labels.length > 10) {
+          trafficChart.data.labels.shift();
+          trafficChart.data.datasets[0].data.shift();
+          trafficChart.data.datasets[1].data.shift();
+        }
+
+        trafficChart.update();
+
+        document.getElementById("uploadVal").innerHTML = upload;
+        document.getElementById("downloadVal").innerHTML = download;
+        document.getElementById("totalTraffic").innerHTML =
+          upload + download + " Mbps";
+      }, 2000);
+
+      /* MAP */
+
+      const map = L.map("networkMap").setView([3.56, 98.86], 11);
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 18,
+      }).addTo(map);
+
+      const routers = [
+        {
+          name: "Diskominfo Sei Rampah",
+          lat: 3.567,
+          lng: 98.857,
+          status: "online",
+        },
+        {
+          name: "RSUD Sultan Sulaiman",
+          lat: 3.575,
+          lng: 98.862,
+          status: "online",
+        },
+        { name: "Disdik Sergai", lat: 3.572, lng: 98.87, status: "offline" },
+        {
+          name: "Kantor Bupati Sergai",
+          lat: 3.568,
+          lng: 98.86,
+          status: "online",
+        },
+        { name: "Perbaungan Hub", lat: 3.586, lng: 98.92, status: "online" },
+        {
+          name: "Teluk Mengkudu Node",
+          lat: 3.525,
+          lng: 98.91,
+          status: "online",
+        },
+        {
+          name: "Dolok Masihul Node",
+          lat: 3.453,
+          lng: 98.93,
+          status: "offline",
+        },
+      ];
+
+      routers.forEach((r) => {
+        const icon = L.divIcon({
+          className: r.status === "online" ? "router-online" : "router-offline",
+        });
+
+        const marker = L.marker([r.lat, r.lng], { icon }).addTo(map);
+
+        marker.bindPopup(`
+          <b>${r.name}</b><br>
+          Status: ${r.status}<br>
+          Lat: ${r.lat}, Lng: ${r.lng}
+        `);
+      });
+
+      const fiber = [
+        [
+          [3.567, 98.857],
+          [3.575, 98.862],
+        ],
+        [
+          [3.567, 98.857],
+          [3.586, 98.92],
+        ],
+        [
+          [3.567, 98.857],
+          [3.525, 98.91],
+        ],
+        [
+          [3.586, 98.92],
+          [3.453, 98.93],
+        ],
+      ];
+      fiber.forEach((line) => {
+        L.polyline(line, { color: "#00c3ff", weight: 3 }).addTo(map);
+      });
+
+      setTimeout(() => {
+        map.invalidateSize();
+      }, 100);
+    </script>
+  </body>
+</html>

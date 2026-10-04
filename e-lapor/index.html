@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>E-Lapor - Pengaduan Masyarakat</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Poppins:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+      body {
+        background: radial-gradient(circle at top, #0f2027, #203a43, #0b1a24);
+        font-family: "Poppins", sans-serif;
+        color: white;
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 40px;
+        background: rgba(0, 0, 0, 0.3);
+      }
+
+      .title {
+        font-family: "Orbitron";
+        letter-spacing: 2px;
+      }
+
+      .status {
+        color: #00ff9d;
+      }
+
+      .clock {
+        font-size: 13px;
+        color: #ccc;
+      }
+
+      .topmenu {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 10px 40px;
+      }
+
+      .topmenu a {
+        color: white;
+        text-decoration: none;
+        margin-right: 30px;
+        font-size: 14px;
+      }
+
+      .topmenu a.active {
+        color: #00c3ff;
+        border-bottom: 2px solid #00c3ff;
+      }
+
+      .card-glass {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        padding: 20px;
+        margin-top: 20px;
+      }
+
+      .stat-number {
+        font-size: 28px;
+        font-weight: 600;
+      }
+
+      .alert-box {
+        background: rgba(255, 0, 0, 0.2);
+        border-left: 4px solid red;
+        padding: 10px;
+        margin-bottom: 10px;
+      }
+
+      .table {
+        color: white;
+      }
+
+      .badge-open {
+        background: orange;
+      }
+
+      .badge-progress {
+        background: #00c3ff;
+      }
+
+      .badge-done {
+        background: #00ff9d;
+        color: black;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="header">
+      <div class="title">E-LAPOR COMMAND CENTER</div>
+
+      <div>
+        <div class="status">PENGADUAN MASYARAKAT AKTIF</div>
+        <div id="clock" class="clock"></div>
+      </div>
+    </div>
+
+    <div class="topmenu">
+      <a href="index.html" class="active">Dashboard Pengaduan</a>
+      <a href="data-laporan.html">Daftar Laporan</a>
+      <a href="peta-pengaduan.html">Peta Pengaduan</a>
+      <a href="kinerja-pengaduan.html">Kinerja Penanganan</a>
+      <a href="analitk-pengaduan.html">Analitik Pengaduan</a>
+      <a href="laporan-opd.html">Laporan OPD</a>
+      <a href="../dashboard.html">Command Center</a>
+    </div>
+
+    <div class="container-fluid">
+      <!-- STAT -->
+
+      <div class="row">
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Total Laporan</h6>
+            <div class="stat-number">4,320</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Laporan Hari Ini</h6>
+            <div class="stat-number">85</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Dalam Proses</h6>
+            <div class="stat-number text-warning">210</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card-glass">
+            <h6>Laporan Selesai</h6>
+            <div class="stat-number text-success">3,910</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHART -->
+
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="card-glass">
+            <h5>Kategori Pengaduan</h5>
+
+            <canvas id="categoryChart"></canvas>
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <div class="card-glass">
+            <h5>Tren Laporan</h5>
+
+            <canvas id="trendChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- ALERT -->
+
+      <div class="card-glass">
+        <h5>Pengaduan Prioritas</h5>
+
+        <div class="alert-box">
+          ⚠ Jalan rusak parah di Kecamatan Teluk Mengkudu.
+        </div>
+
+        <div class="alert-box">⚠ Lampu jalan mati di Jalan Sudirman.</div>
+      </div>
+
+      <!-- LAPORAN TERBARU -->
+
+      <div class="card-glass">
+        <h5>Laporan Terbaru</h5>
+
+        <table class="table table-dark table-striped">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Laporan</th>
+              <th>Lokasi</th>
+              <th>OPD</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>LP-001</td>
+              <td>Jalan berlubang</td>
+              <td>Perbaungan</td>
+              <td>Dinas PU</td>
+              <td><span class="badge badge-open">Open</span></td>
+            </tr>
+
+            <tr>
+              <td>LP-002</td>
+              <td>Lampu jalan mati</td>
+              <td>Sei Rampah</td>
+              <td>Dinas Perhubungan</td>
+              <td><span class="badge badge-progress">Process</span></td>
+            </tr>
+
+            <tr>
+              <td>LP-003</td>
+              <td>Sampah menumpuk</td>
+              <td>Teluk Mengkudu</td>
+              <td>Dinas Lingkungan</td>
+              <td><span class="badge badge-done">Done</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <script>
+      /* CLOCK */
+
+      function updateClock() {
+        const now = new Date();
+
+        const date = now.toLocaleDateString("id-ID");
+
+        const time = now.toLocaleTimeString("id-ID");
+
+        document.getElementById("clock").innerHTML = date + " | " + time;
+      }
+
+      setInterval(updateClock, 1000);
+
+      updateClock();
+
+      /* CATEGORY */
+
+      new Chart(document.getElementById("categoryChart"), {
+        type: "doughnut",
+
+        data: {
+          labels: [
+            "Infrastruktur",
+            "Kebersihan",
+            "Lampu Jalan",
+            "Air",
+            "Lainnya",
+          ],
+          datasets: [
+            {
+              data: [1200, 900, 600, 400, 300],
+              backgroundColor: [
+                "#00c3ff",
+                "#00ff9d",
+                "#ffaa00",
+                "#ff4c4c",
+                "#888",
+              ],
+            },
+          ],
+        },
+      });
+
+      /* TREND */
+
+      new Chart(document.getElementById("trendChart"), {
+        type: "line",
+
+        data: {
+          labels: ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab"],
+          datasets: [
+            {
+              label: "Jumlah Laporan",
+              data: [60, 80, 70, 95, 85, 90],
+              borderColor: "#00ff9d",
+            },
+          ],
+        },
+      });
+    </script>
+  </body>
+</html>
